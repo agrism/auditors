@@ -10,35 +10,40 @@ use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
 	protected $companyId;
 	protected $company;
 
 	public function __construct()
 	{
-		$this->company  = app()->Company;
+		$this->company = app()->Company;
 
 		$this->initCompany();
 
-		if( !isset($this->company->id) ){
+		if (!isset($this->company->id)) {
 			return route('client.companies.index');
 		}
 	}
 
-	private function initCompany(){
+	private function initCompany()
+	{
 
-		$this->middleware(function ($request, $next){
+		$this->middleware(
+			function ($request, $next) {
 
-			if($request->session()->has('companyId')){
-				$this->companyId = $request->session()->get('companyId');
+				if ($request->session()->has('companyId')) {
+					$this->companyId = $request->session()->get('companyId');
 
-				if(!$this->company = Company::where('id', $this->companyId)->first()){
-					$this->companyId = null;
+					if (!$this->company = Company::where('id', $this->companyId)
+						->first()
+					) {
+						$this->companyId = null;
+					}
 				}
-			}
 
-			return $next($request);
-		});
+				return $next($request);
+			}
+		);
 	}
 }

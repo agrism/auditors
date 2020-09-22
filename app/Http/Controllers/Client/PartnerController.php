@@ -14,105 +14,122 @@ class PartnerController extends Controller
 {
 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
 
 
-    public function index()
-    {
-        $partners = Partner::where('company_id', $this->companyId)->oldest('name')->get();
-        return view('client.partners.index',compact('partners'));
-    }
+	public function index()
+	{
+		$partners = Partner::where('company_id', $this->companyId)->oldest(
+			'name'
+		)->get();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('client.partners.create');
-    }
+		return view('client.partners.index', compact('partners'));
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $data = $request->all();
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		return view('client.partners.create');
+	}
 
-        $validator = Validator::make($data, Partner::createRules() );
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(Request $request)
+	{
+		$data = $request->all();
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+		$validator = Validator::make($data, Partner::createRules());
+
+		if ($validator->fails()) {
+			return redirect()->back()
+				->withErrors($validator)
+				->withInput();
+		}
 
 
-        $data['company_id'] = $this->companyId;
-        // return $data;
-        Partner::create($data);
-        return redirect()->route('client.partners.index')->with('success', true)->with('form_message', _('Partner is created successfully'));
-        return $this->index();
-    }
+		$data['company_id'] = $this->companyId;
+		// return $data;
+		Partner::create($data);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+		return redirect()->route('client.partners.index')->with('success', true)
+			->with('form_message', _('Partner is created successfully'));
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $partner = Partner::where('company_id', $this->companyId)->find($id);
-        return view('client.partners.edit',compact('partner'));
-    }
+		return $this->index();
+	}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $data = $request->all();
-        $data['company_id'] = $this->companyId;
-        // return $data;
-        $partner = Partner::where('company_id', $this->companyId )->find($id);
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+		//
+	}
 
-        $partner->update($data);
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit($id)
+	{
+		$partner = Partner::where('company_id', $this->companyId)->find($id);
 
-        return redirect()->route('client.partners.index')->with('success', true)->with('form_message', _('Partner is updated successfully'));
-    }
+		return view('client.partners.edit', compact('partner'));
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        return redirect()->route('client.partners.index')->with('warning', true)->with('form_message', _('There is not possibility to delete Partner now'));
-    }
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int                       $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update(Request $request, $id)
+	{
+		$data = $request->all();
+		$data['company_id'] = $this->companyId;
+		// return $data;
+		$partner = Partner::where('company_id', $this->companyId)->find($id);
+
+		$partner->update($data);
+
+		return redirect()->route('client.partners.index')->with('success', true)
+			->with('form_message', _('Partner is updated successfully'));
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy($id)
+	{
+		return redirect()->route('client.partners.index')->with('warning', true)
+			->with(
+				'form_message',
+				_('There is not possibility to delete Partner now')
+			);
+	}
 }

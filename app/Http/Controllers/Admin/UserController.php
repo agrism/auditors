@@ -13,149 +13,170 @@ use Illuminate\Support\Facades\Input;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index()
+	{
 //        dd(\Auth::user()->isAdmin());
-        return view('admin.users.index')->with('users', User::all() );
-    }
+		return view('admin.users.index')->with('users', User::all());
+	}
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		//
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(Request $request)
+	{
+		//
+	}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return 'UserController@show()';
-        // return User::with('companies')->get()->;
-        // $user = User::with('companies')->findOrFail($id);
-        // // $partners = Partner::all()->pluck('name', 'id');
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+		return 'UserController@show()';
+		// return User::with('companies')->get()->;
+		// $user = User::with('companies')->findOrFail($id);
+		// // $partners = Partner::all()->pluck('name', 'id');
 
-        // return view('admin.users.show', compact('user'));
-    }
+		// return view('admin.users.show', compact('user'));
+	}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request,$id)
-    {
-        $user = User::find($id);
-        // return $user;
-        return view('admin.users.edit', compact('user'));
-    }
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit(Request $request, $id)
+	{
+		$user = User::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $user = User::find($id);
-        $user->update($request->all() );
-        $users = User::all();
-        return view('admin.users.index', compact('users'));
-    }
+		// return $user;
+		return view('admin.users.edit', compact('user'));
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int                       $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update(Request $request, $id)
+	{
+		$user = User::find($id);
+		$user->update($request->all());
+		$users = User::all();
 
-    public function assignToPartner(Request $request){
-        $user = User::findOrFail($request->user_id);
+		return view('admin.users.index', compact('users'));
+	}
 
-        try {
-            $user->partners()->attach($request->partner_id) ; 
-            $response['response'] ='success';
-            $response['user'] = $user->partners;
-        }catch(\Exception $e){
-            $response['response'] ='error';
-            $response['message'] ='User is allready assigned to this partner!';
-        }
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy($id)
+	{
+		//
+	}
 
-        return $response;
+	public function assignToPartner(Request $request)
+	{
+		$user = User::findOrFail($request->user_id);
 
-    }
+		try {
+			$user->partners()->attach($request->partner_id);
+			$response['response'] = 'success';
+			$response['user'] = $user->partners;
+		} catch (\Exception $e) {
+			$response['response'] = 'error';
+			$response['message'] = 'User is allready assigned to this partner!';
+		}
 
-    public function assignRoleToUser(){
+		return $response;
 
-        $partnerId = Input::get('partner_id');
+	}
 
-        $user = User::with(['partners'=>function($q) use( $partnerId ){
-            $q->find($partnerId)->first();
-        }])->find(Input::get('user_id'));
+	public function assignRoleToUser()
+	{
 
-        $roles = $user->roles->filter(function($role) use ($partnerId){
-            return $role->pivot->partner_id == $partnerId;
-        });
+		$partnerId = Input::get('partner_id');
 
-        $allRoles = Role::all();
-        //return $allRoles;
+		$user = User::with(
+			[
+				'partners' => function ($q) use ($partnerId) {
+					$q->find($partnerId)->first();
+				},
+			]
+		)->find(Input::get('user_id'));
 
+		$roles = $user->roles->filter(
+			function ($role) use ($partnerId) {
+				return $role->pivot->partner_id == $partnerId;
+			}
+		);
 
-        return view('admin.users.roles.index')
-            ->with('roles',$roles)
-            ->with('allRoles', $allRoles)
-            ->with('user', $user)
-            ->with('partnerId', $partnerId);
+		$allRoles = Role::all();
 
-    }
-
-    public function assignRoleToUserSave(Request $request){
-        //return $request->all();
-        $partnerId = $request->partner_id;
-        $userId = $request->user_id;
-
-        // $user = User::with(['partners'=>function($q) use( $partnerId ){
-        //     $q->find($partnerId)->first();
-        // }])->find($userId)->first();
-
-        $user = User::with(['partners'=>function($q) use( $partnerId ){
-            $q->find($partnerId)->first();
-        }]);
+		//return $allRoles;
 
 
-        return $user;
-    }
+		return view('admin.users.roles.index')
+			->with('roles', $roles)
+			->with('allRoles', $allRoles)
+			->with('user', $user)
+			->with('partnerId', $partnerId);
+
+	}
+
+	public function assignRoleToUserSave(Request $request)
+	{
+		//return $request->all();
+		$partnerId = $request->partner_id;
+		$userId = $request->user_id;
+
+		// $user = User::with(['partners'=>function($q) use( $partnerId ){
+		//     $q->find($partnerId)->first();
+		// }])->find($userId)->first();
+
+		$user = User::with(
+			[
+				'partners' => function ($q) use ($partnerId) {
+					$q->find($partnerId)->first();
+				},
+			]
+		);
+
+
+		return $user;
+	}
 
 
 }

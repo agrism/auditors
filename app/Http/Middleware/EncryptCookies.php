@@ -14,14 +14,16 @@ class EncryptCookies extends Middleware
 	 *
 	 * @var array
 	 */
-	protected $except = [
-		//
-	];
+	protected $except
+		= [
+			//
+		];
 
 	/**
 	 * Decrypt the cookies on the request.
 	 *
-	 * @param \Symfony\Component\HttpFoundation\Request $request
+	 * @param  \Symfony\Component\HttpFoundation\Request  $request
+	 *
 	 * @return \Symfony\Component\HttpFoundation\Request
 	 */
 	protected function decrypt(Request $request)
@@ -38,10 +40,15 @@ class EncryptCookies extends Middleware
 					$value = json_encode($value);
 				}
 
-				$hasValidPrefix = strpos($value, CookieValuePrefix::create($key, $this->encrypter->getKey())) === 0;
+				$hasValidPrefix = strpos(
+						$value, CookieValuePrefix::create(
+						$key, $this->encrypter->getKey()
+					)
+					) === 0;
 
 				$request->cookies->set(
-					$key, $hasValidPrefix ? CookieValuePrefix::remove($value) : null
+					$key,
+					$hasValidPrefix ? CookieValuePrefix::remove($value) : null
 				);
 
 

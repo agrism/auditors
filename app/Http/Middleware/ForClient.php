@@ -12,8 +12,9 @@ class ForClient
 	/**
 	 * Handle an incoming request.
 	 *
-	 * @param \Illuminate\Http\Request $request
-	 * @param \Closure $next
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  \Closure                  $next
+	 *
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next)
@@ -24,7 +25,9 @@ class ForClient
 
 		// ja ejam uz citiem routem izņemot client.companies.index - lai nebūtu redireckts loopā
 		// un uz client.companies.show - kas, piešķir ID
-		if (\Request::route()->getName() != 'client.companies.index' && \Request::route()->getName() != 'client.companies.show') {
+		if (\Request::route()->getName() != 'client.companies.index'
+			&& \Request::route()->getName() != 'client.companies.show'
+		) {
 
 			// ja nav ID, tad redirekts uz client.companies.index
 			if (!SelectedCompanyService::getCompanyId()) {
@@ -32,6 +35,7 @@ class ForClient
 				return redirect(route('client.companies.index'));
 			}
 		}
+
 		return $next($request);
 	}
 }

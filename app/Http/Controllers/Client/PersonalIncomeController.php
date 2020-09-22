@@ -24,14 +24,16 @@ class PersonalIncomeController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
-	 * @param Request $request
-	 * @param PersonalIncomeRepository $personalIncomes
+	 * @param  Request  $request
+	 * @param  PersonalIncomeRepository  $personalIncomes
+	 *
 	 * @return \Illuminate\Http\Response
 	 */
 
 
-	public function index(Request $request, PersonalIncomeRepository $personalIncomes)
-	{
+	public function index(
+		Request $request, PersonalIncomeRepository $personalIncomes
+	) {
 		$this->personalIncomes = $personalIncomes;
 
 		$partners = $this->personalIncomes->getPartners();
@@ -44,8 +46,14 @@ class PersonalIncomeController extends Controller
 			$filter = $params['filter'];
 			foreach ($filter as $key => $value) {
 				if (isset($filter[$key])) {
-					setcookie('cookies[' . SelectedCompanyService::getCompanyId() . '][filter][' . $key . ']', $filter[$key], env('COOKIE_EXPIRE_TIME'));
-					$_COOKIE['cookies'][SelectedCompanyService::getCompanyId()]['filter'][$key] = $filter[$key];
+					setcookie(
+						'cookies['.SelectedCompanyService::getCompanyId()
+						.'][filter]['.$key.']', $filter[$key],
+						env('COOKIE_EXPIRE_TIME')
+					);
+					$_COOKIE['cookies'][SelectedCompanyService::getCompanyId(
+					)]['filter'][$key]
+						= $filter[$key];
 				}
 			}
 		}
@@ -57,15 +65,23 @@ class PersonalIncomeController extends Controller
 			foreach ($sort as $key => $value) {
 				if (isset($sort[$key])) {
 					foreach ($sort[$key] as $k => $v) {
-						setcookie('cookies[' . SelectedCompanyService::getCompanyId() . '][sort][' . $key . '][' . $k . ']', $v, env('COOKIE_EXPIRE_TIME'));
-						$_COOKIE['cookies'][SelectedCompanyService::getCompanyId()]['sort'][$key][$k] = $v;
+						setcookie(
+							'cookies['.SelectedCompanyService::getCompanyId()
+							.'][sort]['.$key.']['.$k.']', $v,
+							env('COOKIE_EXPIRE_TIME')
+						);
+						$_COOKIE['cookies'][SelectedCompanyService::getCompanyId(
+						)]['sort'][$key][$k]
+							= $v;
 					}
 				}
 			}
 		}
 
 
-		$params = isset($_COOKIE['cookies'][SelectedCompanyService::getCompanyId()]) ? $_COOKIE['cookies'][SelectedCompanyService::getCompanyId()] : [];
+		$params
+			= isset($_COOKIE['cookies'][SelectedCompanyService::getCompanyId()])
+			? $_COOKIE['cookies'][SelectedCompanyService::getCompanyId()] : [];
 
 
 		$personalIncomes = $this->personalIncomes->getPersonalIncomes($params);
@@ -74,7 +90,11 @@ class PersonalIncomeController extends Controller
 //            return $this->index(new Request);
 		}
 
-		return view('client.personal-incomes.index', compact('personalIncomes', 'partners', 'params', 'personalIncomeTypes'));
+		return view(
+			'client.personal-incomes.index', compact(
+			'personalIncomes', 'partners', 'params', 'personalIncomeTypes'
+		)
+		);
 	}
 
 	/**
@@ -84,18 +104,26 @@ class PersonalIncomeController extends Controller
 	 */
 	public function create()
 	{
-		$partners = Partner::where('company_id', SelectedCompanyService::getCompanyId())->get()->pluck('name', 'id');
+		$partners = Partner::where(
+			'company_id', SelectedCompanyService::getCompanyId()
+		)->get()->pluck('name', 'id');
 		$personalIncomeTypes = PersonalIncomeType::get()->pluck('name', 'id');
 		$personalIncomeTaxRates = PersonalIncomeTaxRate::get();
 		$personalIncomeCostRates = PersonalIncomeCostRate::get();
 
-		return view('client.personal-incomes.create', compact('partners', 'personalIncomeTypes', 'personalIncomeTaxRates', 'personalIncomeCostRates'));
+		return view(
+			'client.personal-incomes.create', compact(
+			'partners', 'personalIncomeTypes', 'personalIncomeTaxRates',
+			'personalIncomeCostRates'
+		)
+		);
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param \Illuminate\Http\Request $request
+	 * @param  \Illuminate\Http\Request  $request
+	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(Request $request)
@@ -106,7 +134,8 @@ class PersonalIncomeController extends Controller
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param int $id
+	 * @param  int  $id
+	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id)
@@ -117,7 +146,8 @@ class PersonalIncomeController extends Controller
 	/**
 	 * Show the form for editing the specified resource.
 	 *
-	 * @param int $id
+	 * @param  int  $id
+	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function edit($id)
@@ -128,8 +158,9 @@ class PersonalIncomeController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param \Illuminate\Http\Request $request
-	 * @param int $id
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  int                       $id
+	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id)
@@ -140,7 +171,8 @@ class PersonalIncomeController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param int $id
+	 * @param  int  $id
+	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id)

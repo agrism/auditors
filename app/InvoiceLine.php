@@ -11,10 +11,15 @@ use App\Vat;
 class InvoiceLine extends Model
 {
 	protected $table = 'invoice_lines';
-	protected $fillable = ['invoice_id','product_id', 'title','unit_id', 'quantity', 'currency_id', 'price', 'vat_id'];
+	protected $fillable
+		= [
+			'invoice_id', 'product_id', 'title', 'unit_id', 'quantity',
+			'currency_id', 'price', 'vat_id',
+		];
 	public $timestamps = true;
 
-	public function invoice(){
+	public function invoice()
+	{
 		return $this->belongsTo(Invoice::class);
 	}
 
@@ -27,6 +32,7 @@ class InvoiceLine extends Model
 	{
 		return $this->belongsTo(Currency::class);
 	}
+
 	public function vat()
 	{
 		return $this->belongsTo(Vat::class);

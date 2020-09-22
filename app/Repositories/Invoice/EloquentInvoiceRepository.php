@@ -14,7 +14,8 @@ class EloquentInvoiceRepository implements InvoiceRepository
 	public $companyId;
 	public $company;
 
-	private function init(){
+	private function init()
+	{
 		$this->company = App\Services\SelectedCompanyService::getCompany();
 		if (!isset($this->company->id)) {
 			return route('client.companies.index');
@@ -42,12 +43,24 @@ class EloquentInvoiceRepository implements InvoiceRepository
 		 */
 		// $invoice =  Invoice::where('company_id', $this->companyId);
 
-		$invoice = Invoice::select(\DB::raw('invoices.*, currencies.name as currency_name, partners.name as partnername,
-        structuralunits.title as structuralunitname, invoice_types.title as invoicetypename'))
+		$invoice = Invoice::select(
+			\DB::raw(
+				'invoices.*, currencies.name as currency_name, partners.name as partnername,
+        structuralunits.title as structuralunitname, invoice_types.title as invoicetypename'
+			)
+		)
 			->leftJoin('partners', 'invoices.partner_id', '=', 'partners.id')
-			->leftJoin('structuralunits', 'invoices.structuralunit_id', '=', 'structuralunits.id')
-			->leftJoin('invoice_types', 'invoices.invoicetype_id', '=', 'invoice_types.id')
-			->leftJoin('currencies', 'invoices.currency_id', '=', 'currencies.id')
+			->leftJoin(
+				'structuralunits', 'invoices.structuralunit_id', '=',
+				'structuralunits.id'
+			)
+			->leftJoin(
+				'invoice_types', 'invoices.invoicetype_id', '=',
+				'invoice_types.id'
+			)
+			->leftJoin(
+				'currencies', 'invoices.currency_id', '=', 'currencies.id'
+			)
 			->where('invoices.company_id', $this->companyId);
 
 		if (isset($params['sort'])) {
@@ -61,15 +74,21 @@ class EloquentInvoiceRepository implements InvoiceRepository
 					}
 
 					if ($value['orderBy'] == 'number') {
-						$invoice = $invoice->orderByRaw('cast(number as unsigned) ' . $value['direction']);
+						$invoice = $invoice->orderByRaw(
+							'cast(number as unsigned) '.$value['direction']
+						);
 					}
 
-					$invoice = $invoice->orderBy($value['orderBy'], $value['direction']);
+					$invoice = $invoice->orderBy(
+						$value['orderBy'], $value['direction']
+					);
 
 				}
 			}
 		} else {
-			$invoice = $invoice->orderBy('date', 'desc')->orderBy('number', 'desc');
+			$invoice = $invoice->orderBy('date', 'desc')->orderBy(
+				'number', 'desc'
+			);
 		}
 
 //		dd($params);
@@ -80,14 +99,26 @@ class EloquentInvoiceRepository implements InvoiceRepository
 			if (isset($filter['partner_id']) && $filter['partner_id'] != '') {
 				$invoice = $invoice->where('partner_id', $filter['partner_id']);
 			}
-			if (isset($filter['details_self']) && $filter['details_self'] != '') {
-				$invoice = $invoice->where("details_self", "like", "%" . $filter['details_self'] . "%");
+			if (isset($filter['details_self'])
+				&& $filter['details_self'] != ''
+			) {
+				$invoice = $invoice->where(
+					"details_self", "like", "%".$filter['details_self']."%"
+				);
 			}
-			if (isset($filter['structuralunit_id']) && $filter['structuralunit_id'] != '') {
-				$invoice = $invoice->where('structuralunit_id', $filter['structuralunit_id']);
+			if (isset($filter['structuralunit_id'])
+				&& $filter['structuralunit_id'] != ''
+			) {
+				$invoice = $invoice->where(
+					'structuralunit_id', $filter['structuralunit_id']
+				);
 			}
-			if (isset($filter['invoicetype_id']) && $filter['invoicetype_id'] != '') {
-				$invoice = $invoice->where('invoicetype_id', $filter['invoicetype_id']);
+			if (isset($filter['invoicetype_id'])
+				&& $filter['invoicetype_id'] != ''
+			) {
+				$invoice = $invoice->where(
+					'invoicetype_id', $filter['invoicetype_id']
+				);
 			}
 		}
 //		dd($filter);
@@ -106,13 +137,19 @@ class EloquentInvoiceRepository implements InvoiceRepository
 	public function getPartners()
 	{
 		$this->init();
-		return Partner::where('company_id', $this->companyId)->orderBy('name', 'asc')->get();
+
+		return Partner::where('company_id', $this->companyId)->orderBy(
+			'name', 'asc'
+		)->get();
 	}
 
 	public function getStructuralunits()
 	{
 		$this->init();
-		return Structuralunit::where('company_id', $this->companyId)->orderBy('title', 'asc')->get();
+
+		return Structuralunit::where('company_id', $this->companyId)->orderBy(
+			'title', 'asc'
+		)->get();
 	}
 
 	public function getInvoicetypes()
