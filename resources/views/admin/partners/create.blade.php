@@ -1,23 +1,23 @@
 @extends('admin.layout.admin')
- 
+
 @section('content')
 
-		<h3 >Create Company</h3>
+    <h3>Create Company</h3>
 
 
-	<div class="panel-body">
+    <div class="panel-body">
 
-		{!! Form::open( ['class'=>'form-horizontal', 'method'=>'post', 'route'=>['admin.partners.store']]) !!}
-			@include('admin.partners.form')
+        {!! Form::open( ['class'=>'form-horizontal', 'method'=>'post', 'route'=>['admin.partners.store']]) !!}
+        @include('admin.partners.form')
 
-			{!! Form::submit('Save')!!}
-		{!! Form::close() !!}
+        {!! Form::submit('Save')!!}
+        {!! Form::close() !!}
 
-	</div>
+    </div>
 
 @stop
- 
+
 @section('sidebar')
-   
-  
+
+
 @stop

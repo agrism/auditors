@@ -58,7 +58,7 @@
     <div class="col-sm-4">
         <div class="input-group">
             {!! Form::select('partner_id', $partners ,isset($invoice) ? $invoice['partner_id'] : null , ['class'=>'form-control', 'placeholder'=>'Select partner '] ) !!}
-</div>
+        </div>
     </div>
 
 </div>
@@ -354,7 +354,7 @@
                 autoclose: true,
 //                calendarWeeks: true,
                 daysOfWeekDisabled: [],
-                daysOfWeekHighlighted: [0,6],
+                daysOfWeekHighlighted: [0, 6],
 
             });
 
@@ -366,14 +366,14 @@
                 autoclose: true,
 //                calendarWeeks: true,
                 daysOfWeekDisabled: [],
-                daysOfWeekHighlighted: [0,6]
+                daysOfWeekHighlighted: [0, 6]
 
             });
         });
 
         // ------------------------------------------------------------------showHideOtherCurrencyData
         function showHideOtherCurrencyData() {
-            <?php // if invoice in base currency, do not show seperate currency column ?>
+			<?php // if invoice in base currency, do not show seperate currency column ?>
             if ($('#currency_id').val() == 1) {
                 $('.currencyData').hide();
 
@@ -393,8 +393,26 @@
         // ------------------------------------------------------------------------clalculateEachLine
         function recalculateInvoiceData() {
 
-            var invoiceTotatWithOutVatForSpecificVatRateCurrentCurrency = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0};
-            var invoiceTotatWithOutVatForSpecificVatRateBaseCurrency = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0};
+            var invoiceTotatWithOutVatForSpecificVatRateCurrentCurrency = {
+                '1': 0,
+                '2': 0,
+                '3': 0,
+                '4': 0,
+                '5': 0,
+                '6': 0,
+                '7': 0,
+                '8': 0
+            };
+            var invoiceTotatWithOutVatForSpecificVatRateBaseCurrency = {
+                '1': 0,
+                '2': 0,
+                '3': 0,
+                '4': 0,
+                '5': 0,
+                '6': 0,
+                '7': 0,
+                '8': 0
+            };
 
             var invoiceTotalCurency = 0;
             var invoiceTotalBaseCurency = 0;
@@ -430,7 +448,7 @@
                 total = parseFloat(beforeTax) + parseFloat(tax);
                 totalCurrency = (parseFloat(total) / currencyRate).toFixed(2);
 
-                <?php /* rounded diference of converting to base currency influence amount before tax! */ ?>
+				<?php /* rounded diference of converting to base currency influence amount before tax! */ ?>
                 // beforeTaxBaseCurrency = (beforeTax / currencyRate).toFixed(2) ;
                 beforeTaxBaseCurrency = totalCurrency - taxBaseCurrency;
 
@@ -482,10 +500,10 @@
         //        });
     </script>
 
-    @stop
+@stop
 
-    @section('modals')
-            <!-- Modal -->
+@section('modals')
+    <!-- Modal -->
     <div id="partnerModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
@@ -500,7 +518,7 @@
                         {{--<h3>Are you sure you want to delete this invoice?</h3>--}}
                         <div class="form-group">
 
-                                {!! Form::label('name', 'Name', ['class'=>'col-sm-2 control-label'])  !!}
+                            {!! Form::label('name', 'Name', ['class'=>'col-sm-2 control-label'])  !!}
 
                             <div class="col-sm-10">
                                 {!! Form::text('name', '11', ['class'=>'form-control']) !!}
@@ -515,7 +533,7 @@
                         </div>
 
                         <div class="form-group">
-                                {!! Form::label('registration_number', 'Reg.No', ['class'=>'col-sm-2 control-label'])  !!}
+                            {!! Form::label('registration_number', 'Reg.No', ['class'=>'col-sm-2 control-label'])  !!}
                             <div class="col-xs-10">
                                 {!! Form::text('registration_number', '11', ['class'=>'form-control ']) !!}
                             </div>

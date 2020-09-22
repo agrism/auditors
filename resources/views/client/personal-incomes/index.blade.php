@@ -5,7 +5,9 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                {{_('Personal Incomes list')}} <a href="{{ url(route('client.personal-incomes.create'))}}"><div class="btn btn-success btn-xs fa-plus fa"></div></a>
+                {{_('Personal Incomes list')}} <a href="{{ url(route('client.personal-incomes.create'))}}">
+                    <div class="btn btn-success btn-xs fa-plus fa"></div>
+                </a>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -27,10 +29,16 @@
                                 <td>{{ $income->name}}</td>
                                 <td>{{ $income->registration_number}}</td>
                                 <td>
-                                    <a href="{{ url(route('client.partners.show', $income->id))}}"><div class="btn btn-info btn-xs fa   fa-info"></div></a>
+                                    <a href="{{ url(route('client.partners.show', $income->id))}}">
+                                        <div class="btn btn-info btn-xs fa   fa-info"></div>
+                                    </a>
 
-                                    <a href="{{ url(route('client.partners.edit',  $income->id))}}"><div class="btn btn-success btn-xs fa-edit fa"></div></a>
-                                    <a href="{{ url(route('client.partners.delete',  [$income->id]))}}"><div class="btn btn-danger btn-xs fa-remove fa"></div></a>
+                                    <a href="{{ url(route('client.partners.edit',  $income->id))}}">
+                                        <div class="btn btn-success btn-xs fa-edit fa"></div>
+                                    </a>
+                                    <a href="{{ url(route('client.partners.delete',  [$income->id]))}}">
+                                        <div class="btn btn-danger btn-xs fa-remove fa"></div>
+                                    </a>
 
                                 </td>
 

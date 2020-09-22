@@ -21,24 +21,31 @@
                         </thead>
                         <tbody>
 
-                            <tr>
-                                <td>{{ $company->id}}</td>
-                                <td>{{ $company->title}}</td>
-                                <td>{{ $company->registration_number}}</td>
-                                <td>
-                                    <a href="{{ url(route('admin.companies.users.show', $company->id))}}"><div class="btn btn-info btn-xs fa   fa-compress"></div></a>
+                        <tr>
+                            <td>{{ $company->id}}</td>
+                            <td>{{ $company->title}}</td>
+                            <td>{{ $company->registration_number}}</td>
+                            <td>
+                                <a href="{{ url(route('admin.companies.users.show', $company->id))}}">
+                                    <div class="btn btn-info btn-xs fa   fa-compress"></div>
+                                </a>
 
-                                    <a href="{{ url(route('admin.companies.edit',  $company->id))}}"><div class="btn btn-success btn-xs fa-edit fa"></div></a>
+                                <a href="{{ url(route('admin.companies.edit',  $company->id))}}">
+                                    <div class="btn btn-success btn-xs fa-edit fa"></div>
+                                </a>
 
-                                    <a href="{{ url(route('admin.company.structuralunits.index',  $company->id))}}"><div class="btn btn-success btn-xs fa-info fa">Structural Units</div></a>
+                                <a href="{{ url(route('admin.company.structuralunits.index',  $company->id))}}">
+                                    <div class="btn btn-success btn-xs fa-info fa">Structural Units</div>
+                                </a>
 
-                                    <a href="{{ url(route('admin.companies.destroy',  [$company->id,'method'=>'delete']))}}"><div class="btn btn-danger btn-xs fa-remove fa"></div></a>
+                                <a href="{{ url(route('admin.companies.destroy',  [$company->id,'method'=>'delete']))}}">
+                                    <div class="btn btn-danger btn-xs fa-remove fa"></div>
+                                </a>
 
 
+                            </td>
 
-                                </td>
-
-                            </tr>
+                        </tr>
 
 
                         </tbody>

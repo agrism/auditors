@@ -142,56 +142,56 @@
 
 @section('js')
     <script type="text/javascript">
-		$(document).ready(function () {
+        $(document).ready(function () {
 
-			$('#dp0').datepicker({
-				format: 'dd.mm.yyyy',
-				weekStart: 1,
-				todayBtn: "linked",
-				todayHighlight: true,
-				autoclose: true,
-				//                calendarWeeks: true,
-				daysOfWeekDisabled: [],
-				daysOfWeekHighlighted: [0, 6]
+            $('#dp0').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1,
+                todayBtn: "linked",
+                todayHighlight: true,
+                autoclose: true,
+                //                calendarWeeks: true,
+                daysOfWeekDisabled: [],
+                daysOfWeekHighlighted: [0, 6]
 
-			});
+            });
 
-			$('#dp1').datepicker({
-				format: 'dd.mm.yyyy',
-				weekStart: 1,
-				todayBtn: "linked",
-				todayHighlight: true,
-				autoclose: true,
-				//                calendarWeeks: true,
-				daysOfWeekDisabled: [],
-				daysOfWeekHighlighted: [0, 6]
+            $('#dp1').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1,
+                todayBtn: "linked",
+                todayHighlight: true,
+                autoclose: true,
+                //                calendarWeeks: true,
+                daysOfWeekDisabled: [],
+                daysOfWeekHighlighted: [0, 6]
 
-			});
+            });
 
-			$('#dp2').datepicker({
-				format: 'dd.mm.yyyy',
-				weekStart: 1,
-				todayBtn: "linked",
-				todayHighlight: true,
-				autoclose: true,
-				//                calendarWeeks: true,
-				daysOfWeekDisabled: [],
-				daysOfWeekHighlighted: [0, 6]
+            $('#dp2').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1,
+                todayBtn: "linked",
+                todayHighlight: true,
+                autoclose: true,
+                //                calendarWeeks: true,
+                daysOfWeekDisabled: [],
+                daysOfWeekHighlighted: [0, 6]
 
-			});
+            });
 
-			$('#dp3').datepicker({
-				format: 'dd.mm.yyyy',
-				weekStart: 1,
-				todayBtn: "linked",
-				todayHighlight: true,
-				autoclose: true,
-				//                calendarWeeks: true,
-				daysOfWeekDisabled: [],
-				daysOfWeekHighlighted: [0, 6]
+            $('#dp3').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1,
+                todayBtn: "linked",
+                todayHighlight: true,
+                autoclose: true,
+                //                calendarWeeks: true,
+                daysOfWeekDisabled: [],
+                daysOfWeekHighlighted: [0, 6]
 
-			});
-		});
+            });
+        });
 
     </script>
 @stop

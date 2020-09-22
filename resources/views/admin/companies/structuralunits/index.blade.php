@@ -5,7 +5,10 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Company Structaral Units <a href="{{ url(route('admin.company.structuralunits.create', $company['id'])) }}"><div class="btn btn-success btn-xs fa-plus fa"></div></a>
+                Company Structaral Units <a
+                        href="{{ url(route('admin.company.structuralunits.create', $company['id'])) }}">
+                    <div class="btn btn-success btn-xs fa-plus fa"></div>
+                </a>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -26,9 +29,13 @@
                                 <td>{{ $unit->title}}</td>
                                 <td>
 
-                                    <a href="{{ url(route('admin.company.structuralunits.edit',  [$company['id'], $unit->id]))}}"><div class="btn btn-success btn-xs fa-edit fa"></div></a>
+                                    <a href="{{ url(route('admin.company.structuralunits.edit',  [$company['id'], $unit->id]))}}">
+                                        <div class="btn btn-success btn-xs fa-edit fa"></div>
+                                    </a>
 
-                                    <a href="{{ url(route('admin.company.structuralunits.destroy', [$company['id'],$unit->id ,'method'=>'delete']))}}"><div class="btn btn-danger btn-xs fa-remove fa"></div></a>
+                                    <a href="{{ url(route('admin.company.structuralunits.destroy', [$company['id'],$unit->id ,'method'=>'delete']))}}">
+                                        <div class="btn btn-danger btn-xs fa-remove fa"></div>
+                                    </a>
 
                                 </td>
 

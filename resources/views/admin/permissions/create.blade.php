@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h3 >Create Permission</h3>
+    <h3>Create Permission</h3>
 
 
     <div class="panel-body">

@@ -47,7 +47,6 @@
                     </table>
 
 
-
                     {!! Form::submit('Update')!!}
                     {!! Form::close() !!}
                 </div>

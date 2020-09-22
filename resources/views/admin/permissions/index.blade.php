@@ -5,7 +5,9 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Permissions list in system <a href="{{ url(route('admin.permissions.create'))}}"><div class="btn btn-success btn-xs fa-plus fa"></div></a>
+                Permissions list in system <a href="{{ url(route('admin.permissions.create'))}}">
+                    <div class="btn btn-success btn-xs fa-plus fa"></div>
+                </a>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -27,10 +29,16 @@
                                 <td>{{ $permission->name}}</td>
                                 <td>{{ $permission->label}}</td>
                                 <td>
-                                    <a href="{{ url(route('admin.permissions.roles.show', $permission->id))}}"><div class="btn btn-info btn-xs fa   fa-compress"></div></a>
+                                    <a href="{{ url(route('admin.permissions.roles.show', $permission->id))}}">
+                                        <div class="btn btn-info btn-xs fa   fa-compress"></div>
+                                    </a>
 
-                                    <a href="{{ url(route('admin.permissions.edit',  $permission->id))}}"><div class="btn btn-success btn-xs fa-edit fa"></div></a>
-                                    <a href="{{ url(route('admin.permissions.destroy',  [$permission->id,'method'=>'delete']))}}"><div class="btn btn-danger btn-xs fa-remove fa"></div></a>
+                                    <a href="{{ url(route('admin.permissions.edit',  $permission->id))}}">
+                                        <div class="btn btn-success btn-xs fa-edit fa"></div>
+                                    </a>
+                                    <a href="{{ url(route('admin.permissions.destroy',  [$permission->id,'method'=>'delete']))}}">
+                                        <div class="btn btn-danger btn-xs fa-remove fa"></div>
+                                    </a>
 
                                 </td>
 

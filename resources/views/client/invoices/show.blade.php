@@ -196,6 +196,7 @@
 
 
 
+
 </script>
 {{--  --}}
 <div style="height: {{$settingsTopMargin}}px">
@@ -323,7 +324,8 @@
     </tr>
     <tr>
         <td>Rēķina valūta:</td>
-        <td>{{ $invoice->currency->name }}@if($invoice->currency->name !='EUR'), kurss ({{$invoice->currency->name}}/EUR): {{ $invoice->currency_rate}}
+        <td>{{ $invoice->currency->name }}@if($invoice->currency->name !='EUR'), kurss ({{$invoice->currency->name}}
+            /EUR): {{ $invoice->currency_rate}}
             @endif
         </td>
     </tr>
@@ -377,14 +379,14 @@
             <td>{{ $line->title }}</td>
             <td class="text-center">{{ $line->unit->name }}</td>
 
-            <?php $numberOfDigits = strlen(substr(strrchr($line->quantity, "."), 1));
-            if ($numberOfDigits < 2) $numberOfDigits = 2;
-            ?>
+			<?php $numberOfDigits = strlen(substr(strrchr($line->quantity, "."), 1));
+			if ($numberOfDigits < 2) $numberOfDigits = 2;
+			?>
             <td class="text-right">{{ number_format($line->quantity,$numberOfDigits) }}</td>
 
-            <?php $numberOfDigits = strlen(substr(strrchr($line->price, "."), 1));
-            if ($numberOfDigits < 2) $numberOfDigits = 2;
-            ?>
+			<?php $numberOfDigits = strlen(substr(strrchr($line->price, "."), 1));
+			if ($numberOfDigits < 2) $numberOfDigits = 2;
+			?>
             <td class="text-right">{{ number_format($line->price, $numberOfDigits)  }}</td>
             <td class="text-right">{{ number_format($line->quantity * $line->price, 2) }}</td>
 
@@ -397,16 +399,18 @@
         </tr>
 
 
-        <?php
-        $withoutVat[$line->vat->name] = isset($withoutVat[$line->vat->name]) ? $withoutVat[$line->vat->name] : 0;
-        $withoutVat[$line->vat->name] += round($line->quantity * $line->price, 2);
-        ?>
+		<?php
+		$withoutVat[$line->vat->name] = isset($withoutVat[$line->vat->name]) ? $withoutVat[$line->vat->name] : 0;
+		$withoutVat[$line->vat->name] += round($line->quantity * $line->price, 2);
+		?>
     @endforeach
     </tbody>
     @foreach($vats as $key=>$vat)
         @if(isset($withoutVat[$vat->name]) )
 
-            <?php  $total_total = $total_total + $withoutVat[$vat->name] + round($withoutVat[$vat->name] * $vat->rate, 2); ?>
+			<?php  $total_total = $total_total + $withoutVat[$vat->name] + round(
+					$withoutVat[$vat->name] * $vat->rate, 2
+				); ?>
 
             <tr>
                 <td colspan="10" class="no-border"></td>
@@ -433,15 +437,14 @@
                 <td class="text-right">{{ number_format($withoutVat[$vat->name]+ $withoutVat[$vat->name] * $vat->rate,2)}}</td>
 
                 @if($invoice->currency->name !='EUR')
-                    <td nowrap class="text-right">{{ number_format( ($withoutVat[$vat->name]+ $withoutVat[$vat->name] * $vat->rate ) / $invoice->currency_rate,2)}}</td>
+                    <td nowrap
+                        class="text-right">{{ number_format( ($withoutVat[$vat->name]+ $withoutVat[$vat->name] * $vat->rate ) / $invoice->currency_rate,2)}}</td>
                 @endif
                 <td class="only-left-border"></td>
             </tr>
 
         @endif
     @endforeach
-
-
 
 
     <tr>
@@ -464,11 +467,11 @@
 <table width="695px" border="0">
     <tr>
         <td class="text-left">
-            <?php
-            // require __DIR__ . '/vendor/autoload.php';
-            // use \js\tools\numbers2words\Speller;
-            $sumInWords = \js\tools\numbers2words\Speller::spellCurrency($total_total, 'lv', $invoice->currency->name);;
-            ?>
+			<?php
+			// require __DIR__ . '/vendor/autoload.php';
+			// use \js\tools\numbers2words\Speller;
+			$sumInWords = \js\tools\numbers2words\Speller::spellCurrency($total_total, 'lv', $invoice->currency->name);;
+			?>
             Summa vārdiem: {{ $sumInWords}}
         </td>
     </tr>

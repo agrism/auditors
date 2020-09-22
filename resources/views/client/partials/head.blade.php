@@ -1,22 +1,26 @@
 <!-- Bootstrap Core CSS -->
-<link rel="stylesheet" href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/bootstrap-social/bootstrap-social.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/bootstrap-social/bootstrap-social.css') }}">
 
 
 <!-- MetisMenu CSS -->
-<link rel="stylesheet" href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/metisMenu/dist/metisMenu.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/metisMenu/dist/metisMenu.min.css') }}">
 
 <!-- Timeline CSS -->
 <link rel="stylesheet" href="{{ URL::asset('admin-assets/sb-admin-2/dist/css/timeline.css') }}">
 
 <!-- Custom CSS -->
 
-    <link rel="stylesheet" href="{{ URL::asset('admin-assets/sb-admin-2/dist/css/sb-admin-2.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('admin-assets/sb-admin-2/dist/css/sb-admin-2.css') }}">
 
 <!-- Custom Fonts -->
-<link rel="stylesheet" href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/font-awesome/css/font-awesome.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/font-awesome/css/font-awesome.min.css') }}">
 
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
 

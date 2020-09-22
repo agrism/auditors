@@ -1,23 +1,23 @@
 @extends('admin.layout.admin')
- 
+
 @section('content')
 
-		<h3 >Edit Company</h3>
+    <h3>Edit Company</h3>
 
 
-	<div class="panel-body">
+    <div class="panel-body">
 
-		{!! Form::model($partner, ['class'=>'form-horizontal', 'method'=>'put', 'route'=>['admin.partners.update', $partner->id]]) !!}
-			@include('admin.partners.form')
+        {!! Form::model($partner, ['class'=>'form-horizontal', 'method'=>'put', 'route'=>['admin.partners.update', $partner->id]]) !!}
+        @include('admin.partners.form')
 
-			{!! Form::submit('Save')!!}
-		{!! Form::close() !!}
+        {!! Form::submit('Save')!!}
+        {!! Form::close() !!}
 
-	</div>
+    </div>
 
 @stop
- 
+
 @section('sidebar')
-   
-  
+
+
 @stop

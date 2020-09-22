@@ -64,7 +64,7 @@
                                     {{ $invoice->date}}
 
                                     @if(isset($invoice) && $invoice['is_closed_for_edit'])
-{{--                                    @if(isset($invoice) )--}}
+                                        {{--                                    @if(isset($invoice) )--}}
                                         <i class="fa fa-lock"></i>
                                     @endif
 
@@ -72,10 +72,12 @@
                                 {{--<td>{{ $invoice->payment_date}}</td>--}}
                                 <td>{{ $invoice->invoicetypename}}</td>
                                 <td>{{ $invoice->structuralunitname}}</td>
-                                <?php
-                                $partnername = str_replace('Sabiedrība ar ierobežotu atbildību', 'SIA', $invoice->partnername);
-                                $partnername = str_replace('Akciju sabiedrība', 'A/S', $partnername);
-                                ?>
+								<?php
+								$partnername = str_replace(
+									'Sabiedrība ar ierobežotu atbildību', 'SIA', $invoice->partnername
+								);
+								$partnername = str_replace('Akciju sabiedrība', 'A/S', $partnername);
+								?>
 
                                 <td>{{ $partnername }}</td>
                                 <td>{{ $invoice->details_self}}</td>
@@ -104,7 +106,8 @@
 
                                             @if(\Auth::user()->isAdmin())
                                                 <button class="btn btn-info btn-xs fa fa-lock unlockButton1"
-                                                        data-toggle1="tooltip" title="{{ _("UnLock") }}" data-placement="top"
+                                                        data-toggle1="tooltip" title="{{ _("UnLock") }}"
+                                                        data-placement="top"
                                                         data-toggle="modal"
                                                         data-target="#myModalUnLock"
                                                         invoice-id="{{ $invoice->id }}"
@@ -133,7 +136,8 @@
                                                 ></div>
                                             </a>
 
-                                            <button type="button" class="btn btn-danger btn-xs fa-remove fa deleteButton1"
+                                            <button type="button"
+                                                    class="btn btn-danger btn-xs fa-remove fa deleteButton1"
                                                     data-toggle1="tooltip" title="{{_("Delete")}}" data-placement="top"
                                                     data-toggle="modal"
                                                     data-target="#myModal"
@@ -238,7 +242,8 @@
                         </div>
                         <div
                                 {{--style="float:left;"--}}
-                        >:&nbsp;</div>
+                        >:&nbsp;
+                        </div>
 
                         <div style="display:flex ">
                             <div>[</div>
@@ -272,7 +277,8 @@
                                 </div>
                                 <div>&nbsp;</div>
                                 <div>
-                                    <button id="update-invoice-button" class="btn btn-primary btn-xs fa fa-save"></button>
+                                    <button id="update-invoice-button"
+                                            class="btn btn-primary btn-xs fa fa-save"></button>
                                 </div>
                                 <div id="input-edit-invoice-number-href" action=""></div>
                                 <div id="invoice-id" invoice-id=""></div>
