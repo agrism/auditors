@@ -13,6 +13,8 @@
     {{--<META NAME="ROBOTS" CONTENT="ALL">--}}
 
 
+    @yield('style')
+
     @include('client.partials.head')
 </head>
 <body>
@@ -24,11 +26,8 @@
 @stop
 @yield('navigation')
 
-{{-- <div class="container"> --}}
-<div class="col-md-offset-1 col-md-10">
-    @include('includes.messages')
-</div>
 <div>
+    @include('includes.messages')
     @yield('content')
 </div>
 

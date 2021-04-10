@@ -96,6 +96,7 @@
 
 <table class="table table-hover table-condensed ">
     <thead>
+    <th width="">Code</th>
     <th width="">Service/good</th>
     <th width="120px">Unit</th>
     <th width="120">Quentity</th>
@@ -113,6 +114,9 @@
         @foreach($invoice->invoiceLines as $line)
 
             <tr>
+                <td>
+                    {!! Form::text('code[]', isset($line) ? $line['code'] : null , ['style'=>'min-width:50px','class'=>'form-control input-sm line_code line-1 text-right', 'placeholder'=>'code'] ) !!}
+                </td>
                 <td>
                     {!! Form::hidden('line_id[]', $line->id) !!}
                     {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'height: 30px; min-width:200px','class'=>'form-control input-sm line_title line-1', 'placeholder'=>'title'] ) !!}

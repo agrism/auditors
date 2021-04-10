@@ -21,10 +21,20 @@
                 <li class="{{ \Request::route()->getName() == 'admin.invoices.index' ? 'active' : null }}"><a
                             href="{{ url(route('admin.invoices.index')) }}">{{_('Invoices')}}</a></li>
 
-                <li class="{{ \Request::route()->getName() == 'admin.export' ? 'active' : null }}"><a
-                            href="{{ url(route('admin.export')) }}">{{_('Export data')}}</a></li>
-                <li class="{{ \Request::route()->getName() == 'admin.npi' ? 'active' : null }}"><a
-                            href="{{ url(route('admin.npi')) }}">{{_('NPI')}}</a></li>
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="true">Export <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ \Request::route()->getName() == 'admin.export' ? 'active' : null }}"><a
+                                    href="{{ url(route('admin.export')) }}">{{_('Export data')}}</a></li>
+                        <li class="{{ \Request::route()->getName() == 'admin.npi' ? 'active' : null }}"><a
+                                    href="{{ url(route('admin.npi')) }}">{{_('NPI')}}</a></li>
+                        <li class="{{ \Request::route()->getName() == 'admin.working-hours' ? 'active' : null }}"><a
+                                    href="{{ url(route('admin.working-hours')) }}">{{_('Working hours')}}</a></li>
+                    </ul>
+                </li>
+
+
 
                 <li class="dropdown
                     {{ \Request::route()->getName() == 'admin.roles.index' ? 'active' : null }}

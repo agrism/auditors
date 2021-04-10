@@ -10,7 +10,8 @@
             {!! Form::model('partner', ['class'=>'form-horizontal form1', 'method'=>'post', 'action'=>'Client\InvoiceController@store']) !!}
             @include('client.invoices.form')
 
-            {!! Form::submit('Create')!!}
+            {!! Form::submit('Create', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
+            {!! Form::submit('Update and return to list', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
             {!! Form::close() !!}
 
         </div>

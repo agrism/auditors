@@ -18,25 +18,26 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Bank</th>
-                            <th>action</th>
-
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($banks as $bank)
-                            <tr>
+                            <tr class="line" style="cursor: pointer">
                                 <td>{{ $bank->id}}</td>
                                 <td>{{ $bank->payment_receiver}}</td>
                                 <td>{{ $bank->bank}}</td>
-                                <td>
+
+                            </tr>
+                            <tr class="hidden actions" style="background-color: #e3e3e3">
+                                <td class="text-center" colspan="100">
                                     {{-- <a href="{{ url(route('client.companies.bank.show', $bank->id))}}"><div class="btn btn-info btn-xs fa   fa-info"></div></a> --}}
 
                                     <a href="{{ url(route('client.companies.bank.edit',  $bank->id))}}">
-                                        <div class="btn btn-success btn-xs fa-edit fa"></div>
+                                        <div class=" fa-edit fa fa-2x text-success"></div>
                                     </a>
 
                                     <a href="{{ url(route('client.companies.bank.destroy',  [$bank->id,'method'=>'delete']))}}">
-                                        <div class="btn btn-danger btn-xs fa-remove fa"></div>
+                                        <div class="fa-remove fa fa-2x text-danger"></div>
                                     </a>
 
                                 </td>
@@ -53,4 +54,19 @@
         </div>
         <!-- /.panel -->
     </div>
+@stop
+
+@section('js')
+    <script>
+        $('.line').on('click', function(){
+            let that = this;
+            let shouldStayHidden = !$(that).next().hasClass('hidden')
+
+            $('.actions').addClass('hidden');
+            if(shouldStayHidden){
+                return;
+            }
+            $(that).next().removeClass('hidden');
+        });
+    </script>
 @stop

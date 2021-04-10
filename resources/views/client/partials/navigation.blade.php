@@ -22,8 +22,11 @@
                     <li class="{{ \Request::route()->getName() == 'client.invoices.index' ? 'active' : null }}"><a
                                 href="{{ url(route('client.invoices.index')) }}">{{_('Invoices')}}</a></li>
 
+                    @if(config('app.debug-available'))
+
                     <li class="{{ \Request::route()->getName() == 'client.personal-incomes.index' ? 'active' : null }}">
                         <a href="{{ url(route('client.personal-incomes.index')) }}">{{_('Personal incomes')}}</a></li>
+                    @endif
 
 
 					<?php
@@ -42,9 +45,15 @@
                                 </li>
 
 
-                                <li class="{{ \Request::route()->getName() == 'client.companies.bank.index' ? 'active' : null }}">
+                                <li class="{{ strpos(\Request::route()->getName(), 'client.companies.bank') === 0 ? 'active' : null }}">
                                     <a href="{{ url(route('client.companies.bank.index')) }}">{{_('Other payment receivers')}}</a>
                                 </li>
+
+{{--                                @if(config('app.debug-available'))--}}
+                                <li class="{{ strpos(\Request::route()->getName(),'client.companies.settings') === 0 ? 'active' : null }}">
+                                    <a href="{{ url(route('client.companies.settings.index')) }}">{{_('Settings')}}</a>
+                                </li>
+{{--                                    @endif--}}
 
                             @endif
 
@@ -66,9 +75,22 @@
                                     href="{{ url(route('admin.home')) }}">Admin</a></li>
                     @endif
                     <li>
-                        <a style="color:white;background-color: dimgrey">[closed:{{ \App\Services\SelectedCompanyService::getCompany()->closed_data_date ?? null  }}
-                            ]</a></li>
-                    <li><a href="{{ route('logout') }}">Logout</a></li>
+                        <a style="color:white;background-color: dimgrey">
+                            [closed:{{ \App\Services\SelectedCompanyService::getCompany()->closed_data_date ?? null  }}]
+                        </a></li>
+{{--                    <li><a href="{{ route('logout') }}">Logout</a></li>--}}
+                    <li class="dropdown">
+
+                        <?php
+                            $user = explode(' ',\Illuminate\Support\Facades\Auth::user()->name ?? '')[0] ?? 'Account';
+                        ?>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{$user}} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route('client.user.edit') }}">{{ $user }}</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{{ route('logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

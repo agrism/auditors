@@ -39,8 +39,21 @@ return [
 	|
 	*/
 
-	'debug' => (bool)env('APP_DEBUG', false),
+	'debug' => (function(){
+		if(in_array($_SERVER['REMOTE_ADDR'] ?? '', explode(',',env('APP_DEBUG_IPS')))){
+			return true;
+		}
+		return (bool)env('APP_DEBUG', false);
+	})(),
 
+	'debug-ips' => explode(',',env('APP_DEBUG_IPS')),
+	'debug-available' => (function(): bool{
+
+		if(in_array($_SERVER['REMOTE_ADDR'] ?? '', explode(',',env('APP_DEBUG_IPS')))){
+			return true;
+		}
+		return false;
+	})(),
 	/*
 	|--------------------------------------------------------------------------
 	| Application URL
@@ -187,6 +200,7 @@ return [
 
 		// Barryvdh\Snappy\ServiceProvider::class,
 		Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+		Maatwebsite\Excel\ExcelServiceProvider::class,
 
 //        Collective\IronQueue\IronQueueServiceProvider::class,
 
@@ -248,6 +262,7 @@ return [
 		'Html' => Collective\Html\HtmlFacade::class,
 		'Debugbar' => Barryvdh\Debugbar\Facade::class,
 		'PDF' => Barryvdh\DomPDF\Facade::class,
+		'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
 	],
 

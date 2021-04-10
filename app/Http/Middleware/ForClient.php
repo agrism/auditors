@@ -13,7 +13,7 @@ class ForClient
 	 * Handle an incoming request.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure                  $next
+	 * @param  \Closure  $next
 	 *
 	 * @return mixed
 	 */
@@ -25,14 +25,18 @@ class ForClient
 
 		// ja ejam uz citiem routem izņemot client.companies.index - lai nebūtu redireckts loopā
 		// un uz client.companies.show - kas, piešķir ID
-		if (\Request::route()->getName() != 'client.companies.index'
-			&& \Request::route()->getName() != 'client.companies.show'
-		) {
-
+		if (!in_array($request->route()->getName(), [
+			'client.companies.index',
+			'client.companies.show',
+			'client.user.edit',
+			'client.user.update',
+		])) {
 			// ja nav ID, tad redirekts uz client.companies.index
 			if (!SelectedCompanyService::getCompanyId()) {
 
-				return redirect(route('client.companies.index'));
+				return redirect(route('client.companies.index'))->withErrors([
+					'name' => 'Select company to continue',
+				]);
 			}
 		}
 

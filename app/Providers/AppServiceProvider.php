@@ -29,15 +29,16 @@ class AppServiceProvider extends ServiceProvider
 
 
 		app()->singleton(
-			'Company', function ($app) {
-			if (\Session::has('companyId')) {
-				return Company::orderBy('title', 'asc')->find(
-					Session::get('companyId')
-				);
-			} else {
-				return redirect(route('login'));
+			'Company',
+			function ($app) {
+				if (\Session::has('companyId')) {
+					return Company::orderBy('title', 'asc')->find(
+						Session::get('companyId')
+					);
+				} else {
+					return redirect(route('login'));
+				}
 			}
-		}
 		);
 	}
 

@@ -3,21 +3,21 @@
 @section('content')
 
     <div class="col-md-12">
-    <pre>
-	{{var_dump($data)}}
-	</pre>
+{{--    <pre>--}}
+{{--	{{var_dump($data)}}--}}
+{{--	</pre>--}}
 
-        {{Form::model('data', ['method'=>'get', 'route'=>'admin.export'])}}
+        {{Form::model('data', ['method'=>'post', 'route'=>'admin.working-hours.handle'])}}
 
 
         <div class="form-group col-ms-12">
             <div class="col-md-6">
-                <label for="from">From</label>
-                {{Form::text('from', isset($data['from']) ? $data['from'] : null, ['class'=>'form-control', 'id'=>'dp1', 'placeholder'=>_('data from'), 'autocomplete'=>'off'])}}
+                <label for="from">Year</label>
+                {!! Form::select('year', $years , $selectedYear, ['class' => 'form-control']) !!}
             </div>
             <div class="col-md-6">
-                <label for="to">To</label>
-                {{Form::text('to', isset($data['to']) ? $data['to'] : null, ['class'=>'form-control', 'id'=>'dp2', 'placeholder'=>_('data to'), 'autocomplete'=>'off'])}}
+                <label for="to">Month</label>
+                {!! Form::select('month', $months , $selectedMonth, ['class' => 'form-control']) !!}
             </div>
 
 

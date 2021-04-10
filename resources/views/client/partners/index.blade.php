@@ -18,33 +18,34 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Reg.No</th>
-                            <th>action</th>
-
+                            <th>address</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($partners as $partner)
-                            <tr>
+<!--                            --><?php // dd($partner); ?>
+                            <tr class="line" style="cursor: pointer">
                                 <td>{{ $partner->id}}</td>
                                 <td>{{ $partner->name}}</td>
                                 <td>{{ $partner->registration_number}}</td>
-                                <td>
-                                    <a href="{{ url(route('client.partners.show', $partner->id))}}">
-                                        <div class="btn btn-info btn-xs fa   fa-info"></div>
-                                    </a>
-
-                                    <a href="{{ url(route('client.partners.edit',  $partner->id))}}">
-                                        <div class="btn btn-success btn-xs fa-edit fa"></div>
-                                    </a>
-                                    <a href="{{ url(route('client.partners.delete',  [$partner->id]))}}">
-                                        <div class="btn btn-danger btn-xs fa-remove fa"></div>
-                                    </a>
-
-                                </td>
+                                <td>{{ $partner->address}}</td>
 
                             </tr>
-                        @endforeach
+                            <tr class="hidden actions" style="background-color: #e3e3e3">
+                                <td colspan="10" class="text-center">
+                                    {{--                                    <a href="{{ url(route('client.partners.show', $partner->id))}}">--}}
+                                    {{--                                        <div class="btn btn-info btn-xs fa   fa-info"></div>--}}
+                                    {{--                                    </a>--}}
 
+                                    <a href="{{ url(route('client.partners.edit',  $partner->id))}}">
+                                        <div class="btn btn-success fa-edit fa"></div>
+                                    </a>
+                                    <a href="{{ url(route('client.partners.delete',  [$partner->id]))}}">
+                                        <div class="btn btn-danger fa-remove fa"></div>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -54,4 +55,19 @@
         </div>
         <!-- /.panel -->
     </div>
+@stop
+
+@section('js')
+    <script>
+        $('.line').on('click', function(){
+            let that = this;
+            let shouldStayHidden = !$(that).next().hasClass('hidden')
+
+            $('.actions').addClass('hidden');
+            if(shouldStayHidden){
+                return;
+            }
+            $(that).next().removeClass('hidden');
+        });
+    </script>
 @stop

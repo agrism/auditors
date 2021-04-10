@@ -13,7 +13,7 @@ class InvoiceLine extends Model
 	protected $table = 'invoice_lines';
 	protected $fillable
 		= [
-			'invoice_id', 'product_id', 'title', 'unit_id', 'quantity',
+			'invoice_id', 'product_id', 'code', 'title', 'unit_id', 'quantity',
 			'currency_id', 'price', 'vat_id',
 		];
 	public $timestamps = true;

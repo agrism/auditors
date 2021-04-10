@@ -12,9 +12,9 @@ Route::group(
 	Route::group(
 		['prefix' => 'companies', 'as' => 'companies.'], function () {
 		Route::resource('bank', 'CompanyBankController');
+		Route::resource('settings', 'CompanySettingsController', ['only' => ['index', 'store']]);
 
-	}
-	);
+	});
 
 	Route::resource(
 		'companies', 'CompanyController',
@@ -43,24 +43,33 @@ Route::group(
 
 	Route::get(
 		'getLastFiveInvoices', [
-		'as' => 'invoices.getLastFiveInvoices',
-		'uses' => 'InvoiceController@getLastFiveInvoices',
-	]
+			'as' => 'invoices.getLastFiveInvoices',
+			'uses' => 'InvoiceController@getLastFiveInvoices',
+		]
 	);
 	Route::get(
 		'getCurrentInvoice/{id}', [
-		'as' => 'invoices.getCurrentInvoice',
-		'uses' => 'InvoiceController@getCurrentInvoice',
-	]
+			'as' => 'invoices.getCurrentInvoice',
+			'uses' => 'InvoiceController@getCurrentInvoice',
+		]
 	);
 	Route::get(
 		'updateInvoiceNumber/{id}', [
-		'as' => 'invoices.updateInvoiceNumber',
-		'uses' => 'InvoiceController@updateInvoiceNumber',
-	]
+			'as' => 'invoices.updateInvoiceNumber',
+			'uses' => 'InvoiceController@updateInvoiceNumber',
+		]
 	);
 
 	Route::resource('personal-incomes', 'PersonalIncomeController');
 
+
+	Route::get('user', [
+		'as' => 'user.edit',
+		'uses' => 'UserController@edit',
+	]);
+	Route::put('user', [
+		'as' => 'user.update',
+		'uses' => 'UserController@update',
+	]);
 }
 );

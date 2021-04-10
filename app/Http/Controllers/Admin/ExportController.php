@@ -79,58 +79,6 @@ class ExportController extends Controller
 		$tjResponse->appendChild($xmlAttribute);
 
 
-		//--starts FinancialDOc
-//        $invoices = Invoice::with('currency')
-////            ->with('company.vatNumbers')
-////            ->with('partner')
-//
-//
-//            ->with(['invoiceLines' => function ($q)
-//            {
-////                $q->with(['vat', 'currency'])->groupBy('vat_id')
-//                $q->groupBy('vat_id')
-////                    ->selectRaw('*, sum(quantity * price) as sum')
-//                ;
-//            }])
-////            ->join('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-//            ->where('company_id', $this->companyId)
-//            ->whereIn('id', [25, 76])
-//            ->get();
-
-//        $invoices = $invoices->load(['invoiceLines']);
-
-//        $invoices = $invoices->load(['invoiceLines' => function ($q)
-//        {
-//            $q->with(['vat', 'currency'])->groupBy('vat_id')
-//                ->selectRaw('*, sum(quantity * price) as sum');
-//        }]);
-
-//        foreach ($invoices as $key => $invoice)
-//        {
-////            var_dump($invoice->invoiceLines->groupBy('vat_id')->toArray() );
-////            $invoices[$key]['abc'] = $invoice->invoiceLines->groupBy('vat_id');
-////
-////            $invoices[$key]['abc']['inv_line'] = $invoice->invoiceLines;
-//        }
-
-
-//---------------
-//        $invoices = \DB::table('invoices')
-//            ->leftJoin('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-//            ->select('invoices.*', 'invoice_lines.*')
-//
-//            ->get();
-
-//        dd( collect($invoices) );
-//        return collect($invoices);
-
-//        $invoices = $invoices->toArray();
-//        return 'k';
-
-//        $invoices = \DB::select("SELECT i.*, il.quantity, il.vat_id, SUM(quantity * price) AS sum FROM invoices AS i LEFT JOIN invoice_lines AS il
-//ON (i.id = il.invoice_id) where i.id IN (25, 76) GROUP BY il.invoice_id, il.vat_id");
-
-
 		$from = isset($data['from']) ? $data['from'] : '2015-01-01';
 		$to = isset($data['to']) ? $data['to'] : '2020-01-01';
 		$company_id = isset($data['company_id']) ? $data['company_id'] : 'xx';
@@ -256,9 +204,6 @@ GROUP BY il.invoice_id, il.vat_id
 			$invoice = (array)$invoice;
 
 			if ($invoice['id'] != $lastId) {
-
-//            dd($invoice['company']->toArray()['vat_numbers'][0]['vat_number'] );
-//            dd($invoice['company']['vat_numbers'][0]['vat_number'] );
 
 				$financialDoc = $xml->createElement('FinancialDoc');
 				$financialDoc = $tjResponse->appendChild($financialDoc);

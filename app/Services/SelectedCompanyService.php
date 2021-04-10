@@ -14,9 +14,7 @@ class SelectedCompanyService
 		if ($id = session()->get('companyId')) {
 			if ($id !== self::$sessionId) {
 				self::$sessionId = $id;
-				if (!self::$selectedCompany = Company::where('id', $id)->first(
-				)
-				) {
+				if (!self::$selectedCompany = Company::where('id', $id)->first()) {
 					self::$sessionId = null;
 				}
 			}

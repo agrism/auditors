@@ -117,6 +117,10 @@ Route::group(
 	Route::post(
 		'npi', ['as' => 'npi.handle', 'uses' => 'NpiController@handle']
 	);
+	Route::get('working-hours', ['as' => 'working-hours', 'uses' => 'WorkingHoursController@index']);
+	Route::post(
+		'working-hours', ['as' => 'working-hours.handle', 'uses' => 'WorkingHoursController@handle']
+	);
 
 
 	Route::get(
@@ -126,7 +130,34 @@ Route::group(
 //        dd(App\Test::find(5));
 
 		dd($model);
-	}
-	);
-}
-);
+	});
+
+	Route::get('import-public-holidays', function (){
+
+		$ch = curl_init('https://date.nager.at/api/v2/PublicHolidays/2021/LV');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_exec($ch);
+		$output = curl_exec($ch);
+		$output = json_decode($output);
+
+		// close curl resource to free up system resources
+		curl_close($ch);
+
+		foreach ($output as $date){
+			$d = \App\Calendar::where('date', $date->date)->first();
+
+			if(!$d){
+				$d = new \App\Calendar;
+				$d->date = $date->date;
+			}
+
+			$d->name_local = $date->localName;
+			$d->name = $date->name;
+			$d->type = $date->type == 'Public' ? 'holiday' : 'regular';
+			$d->working_hours = 0;
+
+			$d->save();
+		}
+
+	});
+});

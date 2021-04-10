@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Company;
+use App\CompanySetting;
+use App\Exports\InvoiceExport;
 use App\InvoiceType;
 use App\Structuralunit;
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
 use App\Invoice;
 use App\InvoiceLine;
@@ -18,7 +19,6 @@ use App\Vat;
 use App\CompanyBank;
 use App\Unit;
 use App\CompanyVatNumber;
-use \js\tools\numbers2words\Speller;
 use Auth;
 use Carbon;
 
@@ -42,7 +42,7 @@ class InvoiceController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return Response
 	 */
 	public function index(Request $request)
 	{
@@ -62,8 +62,7 @@ class InvoiceController extends Controller
 					'cookies['.$this->companyId.'][filter]['.$key.']',
 					($value ?? null), env('COOKIE_EXPIRE_TIME')
 				);
-				$_COOKIE['cookies'][$this->companyId]['filter'][$key] = ($value
-					?? null);
+				$_COOKIE['cookies'][$this->companyId]['filter'][$key] = ($value ?? null);
 
 			}
 		}
@@ -74,12 +73,11 @@ class InvoiceController extends Controller
 			foreach ($sort as $key => $value) {
 				if (isset($sort[$key])) {
 					foreach ($sort[$key] as $k => $v) {
-						setcookie(
-							'cookies['.$this->companyId.'][sort]['.$key.']['.$k
-							.']', $v, env('COOKIE_EXPIRE_TIME')
+						setcookie('cookies['.$this->companyId.'][sort]['.$key.']['.$k.']',
+							$v,
+							env('COOKIE_EXPIRE_TIME')
 						);
-						$_COOKIE['cookies'][$this->companyId]['sort'][$key][$k]
-							= $v;
+						$_COOKIE['cookies'][$this->companyId]['sort'][$key][$k]	= $v;
 					}
 				}
 			}
@@ -89,6 +87,11 @@ class InvoiceController extends Controller
 			? $_COOKIE['cookies'][$this->companyId] : [];
 
 		$invoices = $this->invoices->getInvoices($params);
+
+		if($request->export === 'xls'){
+			$invoices->load(['company', 'partner', 'invoiceLines', 'currency', 'invoiceType']);
+			return \Maatwebsite\Excel\Facades\Excel::download(new InvoiceExport($invoices), 'invoices.xlsx');
+		}
 
 		if (!$invoices) {
 			return $this->index(new Request);
@@ -100,9 +103,9 @@ class InvoiceController extends Controller
 //        return $invoices;
 		return view(
 			'client.invoices.index', compact(
-			'invoices', 'bank', 'partners', 'params', 'structuralunits',
-			'invoicetypes'
-		)
+				'invoices', 'bank', 'partners', 'params', 'structuralunits',
+				'invoicetypes'
+			)
 		);
 	}
 
@@ -110,8 +113,7 @@ class InvoiceController extends Controller
 	{
 		$invoices = Invoice::with('partner')->where(
 			'company_id', $this->companyId
-		)->where('is_locked', 1)->orderBy('updated_at', 'desc')->limit(5)->get(
-		);
+		)->where('is_locked', 1)->orderBy('updated_at', 'desc')->limit(5)->get();
 
 		return $invoices;
 	}
@@ -143,7 +145,7 @@ class InvoiceController extends Controller
 	 */
 	public function create()
 	{
-		$partners = Partner::where('company_id', $this->companyId)->get()
+		$partners = Partner::where('company_id', $this->companyId)->orderBy('name', 'asc')->get()
 			->pluck('name', 'id');
 		$currencies = Currency::get()->pluck('name', 'id');
 		$bank = CompanyBank::where('company_id', $this->companyId)->get()
@@ -161,9 +163,9 @@ class InvoiceController extends Controller
 
 		return view(
 			'client.invoices.create', compact(
-			'partners', 'currencies', 'vats', 'bank', 'units',
-			'companyVatNumbers', 'structuralunits', 'invoicetypes'
-		)
+				'partners', 'currencies', 'vats', 'bank', 'units',
+				'companyVatNumbers', 'structuralunits', 'invoicetypes'
+			)
 		);
 	}
 
@@ -204,6 +206,7 @@ class InvoiceController extends Controller
 			if ($val) {
 				$invoiceLine = new InvoiceLine();
 				$array = [];
+				$array['code'] = $data['code'][$key];
 				$array['title'] = $data['title'][$key];
 				$array['unit_id'] = $data['unit_id'][$key];
 				$array['price'] = $data['price'][$key];
@@ -219,6 +222,11 @@ class InvoiceController extends Controller
 
 		$this->calculateTotalInvoiceAmount($invoiceId);
 
+		if(strtolower($request->get('submit-name')) === 'create'){
+			return redirect()->route('client.invoices.edit', $invoiceId)->with('success', true)
+				->with('form_message', _('Invoice is updated successfully'));
+		}
+
 		return redirect()->route('client.invoices.index')->with('success', true)
 			->with('form_message', _('Invoice is created successfully'));
 
@@ -227,6 +235,7 @@ class InvoiceController extends Controller
 	/**
 	 * Display the specified resource.
 	 *
+	 * @param  Request  $request
 	 * @param  int  $id
 	 *
 	 * @return \Illuminate\Http\Response
@@ -234,8 +243,23 @@ class InvoiceController extends Controller
 	public function show(Request $request, $id)
 	{
 
-		// $var =  speller::spellcurrency(100123.45, 'en', 'eur');
-		$settingsTopMargin = $this->company['settings_top-margin'];
+		if($request->get('locale') == 'en'){
+			app()->setLocale('en');
+		} else {
+			app()->setLocale('lv');
+		}
+
+		$settings = $this->company->settings->pluck('content', 'variable');
+		$settingsTopMargin = $settings[CompanySetting::INVOICE_PRINT_TOP_MARGIN] ?? null;
+		$settingsBottomMargin = $settings[CompanySetting::INVOICE_PRINT_BOTTOM_MARGIN] ?? null;
+		$settingLeftMargin = $settings[CompanySetting::INVOICE_PRINT_LEFT_MARGIN] ?? null;
+		$settingRightMargin = $settings[CompanySetting::INVOICE_PRINT_RIGHT_MARGIN] ?? null;
+
+//		dump($settingsTopMargin);
+//		dump($settingsBottomMargin);
+//		dump($settingLeftMargin);
+//		dump($settingRightMargin);
+//		dd(1);
 
 		if ($request->has('method') && $request->input('method') == 'delete') {
 			return $this->destroy($id);
@@ -246,8 +270,7 @@ class InvoiceController extends Controller
 				'company', 'partner', 'currency', 'invoicelines',
 				'invoicelines.unit', 'invoicelines.vat', 'invoicelines.currency',
 			]
-		)
-			->where('company_id', $this->companyId)->find($id);
+		)->where('company_id', $this->companyId)->find($id);
 
 		$vats = vat::get();
 
@@ -266,15 +289,24 @@ class InvoiceController extends Controller
 		if ($request->has('type') && $request['type'] == 'html') {
 			return view(
 				'client.invoices.show',
-				compact('invoice', 'vats', 'settingsTopMargin')
+				compact('invoice', 'vats',
+					'settingsTopMargin', 'settingLeftMargin', 'settingsBottomMargin', 'settingRightMargin'
+				)
 			);
 		}
 		$pdf = app::make('dompdf.wrapper');
 
 		$pdf->loadview(
 			'client.invoices.show',
-			compact('invoice', 'vats', 'settingsTopMargin')
-		);
+			compact('invoice', 'vats', 'settingsTopMargin', 'settingLeftMargin',
+				'settingsBottomMargin', 'settingRightMargin')
+		)
+//			->setPaper([0,0,297, 210]);
+//			->setPaper([0, 0, 595.28, 841.89]);
+			->setPaper('a4');
+
+//			->setPaper([0, 0, 841.89, 1190.55]);
+//			->setPaper('a3');
 
 		// return $pdf->stream();
 
@@ -283,11 +315,13 @@ class InvoiceController extends Controller
 			->format('Y-m-d');
 
 		$details = $invoice->details_self;
-		$partner = $invoice->partner()->first()->name;
+		$partner = $invoice->partner()->first()->name ?? null;
 
 		$key = strpos($partner, ',');
 
 		$partner = substr($partner, 0, $key);
+
+		app()->setLocale('en');
 
 		return $pdf->download(
 			'invoice_'.$invoiceNumber.'_'.$date.'_'.$details.'_'.$partner.'.pdf'
@@ -310,7 +344,7 @@ class InvoiceController extends Controller
 		// return $pdf->stream();
 
 
-		return view('client.invoices.show', compact('invoice', 'vats'));
+		return view('client.invoices.show', compact('invoice', 'vats', 'settingLeftMargin', 'settingTopMargin'));
 
 	}
 
@@ -328,13 +362,16 @@ class InvoiceController extends Controller
 			'company_id', $this->companyId
 		)->find($id);
 
-		$partners = Partner::where('company_id', $this->companyId)->get()
+		$partners = Partner::where('company_id', $this->companyId)->orderBy('name', 'asc')->get()
 			->pluck('name', 'id');
 		$currencies = Currency::get()->pluck('name', 'id');
 		$bank = CompanyBank::where('company_id', $this->companyId)->get()
+			->map(function($record){
+				$record->payment_receiver = $record->payment_receiver . ' | '. $record->bank .' | '.$record->account_number;
+				return $record;
+			})
 			->pluck('payment_receiver', 'id');
-		$units = Unit::orderBy('default', 'desc')->orderBy('name', 'asc')->get(
-		);
+		$units = Unit::orderBy('default', 'desc')->orderBy('name', 'asc')->get();
 
 		$structuralunits = Structuralunit::where('company_id', $this->companyId)
 			->get();
@@ -357,10 +394,10 @@ class InvoiceController extends Controller
 
 		return view(
 			'client.invoices.edit', compact(
-			'invoice', 'partners', 'currencies', 'units', 'vats', 'bank',
-			'selectedBank', 'companyVatNumbers', 'structuralunits',
-			'invoicetypes'
-		)
+				'invoice', 'partners', 'currencies', 'units', 'vats', 'bank',
+				'selectedBank', 'companyVatNumbers', 'structuralunits',
+				'invoicetypes'
+			)
 		);
 	}
 
@@ -368,7 +405,7 @@ class InvoiceController extends Controller
 	 * Update the specified resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int                       $id
+	 * @param  int  $id
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
@@ -409,11 +446,12 @@ class InvoiceController extends Controller
 			if ($val) {
 
 				$array = [];
-				$array['title'] = $data['title'][$key];
-				$array['unit_id'] = $data['unit_id'][$key];
-				$array['price'] = $data['price'][$key];
-				$array['quantity'] = $data['quantity'][$key];
-				$array['vat_id'] = $data['vat_id'][$key];
+				$array['code'] = substr(($data['code'][$key] ?? ''), 0, 15);
+				$array['title'] = $data['title'][$key] ?? null;
+				$array['unit_id'] = $data['unit_id'][$key] ?? null;
+				$array['price'] = $data['price'][$key] ?? null;
+				$array['quantity'] = $data['quantity'][$key] ?? null;
+				$array['vat_id'] = $data['vat_id'][$key] ?? null;
 
 				$array['invoice_id'] = $invocieId;
 				$array['currency_id'] = $invoiceCurrencyId;
@@ -440,6 +478,11 @@ class InvoiceController extends Controller
 		$deletedInvoiceLines->delete();
 
 		$this->calculateTotalInvoiceAmount($invocieId);
+
+		if(strtolower($request->get('submit-name')) === 'save'){
+			return redirect()->route('client.invoices.edit', $id)->with('success', true)
+				->with('form_message', _('Invoice is updated successfully'));
+		}
 
 		return redirect()->route('client.invoices.index')->with('success', true)
 			->with('form_message', _('Invoice is updated successfully'));
@@ -522,8 +565,7 @@ class InvoiceController extends Controller
 			$total['rate'][$vat->id] = $vat->rate;
 		}
 
-		$invoiceLines = InvoiceLine::with('vat')->where('invoice_id', $id)->get(
-		);
+		$invoiceLines = InvoiceLine::with('vat')->where('invoice_id', $id)->get();
 		// return $invoiceLines;
 
 		foreach ($invoiceLines as $key => $line) {

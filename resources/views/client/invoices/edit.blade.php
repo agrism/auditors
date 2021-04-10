@@ -10,7 +10,8 @@
             {!! Form::model('invoice', ['class'=>'form-horizontal form1', 'method'=>'put', 'route' => ['client.invoices.update', $invoice->id], 'files' => true ]) !!}
             @include('client.invoices.form')
 
-            {!! Form::submit('Update', ['class'=>'btn btn-primary'])!!}
+            {!! Form::submit('Save', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
+            {!! Form::submit('Update and return to list', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
             {!! Form::close() !!}
 
         </div>

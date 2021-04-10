@@ -33,9 +33,9 @@
                                 <td>{{ $invoice->id}}</td>
                                 <td>{{ $invoice->number}}</td>
                                 <td>{{ $invoice->date}}</td>
-                                <td>{{ $invoice->company->title}}</td>
-                                <td>{{ $invoice->partner->name}}</td>
-                                <td>{{ $invoice->currency->name}}</td>
+                                <td>{{ $invoice->company->title ?? null}}</td>
+                                <td>{{ $invoice->partner->name ?? null}}</td>
+                                <td>{{ $invoice->currency->name ?? null}}</td>
                                 <td class="text-right">{{ $invoice->amount_total}}</td>
                                 {{--<td>{{ isset($invoice->closed_data_date) ? $company->closed_data_date : '-'}}</td>--}}
                                 <td>

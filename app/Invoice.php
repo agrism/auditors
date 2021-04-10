@@ -48,14 +48,14 @@ class Invoice extends Model
 		return $this->hasMany(InvoiceLine::class);
 	}
 
-//    public function invoiceLinesgroupedByVat()
-//    {
-//        return $this->hasMany(InvoiceLine::class)->groupBy('vat_id');
-//    }
+    public function invoiceLinesGroupedByVat()
+    {
+        return $this->hasMany(InvoiceLine::class)->groupBy('vat_id');
+    }
 
 	public function invoiceType()
 	{
-		return $this->hasMany(InvoiceType::class);
+		return $this->belongsTo(InvoiceType::class, 'invoicetype_id');
 	}
 
 	public function setDateAttribute($value)

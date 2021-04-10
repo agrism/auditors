@@ -7,6 +7,7 @@ use App\Partner;
 
 use App;
 use App\Structuralunit;
+use Carbon\Carbon;
 
 class EloquentInvoiceRepository implements InvoiceRepository
 {
@@ -50,20 +51,14 @@ class EloquentInvoiceRepository implements InvoiceRepository
 			)
 		)
 			->leftJoin('partners', 'invoices.partner_id', '=', 'partners.id')
-			->leftJoin(
-				'structuralunits', 'invoices.structuralunit_id', '=',
-				'structuralunits.id'
-			)
-			->leftJoin(
-				'invoice_types', 'invoices.invoicetype_id', '=',
-				'invoice_types.id'
-			)
-			->leftJoin(
-				'currencies', 'invoices.currency_id', '=', 'currencies.id'
-			)
+			->leftJoin('structuralunits', 'invoices.structuralunit_id', '=', 'structuralunits.id')
+			->leftJoin('invoice_types', 'invoices.invoicetype_id', '=', 'invoice_types.id')
+			->leftJoin('currencies', 'invoices.currency_id', '=', 'currencies.id')
 			->where('invoices.company_id', $this->companyId);
 
 		if (isset($params['sort'])) {
+
+			ksort($params['sort']);
 
 			foreach ($params['sort'] as $key => $value) {
 
@@ -86,15 +81,33 @@ class EloquentInvoiceRepository implements InvoiceRepository
 				}
 			}
 		} else {
-			$invoice = $invoice->orderBy('date', 'desc')->orderBy(
-				'number', 'desc'
-			);
+			$invoice = $invoice->orderBy('date', 'desc')->orderBy('number', 'desc');
 		}
 
 //		dd($params);
 		if (isset($params['filter'])) {
 
 			$filter = $params['filter'];
+
+			if (isset($filter['date_from']) && $filter['date_from'] != '') {
+					try {
+					$dateFrom = Carbon::createFromFormat('d.m.Y', $filter['date_from'])
+						->format('Y-m-d');
+					$invoice = $invoice->where('date', '>=', $dateFrom);
+				} catch (\Exception $e) {
+					dd($e->getMessage());
+				}
+			}
+
+			if (isset($filter['date_to']) && $filter['date_to'] != '') {
+				try {
+					$dateTo = Carbon::createFromFormat('d.m.Y', $filter['date_to'])
+						->format('Y-m-d');
+					$invoice = $invoice->where('date', '<=', $dateTo);
+				} catch (\Exception $e) {
+					dd($e->getMessage());
+				}
+			}
 
 			if (isset($filter['partner_id']) && $filter['partner_id'] != '') {
 				$invoice = $invoice->where('partner_id', $filter['partner_id']);

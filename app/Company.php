@@ -27,9 +27,14 @@ class Company extends Model
 		return $this->hasMany(CompanyVatNumber::class);
 	}
 
-	public function partner()
+	public function partner(): \Illuminate\Database\Eloquent\Relations\HasOne
 	{
 		return $this->hasOne(Partner::class);
+	}
+
+	public function settings(): \Illuminate\Database\Eloquent\Relations\HasMany
+	{
+		return $this->hasMany(CompanySetting::class);
 	}
 
 
@@ -56,6 +61,11 @@ class Company extends Model
 		}
 
 		return null;
+	}
+
+	public function employees(): \Illuminate\Database\Eloquent\Relations\HasMany
+	{
+		return $this->hasMany(Employee::class);
 	}
 
 

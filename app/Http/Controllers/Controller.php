@@ -35,9 +35,7 @@ class Controller extends BaseController
 				if ($request->session()->has('companyId')) {
 					$this->companyId = $request->session()->get('companyId');
 
-					if (!$this->company = Company::where('id', $this->companyId)
-						->first()
-					) {
+					if (!$this->company = Company::where('id', $this->companyId)->first()) {
 						$this->companyId = null;
 					}
 				}
