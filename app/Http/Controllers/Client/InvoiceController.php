@@ -149,6 +149,10 @@ class InvoiceController extends Controller
 			->pluck('name', 'id');
 		$currencies = Currency::get()->pluck('name', 'id');
 		$bank = CompanyBank::where('company_id', $this->companyId)->get()
+			->map(function($record){
+				$record->payment_receiver = $record->payment_receiver . ' | '. $record->bank .' | '.$record->account_number;
+				return $record;
+			})
 			->pluck('payment_receiver', 'id');
 		$vats = Vat::get();
 		$units = Unit::get();

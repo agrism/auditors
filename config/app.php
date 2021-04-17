@@ -199,7 +199,7 @@ return [
 		Barryvdh\DomPDF\ServiceProvider::class,
 
 		// Barryvdh\Snappy\ServiceProvider::class,
-		Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+//		Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 		Maatwebsite\Excel\ExcelServiceProvider::class,
 
 //        Collective\IronQueue\IronQueueServiceProvider::class,

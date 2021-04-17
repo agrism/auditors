@@ -153,6 +153,9 @@
     {{--  empty line starts --}}
     <tr id="line-empty-div" class="hidden">
         <td>
+            {!! Form::text('code[]', null , ['style'=>'min-width:50px','class'=>'form-control input-sm line_code line-1 text-right', 'placeholder'=>'code'] ) !!}
+        </td>
+        <td>
             {!! Form::hidden('line_id[]', null) !!}
             {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'height: 30px', 'class'=>'form-control input-sm line_title line-1', 'placeholder'=>'title'] ) !!}
         </td>

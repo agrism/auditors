@@ -16,6 +16,7 @@ return [
 	'registration_no' => 'Reģ.nr.',
 	'vat_no' => 'PVN Nr.',
 	'payment_receiver' => 'Maks. saņēmējs',
+	'payment_payer' => 'Maksātājs',
 	'bank' => 'Banka',
 	'swift' => 'SWIFT',
 	'bank_account_number' => 'Konta nr',
@@ -47,6 +48,7 @@ return [
 		'kadastr vērt' => 'kadastr.vērt',
 		'gab' => 'gab.',
 		'reiss' => 'reiss',
+		'kompl' => 'kompl.',
 	],
 
 

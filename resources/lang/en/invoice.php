@@ -17,6 +17,7 @@ return [
 	'registration_no' => 'Reg.No.',
 	'vat_no' => 'VAT No.',
 	'payment_receiver' => 'Payee',
+	'payment_payer' => 'Payer',
 	'bank' => 'Bank',
 	'swift' => 'SWIFT',
 	'bank_account_number' => 'Account No.',
@@ -49,5 +50,6 @@ return [
 		'kadastr vērt' => 'cadastral value',
 		'gab' => 'pcs.',
 		'reiss' => 'trip',
+		'kompl' => 'set',
 	],
 ];
