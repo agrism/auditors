@@ -27,9 +27,9 @@ class Company extends Model
 		return $this->hasMany(CompanyVatNumber::class);
 	}
 
-	public function partner(): \Illuminate\Database\Eloquent\Relations\HasOne
+	public function partners(): \Illuminate\Database\Eloquent\Relations\HasMany
 	{
-		return $this->hasOne(Partner::class);
+		return $this->hasMany(Partner::class)->orderBy('name', 'asc');
 	}
 
 	public function settings(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -66,6 +66,15 @@ class Company extends Model
 	public function employees(): \Illuminate\Database\Eloquent\Relations\HasMany
 	{
 		return $this->hasMany(Employee::class);
+	}
+
+	public function structuralunits(){
+		return $this->hasMany(Structuralunit::class);
+	}
+
+	public function banks()
+	{
+		return $this->hasMany(CompanyBank::class);
 	}
 
 

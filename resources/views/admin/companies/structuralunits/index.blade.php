@@ -38,8 +38,23 @@
                                     </a>
 
                                 </td>
-
                             </tr>
+
+                            @foreach($company->users as $user)
+                                <tr>
+                                    <td></td>
+                                    <td class="pull-right">
+                                        user: {{$user->name}} {{$user->email}}
+                                        @if(in_array($user->id, $unit->users->pluck('id')->all() ))
+                                            <span class="fa fa-check-square"></span>
+                                        @else
+                                            <span class="fa fa-square-o"></span>
+                                        @endif
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                            @endforeach
                         @endforeach
 
                         </tbody>

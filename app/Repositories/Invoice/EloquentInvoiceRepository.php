@@ -8,6 +8,7 @@ use App\Partner;
 use App;
 use App\Structuralunit;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class EloquentInvoiceRepository implements InvoiceRepository
 {
@@ -56,6 +57,24 @@ class EloquentInvoiceRepository implements InvoiceRepository
 			->leftJoin('currencies', 'invoices.currency_id', '=', 'currencies.id')
 			->where('invoices.company_id', $this->companyId);
 
+//		if (!Auth::user()->isAdmin()) {
+
+
+//		$invoice = $invoice->where(function ($q) {
+//			return $q->rightJoin('structuralunits_users', function ($join) {
+//				$join->on('structuralunits.id', '=', 'structuralunits_users.structuralunit_id')
+//					->where('structuralunits_users.user_id', Auth::user()->id);
+//			});
+//		});
+
+
+//		$invoice = $invoice->rightJoin('structuralunits_users', function ($join) {
+//			$join->on('invoices.structuralunit_id', '=', 'structuralunits_users.structuralunit_id')
+//				->whereIn('structuralunits_users.user_id', Auth::user()->id)
+//			;
+//		});
+//		}
+
 		if (isset($params['sort'])) {
 
 			ksort($params['sort']);
@@ -90,7 +109,7 @@ class EloquentInvoiceRepository implements InvoiceRepository
 			$filter = $params['filter'];
 
 			if (isset($filter['date_from']) && $filter['date_from'] != '') {
-					try {
+				try {
 					$dateFrom = Carbon::createFromFormat('d.m.Y', $filter['date_from'])
 						->format('Y-m-d');
 					$invoice = $invoice->where('date', '>=', $dateFrom);
@@ -143,6 +162,18 @@ class EloquentInvoiceRepository implements InvoiceRepository
 			return false;
 		}
 
+		if(!Auth::user()->isAdmin() && $this->company->structuralunits->count() > 0){
+			$availableUnitsForUser = Auth::user()->structuralunits->where('company_id', $this->companyId)->pluck('id')->all();
+
+			$invoice = $invoice->filter(function($inv) use($availableUnitsForUser){
+				if(!$inv->structuralunit_id){
+					return true;
+				}
+
+				return in_array($inv->structuralunit_id, $availableUnitsForUser);
+			});
+		}
+
 		return $invoice;
 
 	}
@@ -160,9 +191,15 @@ class EloquentInvoiceRepository implements InvoiceRepository
 	{
 		$this->init();
 
-		return Structuralunit::where('company_id', $this->companyId)->orderBy(
-			'title', 'asc'
-		)->get();
+		$units = Structuralunit::where('company_id', $this->companyId)->orderBy('title', 'asc');
+
+		if (!Auth::user()->isAdmin()) {
+			$units = $units->whereHas('users', function ($q) {
+				$q->where('users.id', Auth::user()->id);
+			});
+		}
+
+		return $units->get();
 	}
 
 	public function getInvoicetypes()

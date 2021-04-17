@@ -449,7 +449,7 @@ GROUP BY il.invoice_id, il.vat_id
 
 		$xml->save("test.xml");
 
-		$companies = Company::get();
+		$companies = Company::orderBy('title', 'asc')->get();
 
 
 		return view('admin.export.index', compact('companies', 'data'));

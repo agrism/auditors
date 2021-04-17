@@ -49,6 +49,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 			'Datums',
 			'Partneris',
 			'Tips',
+			'Strukturvieniba',
 			'Apraksts',
 			'Valuta',
 			'Summa valuta',
@@ -89,6 +90,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 				null,
 				null,
 				null,
+				null,
 				'Kopā:',
 				$this->invoiceEURWithoutVatAmountTotal,
 				$this->invoiceEURVatAmountTotal,
@@ -101,6 +103,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 			$invoice->date ?? null,
 			$invoice->partner->name ?? null,
 			$invoice->invoiceType->title ?? null,
+			$invoice->structuralunit->title ?? null,
 			$description ?? null,
 			$invoice->currency_name ?? null,
 			$invoice->amount_total ?? null,
@@ -132,9 +135,9 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 			]
 		];
 
-		$sheet->getStyle('A1:J'.($this->recordCount + 1))->applyFromArray($styleArray);
+		$sheet->getStyle('A1:K'.($this->recordCount + 1))->applyFromArray($styleArray);
 
-		$totalRange = 'H'.($this->recordCount + 2).':J'.($this->recordCount + 2);
+		$totalRange = 'I'.($this->recordCount + 2).':K'.($this->recordCount + 2);
 
 		$styleFilledColor = [
 			'fill' => [
@@ -146,7 +149,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 		$sheet->getStyle($totalRange)->applyFromArray($styleArray);
 		$sheet->getStyle($totalRange)->applyFromArray($styleFilledColor);
 
-		$headRange = 'A1:J1';
+		$headRange = 'A1:K1';
 		$sheet->getStyle($headRange)->applyFromArray($styleFilledColor);
 
 

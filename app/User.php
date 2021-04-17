@@ -89,4 +89,8 @@ class User extends Authenticatable
 	{
 		return $this->is_admin;
 	}
+
+	public function structuralunits(){
+		return $this->belongsToMany(Structuralunit::class, 'structuralunits_users');
+	}
 }

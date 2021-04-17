@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\CompanySetting;
 use App\Exports\InvoiceExport;
 use App\InvoiceType;
+use App\Services\InvoiceService;
 use App\Structuralunit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,34 +27,28 @@ use App\Repositories\Invoice\InvoiceRepository;
 
 class InvoiceController extends Controller
 {
-
-
 	private $invoices;
 
 	public function __construct(InvoiceRepository $invoices)
 	{
-
 		$this->invoices = $invoices;
 
 		parent::__construct();
 	}
 
-
 	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
+	 * @param  Request  $request
+	 * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
 	public function index(Request $request)
 	{
-		$partners = $this->invoices->getPartners();
+		$partners = $this->company->partners;
 
 		$structuralunits = $this->invoices->getStructuralunits();
 
 		$invoicetypes = $this->invoices->getInvoicetypes();
 
 		$params = $request->all();
-
 
 		if (isset($params['filter'])) {
 			$filter = $params['filter'];
@@ -63,7 +58,6 @@ class InvoiceController extends Controller
 					($value ?? null), env('COOKIE_EXPIRE_TIME')
 				);
 				$_COOKIE['cookies'][$this->companyId]['filter'][$key] = ($value ?? null);
-
 			}
 		}
 
@@ -73,23 +67,23 @@ class InvoiceController extends Controller
 			foreach ($sort as $key => $value) {
 				if (isset($sort[$key])) {
 					foreach ($sort[$key] as $k => $v) {
-						setcookie('cookies['.$this->companyId.'][sort]['.$key.']['.$k.']',
+						setcookie(
+							'cookies['.$this->companyId.'][sort]['.$key.']['.$k.']',
 							$v,
 							env('COOKIE_EXPIRE_TIME')
 						);
-						$_COOKIE['cookies'][$this->companyId]['sort'][$key][$k]	= $v;
+						$_COOKIE['cookies'][$this->companyId]['sort'][$key][$k] = $v;
 					}
 				}
 			}
 		}
 
-		$params = isset($_COOKIE['cookies'][$this->companyId])
-			? $_COOKIE['cookies'][$this->companyId] : [];
+		$params = isset($_COOKIE['cookies'][$this->companyId]) ? $_COOKIE['cookies'][$this->companyId] : [];
 
 		$invoices = $this->invoices->getInvoices($params);
 
-		if($request->export === 'xls'){
-			$invoices->load(['company', 'partner', 'invoiceLines', 'currency', 'invoiceType']);
+		if ($request->export === 'xls') {
+			$invoices->load(['company', 'partner', 'invoiceLines', 'currency', 'invoiceType', 'structuralunit']);
 			return \Maatwebsite\Excel\Facades\Excel::download(new InvoiceExport($invoices), 'invoices.xlsx');
 		}
 
@@ -97,25 +91,20 @@ class InvoiceController extends Controller
 			return $this->index(new Request);
 		}
 
-		$bank = CompanyBank::where('company_id', $this->companyId)->get()
-			->pluck('payment_receiver', 'id');
-
-//        return $invoices;
-		return view(
-			'client.invoices.index', compact(
-				'invoices', 'bank', 'partners', 'params', 'structuralunits',
-				'invoicetypes'
-			)
-		);
+		return view('client.invoices.index', [
+			'invoices' => $invoices,
+			'partners' => $partners,
+			'params' => $params,
+			'structuralunits' => $structuralunits,
+			'invoicetypes' => $invoicetypes,
+		]);
 	}
 
 	public function getLastFiveInvoices()
 	{
-		$invoices = Invoice::with('partner')->where(
+		return Invoice::with('partner')->where(
 			'company_id', $this->companyId
 		)->where('is_locked', 1)->orderBy('updated_at', 'desc')->limit(5)->get();
-
-		return $invoices;
 	}
 
 	public function getCurrentInvoice($id)
@@ -139,95 +128,25 @@ class InvoiceController extends Controller
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
+	 * @param  InvoiceService  $invoiceService
+	 * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function create()
+	public function create(InvoiceService $invoiceService)
 	{
-		$partners = Partner::where('company_id', $this->companyId)->orderBy('name', 'asc')->get()
-			->pluck('name', 'id');
-		$currencies = Currency::get()->pluck('name', 'id');
-		$bank = CompanyBank::where('company_id', $this->companyId)->get()
-			->map(function($record){
-				$record->payment_receiver = $record->payment_receiver . ' | '. $record->bank .' | '.$record->account_number;
-				return $record;
-			})
-			->pluck('payment_receiver', 'id');
-		$vats = Vat::get();
-		$units = Unit::get();
-
-		$companyVatNumbers = CompanyVatNumber::where(
-			'company_id', $this->companyId
-		)->get();
-
-		$structuralunits = Structuralunit::where('company_id', $this->companyId)
-			->get();
-		$invoicetypes = InvoiceType::get();
-
-		return view(
-			'client.invoices.create', compact(
-				'partners', 'currencies', 'vats', 'bank', 'units',
-				'companyVatNumbers', 'structuralunits', 'invoicetypes'
-			)
-		);
+		return view('client.invoices.create', $invoiceService->getInvoiceFormData($this->company));
 	}
 
 	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 *
-	 * @return \Illuminate\Http\Response
+	 * @param  Request  $request
+	 * @param  InvoiceService  $invoiceService
+	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function store(Request $request)
+	public function store(Request $request, InvoiceService $invoiceService)
 	{
-		$data = $request->all();
-//        return $data;
-		$data['company_id'] = $this->companyId;
-		if (isset($data['bank_id']) && $data['bank_id']) {
-			$selectedOptionalBank = CompanyBank::where(
-				'company_id', $this->companyId
-			)->find($data['bank_id']);
-			$data['payment_receiver']
-				= $selectedOptionalBank['payment_receiver'];
-			$data['bank'] = $selectedOptionalBank['bank'];
-			$data['swift'] = $selectedOptionalBank['swift'];
-			$data['account_number'] = $selectedOptionalBank['account_number'];
-		} else {
-			$data['payment_receiver'] = $this->company->title;
-			$data['bank'] = $this->company->bank;
-			$data['swift'] = $this->company->swift;
-			$data['account_number'] = $this->company->account_number;
-		}
-		// return $data;
-		$invoice = new Invoice();
-		$invoice = $invoice->create($data);
-		$invoiceId = $invoice->id;
-		$invoiceCurrencyId = $invoice->currency_id;
+		$invoice = $invoiceService->saveInvoice($request, $this->company);
 
-		foreach ($data['title'] as $key => $val) {
-			if ($val) {
-				$invoiceLine = new InvoiceLine();
-				$array = [];
-				$array['code'] = $data['code'][$key];
-				$array['title'] = $data['title'][$key];
-				$array['unit_id'] = $data['unit_id'][$key];
-				$array['price'] = $data['price'][$key];
-				$array['quantity'] = $data['quantity'][$key];
-				$array['vat_id'] = $data['vat_id'][$key];
-				$array['currency_id'] = $invoiceCurrencyId;
-
-				$array['invoice_id'] = $invoiceId;
-
-				$invoiceLine->create($array);
-			}
-		}
-
-		$this->calculateTotalInvoiceAmount($invoiceId);
-
-		if(strtolower($request->get('submit-name')) === 'create'){
-			return redirect()->route('client.invoices.edit', $invoiceId)->with('success', true)
+		if (strtolower($request->get('submit-name')) === 'create') {
+			return redirect()->route('client.invoices.edit', $invoice->id)->with('success', true)
 				->with('form_message', _('Invoice is updated successfully'));
 		}
 
@@ -244,10 +163,10 @@ class InvoiceController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show(Request $request, $id)
+	public function show(Request $request, InvoiceService $invoiceService, $id)
 	{
 
-		if($request->get('locale') == 'en'){
+		if ($request->get('locale') == 'en') {
 			app()->setLocale('en');
 		} else {
 			app()->setLocale('lv');
@@ -259,14 +178,8 @@ class InvoiceController extends Controller
 		$settingLeftMargin = $settings[CompanySetting::INVOICE_PRINT_LEFT_MARGIN] ?? null;
 		$settingRightMargin = $settings[CompanySetting::INVOICE_PRINT_RIGHT_MARGIN] ?? null;
 
-//		dump($settingsTopMargin);
-//		dump($settingsBottomMargin);
-//		dump($settingLeftMargin);
-//		dump($settingRightMargin);
-//		dd(1);
-
 		if ($request->has('method') && $request->input('method') == 'delete') {
-			return $this->destroy($id);
+			return $this->destroy($id, $invoiceService);
 		}
 		libxml_use_internal_errors(true);
 		$invoice = Invoice::with(
@@ -319,7 +232,7 @@ class InvoiceController extends Controller
 			->format('Y-m-d');
 
 		$details = $invoice->details_self;
-		$partner = $invoice->partner()->first()->name ?? null;
+		$partner = $invoice->partners()->first()->name ?? null;
 
 		$key = strpos($partner, ',');
 
@@ -353,137 +266,71 @@ class InvoiceController extends Controller
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 *
-	 * @return \Illuminate\Http\Response
+	 * @param $id
+	 * @param  InvoiceService  $invoiceService
+	 * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
 	 */
-	public function edit($id)
+	public function edit($id, InvoiceService $invoiceService)
 	{
 
-		$invoice = Invoice::with('invoiceLines')->where(
-			'company_id', $this->companyId
-		)->find($id);
+//		$invoice = Invoice::with('invoiceLines')->where(
+//			'company_id', $this->companyId
+//		)->find($id);
+//
+//		$partners = $this->company->partners->pluck('name', 'id');
+//
+//		$currencies = Currency::get()->pluck('name', 'id');
+//		$bank = CompanyBank::where('company_id', $this->companyId)->get()
+//			->map(function ($record) {
+//				$record->payment_receiver = $record->payment_receiver.' | '.$record->bank.' | '.$record->account_number;
+//				return $record;
+//			})
+//			->pluck('payment_receiver', 'id');
+//
+//		$units = Unit::orderBy('default', 'desc')->orderBy('name', 'asc')->get();
+//
+//		$structuralunits = $this->invoices->getStructuralunits();
+//
+//		$invoicetypes = InvoiceType::get();
+//
+//		$selectedBank = CompanyBank::where('payment_receiver', $invoice['payment_receiver'])
+//			->where('bank', $invoice['bank'])
+//			->where('swift', $invoice['swift'])
+//			->where('account_number', $invoice['account_number'])->first();
+//
+//		$vats = Vat::orderBy('default', 'desc')->orderBy('name', 'asc')->get();;
+//
+//		$companyVatNumbers = CompanyVatNumber::where(
+//			'company_id', $this->companyId
+//		)->get();
 
-		$partners = Partner::where('company_id', $this->companyId)->orderBy('name', 'asc')->get()
-			->pluck('name', 'id');
-		$currencies = Currency::get()->pluck('name', 'id');
-		$bank = CompanyBank::where('company_id', $this->companyId)->get()
-			->map(function($record){
-				$record->payment_receiver = $record->payment_receiver . ' | '. $record->bank .' | '.$record->account_number;
-				return $record;
-			})
-			->pluck('payment_receiver', 'id');
-		$units = Unit::orderBy('default', 'desc')->orderBy('name', 'asc')->get();
+		return view('client.invoices.edit', $invoiceService->getInvoiceFormData($this->company, $id));
 
-		$structuralunits = Structuralunit::where('company_id', $this->companyId)
-			->get();
-		$invoicetypes = InvoiceType::get();
-
-		$selectedBank = CompanyBank::where(
-			'payment_receiver', $invoice['payment_receiver']
-		)
-			->where('bank', $invoice['bank'])
-			->where('swift', $invoice['swift'])
-			->where('account_number', $invoice['account_number'])->first();
-
-		$vats = Vat::orderBy('default', 'desc')->orderBy('name', 'asc')->get();;
-
-		$companyVatNumbers = CompanyVatNumber::where(
-			'company_id', $this->companyId
-		)->get();
-
-		// return $invoice;
-
-		return view(
-			'client.invoices.edit', compact(
-				'invoice', 'partners', 'currencies', 'units', 'vats', 'bank',
-				'selectedBank', 'companyVatNumbers', 'structuralunits',
-				'invoicetypes'
-			)
-		);
+//		return view('client.invoices.edit', [
+//			'invoice' => $invoice,
+//			'partners' => $partners,
+//			'currencies' => $currencies,
+//			'vats' => $vats,
+//			'bank' => $bank,
+//			'units' => $units,
+//			'selectedBank' => $selectedBank,
+//			'companyVatNumbers' => $companyVatNumbers,
+//			'structuralunits' => $structuralunits,
+//			'invoicetypes' => $invoicetypes,
+//		]);
 	}
 
 	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
+	 * @param  Request  $request
+	 * @param  InvoiceService  $invoiceService
 	 * @param  int  $id
-	 *
-	 * @return \Illuminate\Http\Response
+	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function update(Request $request, $id)
+	public function update(Request $request, InvoiceService $invoiceService, int $id)
 	{
-		$data = $request->all();
-		// return $this->company;
+		$invoiceService->saveInvoice($request, $this->company, $id);
 
-		$data['company_id'] = $this->companyId;
-		// return $data;
-		if (isset($data['bank_id']) && $data['bank_id']) {
-
-			$selectedOptionalBank = CompanyBank::where(
-				'company_id', $this->companyId
-			)->find($data['bank_id']);
-			$data['payment_receiver']
-				= $selectedOptionalBank['payment_receiver'];
-			$data['bank'] = $selectedOptionalBank['bank'];
-			$data['swift'] = $selectedOptionalBank['swift'];
-			$data['account_number'] = $selectedOptionalBank['account_number'];
-
-		} else {
-			// default data!
-			$data['payment_receiver'] = $this->company->title;
-			$data['bank'] = $this->company->bank;
-			$data['swift'] = $this->company->swift;
-			$data['account_number'] = $this->company->account_number;
-		}
-
-		// return $data;
-		$invoice = Invoice::where('company_id', $data['company_id'])->find($id);
-		$invoice->update($data);
-		$invocieId = $invoice->id;
-		$invoiceCurrencyId = $invoice->currency_id;
-
-
-		foreach ($data['title'] as $key => $val) {
-			if ($val) {
-
-				$array = [];
-				$array['code'] = substr(($data['code'][$key] ?? ''), 0, 15);
-				$array['title'] = $data['title'][$key] ?? null;
-				$array['unit_id'] = $data['unit_id'][$key] ?? null;
-				$array['price'] = $data['price'][$key] ?? null;
-				$array['quantity'] = $data['quantity'][$key] ?? null;
-				$array['vat_id'] = $data['vat_id'][$key] ?? null;
-
-				$array['invoice_id'] = $invocieId;
-				$array['currency_id'] = $invoiceCurrencyId;
-
-				if ($data['line_id'][$key]) {
-					$lineId = $data['line_id'][$key];
-					$invoiceLinesIdsExist[]
-						= $lineId;// none existing lines will be deleted after update
-					$invoiceLine = InvoiceLine::find($lineId);
-					$invoiceLine->update($array);
-				} else {
-					$invoiceLine = new InvoiceLine();
-					$invoiceLine->create($array);
-					$invoiceLinesIdsExist[] = $invoiceLine->id;
-				}
-			}
-		}
-
-		$deletedInvoiceLines = InvoiceLine::where('invoice_id', $invocieId)
-			->whereNotIn(
-				'id', isset($invoiceLinesIdsExist) && $invoiceLinesIdsExist
-				? $invoiceLinesIdsExist : []
-			);
-		$deletedInvoiceLines->delete();
-
-		$this->calculateTotalInvoiceAmount($invocieId);
-
-		if(strtolower($request->get('submit-name')) === 'save'){
+		if (strtolower($request->get('submit-name')) === 'save') {
 			return redirect()->route('client.invoices.edit', $id)->with('success', true)
 				->with('form_message', _('Invoice is updated successfully'));
 		}
@@ -493,33 +340,22 @@ class InvoiceController extends Controller
 	}
 
 	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 *
-	 * @return \Illuminate\Http\Response
+	 * @param $id
+	 * @param  InvoiceService  $invoiceService
+	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function destroy($id)
+	public function destroy($id, InvoiceService $invoiceService)
 	{
-
-		$invoice = Invoice::with('invoiceLines')->where(
-			'company_id', $this->companyId
-		)->find($id);
-
-		$invoice->invoiceLines()->delete();
-		$invoice->delete();
+		$invoiceService->deleteInvoice($this->company, $id);
 
 		return redirect()->route('client.invoices.index')->with('success', true)
 			->with('form_message', _('Invoice is deleted successfully'));
 
 	}
 
-	public function lockInvoice($id)
+	public function lockInvoice($id, InvoiceService $invoiceService)
 	{
-		$invoice = Invoice::find($id);
-		$invoice->locker_user_id = Auth::user()->id;
-		$invoice->is_locked = 1;
-		$invoice->save();
+		$invoiceService->lockInvoice($id);
 
 		return redirect()->back();
 	}
@@ -533,61 +369,13 @@ class InvoiceController extends Controller
 		return redirect()->back();
 	}
 
-	public function copyInvoice($id)
+	public function copyInvoice($id, InvoiceService $invoiceService)
 	{
-		$invoice = Invoice::find($id);
-
-		$newInvoice = new Invoice();
-		$data = $invoice->toArray();
-
-		$data['date'] = \Carbon\Carbon::now()->format('d.m.Y');
-		$data['payment_date'] = \Carbon\Carbon::now()->addDays(10)->format(
-			'd.m.Y'
-		);
-		$data['number'] = 'copy of '.$invoice->number;
-		$newInvoice = $newInvoice->create($data);
-
-		$invoiceLines = InvoiceLine::where('invoice_id', $invoice->id)->get();
-		foreach ($invoiceLines as $key => $line) {
-			$data = $line->toArray();
-			$data['invoice_id'] = $newInvoice->id;
-			InvoiceLine::create($data);
-		}
-
+		$invoiceService->copy($id);
 
 		return redirect()->back()->with('success', true)->with(
 			'form_message', _('Invoice is copied successfully')
 		);
 
-	}
-
-	public function calculateTotalInvoiceAmount($id)
-	{
-		$vats = Vat::get();
-		foreach ($vats as $key => $vat) {
-			$total[$vat->id] = 0;
-			$total['rate'][$vat->id] = $vat->rate;
-		}
-
-		$invoiceLines = InvoiceLine::with('vat')->where('invoice_id', $id)->get();
-		// return $invoiceLines;
-
-		foreach ($invoiceLines as $key => $line) {
-			$total[$line->vat_id] += round($line->quantity * $line->price, 2);
-		}
-
-		$vats = Vat::get();
-		$invoiceTotal = 0;
-		foreach ($vats as $key => $vat) {
-			$invoiceTotal += $total[$vat->id] + ROUND(
-					$total[$vat->id] * $total['rate'][$vat->id], 2
-				);
-		}
-
-		$invoice = Invoice::find($id);
-		$invoice->amount_total = $invoiceTotal;
-		$invoice->save();
-
-		return;
 	}
 }

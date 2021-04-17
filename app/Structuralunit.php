@@ -15,4 +15,8 @@ class Structuralunit extends Model
 		return $this->belongsTo(Invoice::class);
 	}
 
+	public function users(){
+		return $this->belongsToMany(User::class, 'structuralunits_users');
+	}
+
 }

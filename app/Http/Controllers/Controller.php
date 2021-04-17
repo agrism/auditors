@@ -13,6 +13,9 @@ class Controller extends BaseController
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
 	protected $companyId;
+	/**
+	 * @var Company
+	 */
 	protected $company;
 
 	public function __construct()

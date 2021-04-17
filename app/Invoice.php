@@ -10,17 +10,18 @@ class Invoice extends Model
 {
 
 	protected $table = 'invoices';
-	protected $fillable
-		= [
-			'number', 'date', 'vat_number', 'payment_date', 'company_id',
-			'structuralunit_id',
-			'invoicetype_id', 'partner_id', 'currency_id', 'currency_rate',
-			'amount_total',
-			'bank', 'swift', 'payment_receiver', 'account_number', 'details',
-			'details1', 'details_self',
-			'details_bottom1', 'details_bottom2', 'details_bottom3',
-			'document_signer', 'document_partner_signer',
-		];
+	protected $guarded = ['id'];
+//	protected $fillable
+//		= [
+//			'number', 'date', 'vat_number', 'payment_date', 'company_id',
+//			'structuralunit_id',
+//			'invoicetype_id', 'partner_id', 'currency_id', 'currency_rate',
+//			'amount_total',
+//			'bank', 'swift', 'payment_receiver', 'account_number', 'details',
+//			'details1', 'details_self',
+//			'details_bottom1', 'details_bottom2', 'details_bottom3',
+//			'document_signer', 'document_partner_signer',
+//		];
 
 
 //    protected $appends = ['is_closed_for_edit'];
@@ -41,6 +42,10 @@ class Invoice extends Model
 	public function currency()
 	{
 		return $this->belongsTo(Currency::class);
+	}
+
+	public function structuralunit(){
+		return $this->belongsTo(Structuralunit::class);
 	}
 
 	public function invoiceLines()

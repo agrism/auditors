@@ -30,7 +30,7 @@ Route::get(
 );
 
 
-Route::get('test/{id}', 'Client\InvoiceController@calculateTotalInvoiceAmount');
+//Route::get('test/{id}', 'Client\InvoiceController@calculateTotalInvoiceAmount');
 
 
 Route::get('login', ['as' => 'login', 'uses' => 'HomeController@login']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Company;
 use App\Structuralunit;
+use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -15,13 +16,14 @@ class StructuralunitController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param  int  $companyId
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index($companyId)
+	public function index(int $companyId)
 	{
-		$structuralunits = Structuralunit::where('company_id', $companyId)->get(
-		);
-		$company = Company::where('id', $companyId)->first();
+		$structuralunits = Structuralunit::where('company_id', $companyId)->with('users')->get();
+
+		$company = Company::where('id', $companyId)->with('users')->first();
 
 		return view(
 			'admin.companies.structuralunits.index',
@@ -112,7 +114,22 @@ class StructuralunitController extends Controller
 			$id
 		);
 		$data = $request->all();
-		$structuralunit->update($data);
+
+		$update = [
+			'title' => $data['title'],
+		];
+
+		$structuralunit->update($update);
+
+		$usersIds = [];
+
+		foreach($data['users'] as $userId){
+			if($user = User::where('id', $userId)->first()){
+				$usersIds[] = $userId;
+			}
+		}
+
+		$structuralunit->users()->sync($usersIds);
 
 		return redirect()->route(
 			'admin.company.structuralunits.index', $companyId

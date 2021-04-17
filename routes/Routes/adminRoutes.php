@@ -134,7 +134,7 @@ Route::group(
 
 	Route::get('import-public-holidays', function (){
 
-		$ch = curl_init('https://date.nager.at/api/v2/PublicHolidays/2021/LV');
+		$ch = curl_init('https://date.nager.at/api/v2/PublicHolidays/2023/LV');
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_exec($ch);
 		$output = curl_exec($ch);
