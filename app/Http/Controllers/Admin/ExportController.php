@@ -93,7 +93,8 @@ class ExportController extends Controller
 SELECT i.*, il.quantity, il.vat_id, SUM(ROUND(quantity * price,2)) AS sum, vats.rate AS rate, vats.name AS vats_name,
 partners.name AS p_name, partners.registration_number AS p_regnumber, partners.vat_number AS p_vatnumber,
 companies.title AS c_name, companies.registration_number AS c_regnumber,
-currencies.name AS currency_name
+currencies.name AS currency_name,
+structuralunits.title AS structuralunit
 
 
 FROM invoices AS i
@@ -111,6 +112,9 @@ ON (i.company_id =  companies.id)
 
 LEFT JOIN currencies
 ON (i.currency_id =  currencies.id)
+
+LEFT JOIN structuralunits
+ON (i.structuralunit_id =  structuralunits.id)
 
 where i.company_id = '".$company_id."'
 
@@ -368,7 +372,10 @@ GROUP BY il.invoice_id, il.vat_id
 			$LineDebetAccountCode = $FinancialDocLine->appendChild(
 				$LineDebetAccountCode
 			);
-			$text = $xml->createTextNode('2310x');
+
+			$debitAccount = '2310x '.($invoice['structuralunit'] ?? null);
+
+			$text = $xml->createTextNode($debitAccount);
 			$LineDebetAccountCode->appendChild($text);
 
 			//--LineCreditAccountCode
@@ -425,7 +432,8 @@ GROUP BY il.invoice_id, il.vat_id
 			$LineDebetAccountCode = $FinancialDocLine->appendChild(
 				$LineDebetAccountCode
 			);
-			$text = $xml->createTextNode('2310x');
+
+			$text = $xml->createTextNode($debitAccount);
 			$LineDebetAccountCode->appendChild($text);
 
 			//--LineCreditAccountCode

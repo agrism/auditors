@@ -14,7 +14,7 @@
             <span aria-hidden="true">×</span>
             <span class="sr-only">Close</span>
         </button>
-        {{ Session::get('form_message') }}
+        {!! Session::get('form_message') !!}
     </div>
 @endif
 

@@ -11,6 +11,7 @@ use App\Currency;
 use App\Invoice;
 use App\InvoiceLine;
 use App\InvoiceType;
+use App\Partner;
 use App\Repositories\Invoice\InvoiceRepository;
 use App\Unit;
 use App\Vat;
@@ -43,7 +44,7 @@ class InvoiceService
 		$currencies = Currency::get()->pluck('name', 'id');
 		$bank = CompanyBank::where('company_id', $company->id)->get()
 			->map(function ($record) {
-				$record->payment_receiver = $record->payment_receiver.' | '.$record->bank.' | '.$record->account_number;
+				$record->payment_receiver = $record->payment_receiver.'  ['.$record->comment. '] | '.$record->bank.' | '.$record->account_number;
 				return $record;
 			})
 			->pluck('payment_receiver', 'id');
@@ -163,7 +164,7 @@ class InvoiceService
 	}
 
 
-	private function calculateTotalInvoiceAmount($id): void
+	public function calculateTotalInvoiceAmount($id): void
 	{
 		$total = [];
 		$vats = Vat::get();
@@ -212,6 +213,9 @@ class InvoiceService
 
 	public function lockInvoice($invoiceId){
 		$invoice = Invoice::find($invoiceId);
+		/**
+		 * @var $invoice Invoice
+		 */
 		$invoice->locker_user_id = Auth::user()->id;
 		$invoice->is_locked = 1;
 		$invoice->save();
@@ -224,5 +228,45 @@ class InvoiceService
 
 		$invoice->invoiceLines()->delete();
 		$invoice->delete();
+	}
+
+	public function fillInvoiceData(){
+
+		Invoice::get()->each(function(Invoice $invoice){
+
+			/*** @var $partner Partner */
+			$partner = $invoice->partner;
+
+			if(!$invoice->partner_name){
+				$invoice->partner_name = $partner->name;
+			}
+
+			if(!$invoice->partner_address){
+				$invoice->partner_address = $partner->address;
+			}
+
+			if(!$invoice->partner_registration_number){
+				$invoice->partner_registration_number = $partner->registration_number;
+			}
+
+			if(!$invoice->partner_vat_number){
+				$invoice->partner_vat_number = $partner->vat_number;
+			}
+
+			if(!$invoice->partner_bank){
+				$invoice->partner_bank = $partner->bank;
+			}
+
+			if(!$invoice->partner_swift){
+				$invoice->partner_swift = $partner->swift;
+			}
+
+			if(!$invoice->partner_account_number){
+				$invoice->partner_account_number = $partner->account_number;
+			}
+
+			$invoice->save();
+		});
+
 	}
 }

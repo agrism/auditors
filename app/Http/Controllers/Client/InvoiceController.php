@@ -232,7 +232,7 @@ class InvoiceController extends Controller
 			->format('Y-m-d');
 
 		$details = $invoice->details_self;
-		$partner = $invoice->partners()->first()->name ?? null;
+		$partner = $invoice->partner->name ?? null;
 
 		$key = strpos($partner, ',');
 
@@ -272,52 +272,7 @@ class InvoiceController extends Controller
 	 */
 	public function edit($id, InvoiceService $invoiceService)
 	{
-
-//		$invoice = Invoice::with('invoiceLines')->where(
-//			'company_id', $this->companyId
-//		)->find($id);
-//
-//		$partners = $this->company->partners->pluck('name', 'id');
-//
-//		$currencies = Currency::get()->pluck('name', 'id');
-//		$bank = CompanyBank::where('company_id', $this->companyId)->get()
-//			->map(function ($record) {
-//				$record->payment_receiver = $record->payment_receiver.' | '.$record->bank.' | '.$record->account_number;
-//				return $record;
-//			})
-//			->pluck('payment_receiver', 'id');
-//
-//		$units = Unit::orderBy('default', 'desc')->orderBy('name', 'asc')->get();
-//
-//		$structuralunits = $this->invoices->getStructuralunits();
-//
-//		$invoicetypes = InvoiceType::get();
-//
-//		$selectedBank = CompanyBank::where('payment_receiver', $invoice['payment_receiver'])
-//			->where('bank', $invoice['bank'])
-//			->where('swift', $invoice['swift'])
-//			->where('account_number', $invoice['account_number'])->first();
-//
-//		$vats = Vat::orderBy('default', 'desc')->orderBy('name', 'asc')->get();;
-//
-//		$companyVatNumbers = CompanyVatNumber::where(
-//			'company_id', $this->companyId
-//		)->get();
-
 		return view('client.invoices.edit', $invoiceService->getInvoiceFormData($this->company, $id));
-
-//		return view('client.invoices.edit', [
-//			'invoice' => $invoice,
-//			'partners' => $partners,
-//			'currencies' => $currencies,
-//			'vats' => $vats,
-//			'bank' => $bank,
-//			'units' => $units,
-//			'selectedBank' => $selectedBank,
-//			'companyVatNumbers' => $companyVatNumbers,
-//			'structuralunits' => $structuralunits,
-//			'invoicetypes' => $invoicetypes,
-//		]);
 	}
 
 	/**

@@ -16,6 +16,7 @@
     @yield('style')
 
     @include('client.partials.head')
+    @livewireStyles
 </head>
 <body>
 
@@ -43,12 +44,8 @@
     <img src="{!! asset('/admin-assets/ajax-loader.gif')  !!}" class="ajax-loader"/>
     <div class="ajax-loader">Loading</div>
 </div>
-</body>
-
 @include('client.partials.js')
-
-
-<div>
-    @yield('js')
-</div>
+@yield('js')
+@livewireScripts
+</body>
 </html>

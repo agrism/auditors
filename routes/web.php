@@ -30,14 +30,16 @@ Route::get(
 );
 
 
-//Route::get('test/{id}', 'Client\InvoiceController@calculateTotalInvoiceAmount');
+Route::get('test', function(\App\Services\InvoiceService $invoiceService){
+	$invoiceService->fillInvoiceData();
+});
 
 
 Route::get('login', ['as' => 'login', 'uses' => 'HomeController@login']);
 Route::post('sign-in', ['as' => 'sign-in', 'uses' => 'HomeController@signIn']);
 Route::get('logout', ['as' => 'logout', 'uses' => 'HomeController@logout']);
 
-
+/*
 Route::get('login/facebook', [
 		'as' => 'login.facebook',
 		'uses' => 'Auth\AuthController@redirectToFacebookProvider',
@@ -65,7 +67,7 @@ Route::get(	'login/google', [
 	]
 );
 Route::get(	'login/google/callback', 'Auth\AuthController@handleGoogleProviderCallback');
-
+*/
 
 require(app_path() . '/../routes/Routes/clientRoutes.php');
 require(app_path() . '/../routes/Routes/adminRoutes.php');

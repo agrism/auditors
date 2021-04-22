@@ -82,9 +82,7 @@ class CompanyBankController extends Controller
 	 */
 	public function edit($id)
 	{
-		$bank = CompanyBank::where('company_id', $this->company['id'])->find(
-			$id
-		);
+		$bank = CompanyBank::where('company_id', $this->company['id'])->find($id);
 
 		return view('client.companies.banks.edit', compact('bank'));
 	}

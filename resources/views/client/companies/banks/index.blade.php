@@ -16,6 +16,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>Comment</th>
                             <th>Name</th>
                             <th>Bank</th>
                         </tr>
@@ -24,6 +25,7 @@
                         @foreach($banks as $bank)
                             <tr class="line" style="cursor: pointer">
                                 <td>{{ $bank->id}}</td>
+                                <td>{{ $bank->comment}}</td>
                                 <td>{{ $bank->payment_receiver}}</td>
                                 <td>{{ $bank->bank}}</td>
 

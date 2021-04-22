@@ -15,7 +15,7 @@
     </div>
 
     {!! Form::label('invoicetype_id', 'Invoice Type:', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-5">
+    <div class="col-sm-6">
         {!! Form::select('invoicetype_id', isset($invoicetypes) ? $invoicetypes->pluck('title', 'id') : [] , isset($invoice) ? $invoice['invoicetype_id'] : null , ['class'=>'form-control'] ) !!}
     </div>
 </div>
@@ -27,7 +27,7 @@
     </div>
 
     {!! Form::label('structuralunit_id', 'Structural Unit:', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-5">
+    <div class="col-sm-6">
         {!! Form::select('structuralunit_id', isset($structuralunits) ? $structuralunits->pluck('title', 'id') : [] , isset($invoice) ? $invoice['structuralunit_id'] : null , ['class'=>'form-control'] ) !!}
     </div>
 </div>
@@ -39,9 +39,10 @@
     </div>
 
     {!! Form::label('details_self', 'Details invisible:', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-5">
+    <div class="col-sm-6">
         {!! Form::text('details_self', isset($invoice) ? $invoice['details_self'] : null , ['class'=>'form-control', 'placeholder'=>'Input details obly for self.'] ) !!}
     </div>
+
 </div>
 
 <div class="form-group">
@@ -49,14 +50,25 @@
     <div class="col-sm-2">
         {!! Form::select('vat_number',isset($companyVatNumbers) ? $companyVatNumbers->pluck('vat_number', 'vat_number') : [] ,isset($invoice) ? $invoice['vat_number'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional VAT no'] ) !!}
     </div>
+    <div>
+        {!! Form::label('currency_id', 'Currency:', ['class'=>'col-sm-2 control-label']) !!}
+        <div class="col-sm-2">
+            {!! Form::select('currency_id', $currencies ,isset($invoice) ? $invoice['currency_id'] : null , ['class'=>'form-control', 'id'=>'currency_id'] ) !!}
+        </div>
+
+        {!! Form::label('currency_rate', 'Rate:', ['class'=>'col-sm-1 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control', 'placeholder'=>'Currency rate.', 'id'=>'currency_rate'] ) !!}
+        </div>
+    </div>
 </div>
 
 <div class="form-group">
     {!! Form::label('partner_id', 'Partner', ['class'=>'col-sm-2 control-label']) !!}
 
 
-    <div class="col-sm-4">
-        <div class="input-group">
+    <div class="col-sm-10">
+        <div class="input-group col-sm-12 col-md-5">
             {!! Form::select('partner_id', $partners ,isset($invoice) ? $invoice['partner_id'] : null , ['class'=>'form-control', 'placeholder'=>'Select partner '] ) !!}
         </div>
     </div>
@@ -65,21 +77,47 @@
 
 <div class="form-group">
     {!! Form::label('bank_id', 'Optional Payment receiver', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-4">
-        {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional payment receiver'] ) !!}
+    <div class="col-sm-10">
+        <div class="input-group col-sm-12 col-md-5">
+            {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional payment receiver'] ) !!}
+        </div>
     </div>
 </div>
 
+{{--<hr></hr>--}}
+
+{{--<div class="form-group">--}}
+{{--    {!! Form::label('currency_id', 'Currency', ['class'=>'col-sm-2 control-label']) !!}--}}
+{{--    <div class="col-sm-2">--}}
+{{--        {!! Form::select('currency_id', $currencies ,isset($invoice) ? $invoice['currency_id'] : null , ['class'=>'form-control', 'id'=>'currency_id'] ) !!}--}}
+{{--    </div>--}}
+{{--    <div class="col-sm-2">--}}
+{{--        {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control', 'placeholder'=>'Currency rate.', 'id'=>'currency_rate'] ) !!}--}}
+{{--    </div>--}}
+{{--</div>--}}
+
+
+<div id="ppr_fields" class="@if($invoice['invoicetype_id'] != 3) hidden @endif" style="background-color: #82e982 !important; padding-bottom: 2px">
+<hr>
 <div class="form-group">
-    {!! Form::label('currency_id', 'Currency', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-2">
-        {!! Form::select('currency_id', $currencies ,isset($invoice) ? $invoice['currency_id'] : null , ['class'=>'form-control', 'id'=>'currency_id'] ) !!}
+    {!! Form::label('goods_out_address', 'Goods delivery from/to', ['class'=>'col-sm-2 control-label']) !!}
+    <div class="col-sm-5">
+        {!! Form::text('goods_address_from', isset($invoice) ? $invoice['goods_address_from'] : null , ['class'=>'form-control', 'placeholder'=>'Goods delivered from'] ) !!}
     </div>
-    <div class="col-sm-2">
-        {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control', 'placeholder'=>'Currency rate.', 'id'=>'currency_rate'] ) !!}
+    <div class="col-sm-5">
+        {!! Form::text('goods_address_to', isset($invoice) ? $invoice['goods_address_to'] : null , ['class'=>'form-control', 'placeholder'=>'Goods delivered to'] ) !!}
     </div>
 </div>
+<div class="form-group">
+    {!! Form::label('goods_deliverer', 'Carrier', ['class'=>'col-sm-2 control-label']) !!}
+    <div class="col-sm-10">
+        {!! Form::text('goods_deliverer', isset($invoice) ? $invoice['goods_deliverer'] : null , ['class'=>'form-control', 'placeholder'=>'Organizācija, Auto Nr, šoferis'] ) !!}
+    </div>
+</div>
+</div>
 
+
+<hr>
 <div class="form-group">
     {!! Form::label('details', 'Details', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-sm-10">
@@ -93,6 +131,7 @@
     </div>
 </div>
 
+<hr>
 
 <table class="table table-hover table-condensed ">
     <thead>
@@ -505,6 +544,17 @@
         //
         //            });
         //        });
+    </script>
+
+    <script>
+        $('#invoicetype_id').on('change', function(){
+            if($(this).val() == 3){
+                $('#ppr_fields').removeClass('hidden');
+            } else {
+                $('#ppr_fields').addClass('hidden');
+            }
+        });
+
     </script>
 
 @stop

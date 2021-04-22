@@ -47,7 +47,9 @@ class HomeController extends Controller
 			return redirect()->to('login');
 		}
 
-		$user = User::where('email', $email)->first();
+		if(!$user = User::where('email', $email)->first()){
+			return redirect()->to('login')->withErrors(['message' => 'User not found']);
+		}
 
 		if (!Hash::check($password, $user->password)) {
 			return redirect()->to('login');

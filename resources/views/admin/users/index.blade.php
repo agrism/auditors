@@ -38,6 +38,9 @@
                                     <a href="{{ url(route('admin.users.destroy',  [$user->id,'method'=>'delete']))}}">
                                         <div class="btn btn-danger btn-xs fa-remove fa"></div>
                                     </a>
+                                    <a href="{{ url(route('admin.prepare-login-as-user',  [$user->id]))}}">
+                                        <div class="btn btn-warning btn-xs fa-sign-in fa"></div>
+                                    </a>
 
                                 </td>
 

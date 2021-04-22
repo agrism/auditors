@@ -1,4 +1,10 @@
 <?php
+
+Route::get('admin/login/{secret}', [
+	'as' => 'admin.loginAsClient',
+	'uses' => 'Admin\\LoginAsUserController@login',
+]);
+
 Route::group(
 	[
 		'namespace' => 'Admin', 'middleware' => ['forAdmin'],
@@ -13,39 +19,39 @@ Route::group(
 
 	Route::get(
 		'companies/{companyId}/structuralunits', [
-		'as' => 'company.structuralunits.index',
-		'uses' => 'StructuralunitController@index',
-	]
+			'as' => 'company.structuralunits.index',
+			'uses' => 'StructuralunitController@index',
+		]
 	);
 	Route::get(
 		'companies/{companyId}/structuralunits/create', [
-		'as' => 'company.structuralunits.create',
-		'uses' => 'StructuralunitController@create',
-	]
+			'as' => 'company.structuralunits.create',
+			'uses' => 'StructuralunitController@create',
+		]
 	);
 	Route::post(
 		'companies/{companyId}/structuralunits/store', [
-		'as' => 'company.structuralunits.store',
-		'uses' => 'StructuralunitController@store',
-	]
+			'as' => 'company.structuralunits.store',
+			'uses' => 'StructuralunitController@store',
+		]
 	);
 	Route::get(
 		'companies/{companyId}/structuralunits/edit/{id}', [
-		'as' => 'company.structuralunits.edit',
-		'uses' => 'StructuralunitController@edit',
-	]
+			'as' => 'company.structuralunits.edit',
+			'uses' => 'StructuralunitController@edit',
+		]
 	);
 	Route::put(
 		'companies/{companyId}/structuralunits/update/{id}', [
-		'as' => 'company.structuralunits.update',
-		'uses' => 'StructuralunitController@update',
-	]
+			'as' => 'company.structuralunits.update',
+			'uses' => 'StructuralunitController@update',
+		]
 	);
 	Route::get(
 		'companies/{companyId}/structuralunits/destroy/{id}', [
-		'as' => 'company.structuralunits.destroy',
-		'uses' => 'StructuralunitController@destroy',
-	]
+			'as' => 'company.structuralunits.destroy',
+			'uses' => 'StructuralunitController@destroy',
+		]
 	);
 
 	Route::resource(
@@ -82,30 +88,29 @@ Route::group(
 		['prefix' => 'users'], function () {
 		Route::post(
 			'assign-to-partner', [
-			'as' => 'user.assignToPartner',
-			'uses' => '\App\Http\Controllers\Admin\UserController@assignToPartner',
-		]
+				'as' => 'user.assignToPartner',
+				'uses' => '\App\Http\Controllers\Admin\UserController@assignToPartner',
+			]
 		);
 
 		Route::group(
 			['prefix' => 'partners'], function () {
 			Route::get(
 				'set-roles', [
-				'as' => 'users.assignrole',
-				'uses' => 'UserController@assignRoleToUser',
-			]
+					'as' => 'users.assignrole',
+					'uses' => 'UserController@assignRoleToUser',
+				]
 			);
 			Route::get(
 				'get-roles', [
-				'as' => 'users.assignrole.save',
-				'uses' => 'UserController@assignRoleToUserSave',
-			]
+					'as' => 'users.assignrole.save',
+					'uses' => 'UserController@assignRoleToUserSave',
+				]
 			);
 
 		}
 		);
-	}
-	);
+	});
 
 	Route::resource('invoices', 'InvoiceController');
 	Route::resource('invoices', 'InvoiceController');
@@ -122,6 +127,9 @@ Route::group(
 		'working-hours', ['as' => 'working-hours.handle', 'uses' => 'WorkingHoursController@handle']
 	);
 
+	Route::get(
+		'prepare-login-as-user/{id}', ['as' => 'prepare-login-as-user', 'uses' => 'LoginAsUserController@prepareLogin']
+	);
 
 	Route::get(
 		'test', function () {
@@ -132,7 +140,7 @@ Route::group(
 		dd($model);
 	});
 
-	Route::get('import-public-holidays', function (){
+	Route::get('import-public-holidays', function () {
 
 		$ch = curl_init('https://date.nager.at/api/v2/PublicHolidays/2023/LV');
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -143,10 +151,10 @@ Route::group(
 		// close curl resource to free up system resources
 		curl_close($ch);
 
-		foreach ($output as $date){
+		foreach ($output as $date) {
 			$d = \App\Calendar::where('date', $date->date)->first();
 
-			if(!$d){
+			if (!$d) {
 				$d = new \App\Calendar;
 				$d->date = $date->date;
 			}
@@ -158,6 +166,5 @@ Route::group(
 
 			$d->save();
 		}
-
 	});
 });

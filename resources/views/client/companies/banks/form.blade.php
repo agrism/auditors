@@ -11,12 +11,16 @@
 
 
 <div class="form-group">
-
     {!! Form::label('payment_receiver', 'Payment Receiver', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-sm-9">
         {!! Form::text('payment_receiver', isset($bank) ? $bank['payment_receiver'] : null , ['class'=>'form-control', 'placeholder'=>'Input payment receiver'] ) !!}
     </div>
-
+</div>
+<div class="form-group">
+    {!! Form::label('comment', 'Internal comment', ['class'=>'col-sm-2 control-label']) !!}
+    <div class="col-sm-9">
+        {!! Form::text('comment', isset($bank) ? $bank['comment'] : null , ['class'=>'form-control', 'placeholder'=>'Internal comment'] ) !!}
+    </div>
 </div>
 
 <div class="form-group">

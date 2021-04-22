@@ -4,6 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Partner
+ * @property int id
+ * @property string name
+ * @property string address
+ * @property int company_id
+ * @property string registration_number
+ * @property string vat_number
+ * @property string bank
+ * @property string swift
+ * @property string account_number
+ */
 class Partner extends Model
 {
 	protected $table = 'partners';

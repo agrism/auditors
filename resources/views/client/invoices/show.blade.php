@@ -564,6 +564,31 @@
             <hr>
         </td>
     </tr>
+    @if($invoice['invoicetype_id']==3)
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <td>@lang('invoice.goods_delivery_from'):</td>
+                    <td><strong>{{$invoice->goods_address_from}}</strong></td>
+                </tr>
+                <tr>
+                    <td>@lang('invoice.goods_delivery_to'):</td>
+                    <td><strong>{{$invoice->goods_address_to}}</strong></td>
+                </tr>
+                <tr>
+                    <td>@lang('invoice.goods_deliverer'):</td>
+                    <td><strong>{{$invoice->goods_deliverer}}</strong></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <hr>
+        </td>
+    </tr>
+    @endif
     <tr>
         <td class="text-left">
             {{ $invoice->details_bottom1}}
@@ -591,7 +616,6 @@
                 </tr>
             </table>
         </td>
-
     </tr>
     {{-- <tr><td colspan="10"><hr></td></tr> --}}
     <tr>
