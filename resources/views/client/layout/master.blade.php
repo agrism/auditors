@@ -45,7 +45,8 @@
     <div class="ajax-loader">Loading</div>
 </div>
 @include('client.partials.js')
-@yield('js')
+
 @livewireScripts
+@yield('js')
 </body>
 </html>

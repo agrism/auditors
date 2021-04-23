@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Company;
 use App\Structuralunit;
+use App\StructuralunitUser;
 use App\User;
 use Illuminate\Http\Request;
 

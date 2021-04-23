@@ -6,7 +6,7 @@ use App\CompanySetting;
 use App\Exports\InvoiceExport;
 use App\InvoiceType;
 use App\Services\InvoiceService;
-use App\Structuralunit;
+use App\StructuralunitUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

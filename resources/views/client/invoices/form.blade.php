@@ -69,7 +69,8 @@
 
     <div class="col-sm-10">
         <div class="input-group col-sm-12 col-md-5">
-            {!! Form::select('partner_id', $partners ,isset($invoice) ? $invoice['partner_id'] : null , ['class'=>'form-control', 'placeholder'=>'Select partner '] ) !!}
+            <livewire:partner-select :selectedPartnerId="$invoice['partner_id']??null" />
+{{--            {!! Form::select('partner_id', $partners ,isset($invoice) ? $invoice['partner_id'] : null , ['class'=>'form-control', 'placeholder'=>'Select partner '] ) !!}--}}
         </div>
     </div>
 
@@ -79,8 +80,8 @@
     {!! Form::label('bank_id', 'Optional Payment receiver', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-sm-10">
         <div class="input-group col-sm-12 col-md-5">
-            {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional payment receiver'] ) !!}
-        </div>
+                {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional payment receiver'] ) !!}
+            </div>
     </div>
 </div>
 
@@ -97,7 +98,7 @@
 {{--</div>--}}
 
 
-<div id="ppr_fields" class="@if($invoice['invoicetype_id'] != 3) hidden @endif" style="background-color: #82e982 !important; padding-bottom: 2px">
+<div id="ppr_fields" class="@if(($invoice['invoicetype_id'] ?? 'x')  != 3) hidden @endif" style="background-color: #82e982 !important; padding-bottom: 2px">
 <hr>
 <div class="form-group">
     {!! Form::label('goods_out_address', 'Goods delivery from/to', ['class'=>'col-sm-2 control-label']) !!}

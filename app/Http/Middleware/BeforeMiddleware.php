@@ -47,7 +47,7 @@ class BeforeMiddleware
 //		}
 
 		if(in_array($_SERVER['REMOTE_ADDR'],explode(',', env('APP_DEBUG_IPS')))){
-			Debugbar::enable();
+//			Debugbar::enable();
 		}
 
 		return $next($request);

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Structuralunit extends Model
+class StructuralunitUser extends Model
 {
 	protected $table = 'structuralunits_users';
 	public $timestamps = true;
