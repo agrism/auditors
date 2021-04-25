@@ -1,13 +1,14 @@
 <div>
-    <div class="input-group">
+    <div class="input-group" style="width: 100%">
         <select wire:model="selectedPartnerId" class="form-control" name="partner_id">
             @foreach($partners ?? [] as $partner)
             <option value="{{$partner['id']}}">{{$partner['name']}}</option>
             @endforeach
         </select>
-        <span class="input-group-addon" style="cursor: pointer" id="basic-addon1" data-toggle="modal" data-target="#exampleModal" wire:click="edit({{ $selectedPartnerId }})">...</span>
+            <span class="input-group-btn" style="cursor: pointer;" id="basic-addon1" data-toggle="modal" data-target="#exampleModal" wire:click="edit({{ $selectedPartnerId }})">
+                <button type="button" class="btn btn-default">...</button>
+            </span>
     </div>
-
 
     <!-- Modal -->
     <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -17,7 +18,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">{{ $selectedPartnerId > 0 ? 'Edit' : 'Create' }} Partner</h4>
                 </div>
-                <div class="modal-body" style="margin-left: 5px;margin-right: 5px">
+                <div class="modal-body" style="margin-left: 15px;margin-right: 15px">
                         <div class="form-group">
                             <label for="first_name" style="font-size: 12px;">Name</label>
                             <input type="text" class="form-control" placeholder="Partner name" aria-describedby="basic-addon1" wire:model.defer="selectedPartnerName">

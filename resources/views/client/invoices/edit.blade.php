@@ -10,8 +10,13 @@
             {!! Form::model('invoice', ['class'=>'form-horizontal form1', 'method'=>'put', 'route' => ['client.invoices.update', $invoice->id], 'files' => true ]) !!}
             @include('client.invoices.form')
 
-            {!! Form::submit('Save', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
-            {!! Form::submit('Update and return to list', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
+            <div class="form-group" style="margin-top: 10px;">
+                <div class="col-sm-12">
+                    {!! Form::submit('Save', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
+                    {!! Form::submit('Update and return to list', ['class'=>'btn btn-primary', 'name'=>'submit-name'])!!}
+                </div>
+            </div>
+
             {!! Form::close() !!}
 
         </div>

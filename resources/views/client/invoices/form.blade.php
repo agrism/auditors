@@ -8,128 +8,199 @@
     </div>
 @endif
 
+@section('style')
+    @parent
+    <style>
+        .form-group {
+            margin-bottom: 0px !important;
+        }
+
+        label.custom {
+            font-size: 12px;
+        }
+
+        .border-lable-flt label, .border-lable-flt > span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            cursor: text;
+            font-size: 75%;
+            opacity: 1;
+            -webkit-transition: all .2s;
+            transition: all .2s;
+            top: -.5em;
+            left: 0.75rem;
+            z-index: 3;
+            line-height: 1;
+            padding: 0 1px;
+        }
+
+        .border-lable-flt label::after, .border-lable-flt > span::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            background: white;
+            height: 2px;
+            top: 50%;
+            left: -.2em;
+            right: -.2em;
+            z-index: -1;
+        }
+
+        .border-lable-flt .form-control::-webkit-input-placeholder {
+            opacity: 1;
+            -webkit-transition: all .2s;
+            transition: all .2s;
+        }
+
+        .border-lable-flt .form-control:placeholder-shown:not(:focus)::-webkit-input-placeholder {
+            opacity: 0;
+        }
+
+        .border-lable-flt .form-control:placeholder-shown:not(:focus) + * {
+            font-size: 150%;
+            opacity: .5;
+            top: .3em;
+        }
+
+        .input-group .border-lable-flt {
+            display: table-cell;
+        }
+
+        .input-group .border-lable-flt .form-control {
+            border-radius: 0.25rem;
+        }
+
+        .input-group .border-lable-flt:not(:last-child), .input-group .border-lable-flt:not(:last-child) .form-control {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+            border-right: 0;
+        }
+
+        .input-group .border-lable-flt:not(:first-child), .input-group .border-lable-flt:not(:first-child) .form-control {
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+        }
+
+        .form-control:focus {
+            color: #804000;
+            background-color: #fff;
+            border-color: #006633;
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 51, 0.25);
+        }
+    </style>
+@stop
+
 <div class="form-group">
-    {!! Form::label('date', 'Date', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-2">
-        {!! Form::text('date', isset($invoice) ? $invoice['date'] : \Carbon\Carbon::now()->format('d.m.Y') , ['class'=>'form-control', 'placeholder'=>'Input date', 'id'=>'dp1', 'readonly'] ) !!}
+
+    <div class="col-sm-6">
+        <label for="date" class="custom text-danger">Date</label>
+        <input type="text" name="date"
+               value="{{isset($invoice) ? $invoice['date'] : \Carbon\Carbon::now()->format('d.m.Y') }}"
+               class="form-control" placeholder="Input date" id="dp1" readonly>
     </div>
 
-    {!! Form::label('invoicetype_id', 'Invoice Type:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-sm-6">
-        {!! Form::select('invoicetype_id', isset($invoicetypes) ? $invoicetypes->pluck('title', 'id') : [] , isset($invoice) ? $invoice['invoicetype_id'] : null , ['class'=>'form-control'] ) !!}
+        <label for="invoicetype_id" class="custom">Invoice type</label>
+        {!! Form::select('invoicetype_id', isset($invoicetypes) ? $invoicetypes->pluck('title', 'id') : [] , isset($invoice) ? $invoice['invoicetype_id'] : null , ['class'=>'form-control', 'id'=>'invoicetype_id'] ) !!}
     </div>
+
+
 </div>
 
 <div class="form-group">
-    {!! Form::label('payment_date', 'Payment Date', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-2">
+    <div class="col-sm-6">
+        <label for="payment_date" class="custom  text-danger">Payment date</label>
         {!! Form::text('payment_date', isset($invoice) ? $invoice['payment_date'] : \Carbon\Carbon::now()->format('d.m.Y')  , ['class'=>'form-control', 'placeholder'=>'Input payment date', 'id'=>'dp2', 'readonly'] ) !!}
     </div>
 
-    {!! Form::label('structuralunit_id', 'Structural Unit:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-sm-6">
+        <label for="structuralunit_id" class="custom">Structural unit</label>
         {!! Form::select('structuralunit_id', isset($structuralunits) ? $structuralunits->pluck('title', 'id') : [] , isset($invoice) ? $invoice['structuralunit_id'] : null , ['class'=>'form-control'] ) !!}
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('number', 'No', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-2">
+    <div class="col-sm-6">
+        <label for="number" class="custom border-label-flt  text-danger">Invoice No</label>
         {!! Form::text('number', isset($invoice) ? $invoice['number'] : null , ['class'=>'form-control', 'placeholder'=>'Input No.'] ) !!}
     </div>
 
-    {!! Form::label('details_self', 'Details invisible:', ['class'=>'col-sm-2 control-label']) !!}
     <div class="col-sm-6">
-        {!! Form::text('details_self', isset($invoice) ? $invoice['details_self'] : null , ['class'=>'form-control', 'placeholder'=>'Input details obly for self.'] ) !!}
+        <label for="details_self" class="custom">Internal comment</label>
+        {!! Form::text('details_self', isset($invoice) ? $invoice['details_self'] : null , ['class'=>'form-control', 'placeholder'=>'Input details only for self.'] ) !!}
     </div>
 
 </div>
 
 <div class="form-group">
-    {!! Form::label('vat_number', 'Vat No', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-2">
+    <div class="col-sm-6">
+        <label for="vat_number" class="custom  text-danger">Vat No</label>
         {!! Form::select('vat_number',isset($companyVatNumbers) ? $companyVatNumbers->pluck('vat_number', 'vat_number') : [] ,isset($invoice) ? $invoice['vat_number'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional VAT no'] ) !!}
     </div>
-    <div>
-        {!! Form::label('currency_id', 'Currency:', ['class'=>'col-sm-2 control-label']) !!}
-        <div class="col-sm-2">
+    <div class="col-sm-6">
+        <div class="col-sm-6" style="padding-left: 0 !important;">
+            <label for="currency_id" class="custom">Currency</label>
             {!! Form::select('currency_id', $currencies ,isset($invoice) ? $invoice['currency_id'] : null , ['class'=>'form-control', 'id'=>'currency_id'] ) !!}
         </div>
 
-        {!! Form::label('currency_rate', 'Rate:', ['class'=>'col-sm-1 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control', 'placeholder'=>'Currency rate.', 'id'=>'currency_rate'] ) !!}
+        <div class="col-sm-6" style="padding-right: 0 !important;">
+            <label for="currency_rate" class="custom">Rate (currency units per one EUR)</label>
+            {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control', 'placeholder'=>'GBP/EUR ~ 0.86 GBP', 'id'=>'currency_rate'] ) !!}
         </div>
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('partner_id', 'Partner', ['class'=>'col-sm-2 control-label']) !!}
-
-
-    <div class="col-sm-10">
-        <div class="input-group col-sm-12 col-md-5">
-            <livewire:partner-select :selectedPartnerId="$invoice['partner_id']??null" />
-{{--            {!! Form::select('partner_id', $partners ,isset($invoice) ? $invoice['partner_id'] : null , ['class'=>'form-control', 'placeholder'=>'Select partner '] ) !!}--}}
-        </div>
+    <div class="col-sm-6">
+        <label for="partner_id" class="custom  text-danger">Partner</label>
+        <livewire:partner-select name="partner_id" :selectedPartnerId="$invoice['partner_id']??null"/>
+        {{--            {!! Form::select('partner_id', $partners ,isset($invoice) ? $invoice['partner_id'] : null , ['class'=>'form-control', 'placeholder'=>'Select partner '] ) !!}--}}
     </div>
 
+    <div class="col-sm-6">
+        <label for="bank_id" class="custom">Optional Payment receiver</label>
+        {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional payment receiver'] ) !!}
+    </div>
 </div>
 
-<div class="form-group">
-    {!! Form::label('bank_id', 'Optional Payment receiver', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        <div class="input-group col-sm-12 col-md-5">
-                {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control', 'placeholder'=>'Select optional payment receiver'] ) !!}
+{{--//--}}
+
+<div id="ppr_fields" class="@if(($invoice['invoicetype_id'] ?? 'x')  != 3) hidden @endif">
+    <hr>
+    <div style="padding-bottom: 2px; border: solid #82e982 5px;margin: 5px 0">
+        <div class="form-group">
+            <div class="col-sm-4">
+                <label for="goods_address_from" class="custom">Goods delivery From</label>
+                {!! Form::text('goods_address_from', isset($invoice) ? $invoice['goods_address_from'] : null , ['class'=>'form-control', 'placeholder'=>'Goods delivered from'] ) !!}
             </div>
+            <div class="col-sm-4">
+                <label for="goods_address_to" class="custom">Goods delivery To</label>
+                {!! Form::text('goods_address_to', isset($invoice) ? $invoice['goods_address_to'] : null , ['class'=>'form-control', 'placeholder'=>'Goods delivered to'] ) !!}
+            </div>
+            <div class="col-sm-4">
+                <label for="goods_deliverer" class="custom">Carrier</label>
+                {!! Form::text('goods_deliverer', isset($invoice) ? $invoice['goods_deliverer'] : null , ['class'=>'form-control', 'placeholder'=>'Organizācija, Auto Nr, šoferis'] ) !!}
+            </div>
+        </div>
     </div>
-</div>
-
-{{--<hr></hr>--}}
-
-{{--<div class="form-group">--}}
-{{--    {!! Form::label('currency_id', 'Currency', ['class'=>'col-sm-2 control-label']) !!}--}}
-{{--    <div class="col-sm-2">--}}
-{{--        {!! Form::select('currency_id', $currencies ,isset($invoice) ? $invoice['currency_id'] : null , ['class'=>'form-control', 'id'=>'currency_id'] ) !!}--}}
-{{--    </div>--}}
-{{--    <div class="col-sm-2">--}}
-{{--        {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control', 'placeholder'=>'Currency rate.', 'id'=>'currency_rate'] ) !!}--}}
-{{--    </div>--}}
-{{--</div>--}}
-
-
-<div id="ppr_fields" class="@if(($invoice['invoicetype_id'] ?? 'x')  != 3) hidden @endif" style="background-color: #82e982 !important; padding-bottom: 2px">
-<hr>
-<div class="form-group">
-    {!! Form::label('goods_out_address', 'Goods delivery from/to', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-5">
-        {!! Form::text('goods_address_from', isset($invoice) ? $invoice['goods_address_from'] : null , ['class'=>'form-control', 'placeholder'=>'Goods delivered from'] ) !!}
-    </div>
-    <div class="col-sm-5">
-        {!! Form::text('goods_address_to', isset($invoice) ? $invoice['goods_address_to'] : null , ['class'=>'form-control', 'placeholder'=>'Goods delivered to'] ) !!}
-    </div>
-</div>
-<div class="form-group">
-    {!! Form::label('goods_deliverer', 'Carrier', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('goods_deliverer', isset($invoice) ? $invoice['goods_deliverer'] : null , ['class'=>'form-control', 'placeholder'=>'Organizācija, Auto Nr, šoferis'] ) !!}
-    </div>
-</div>
 </div>
 
 
 <hr>
 <div class="form-group">
-    {!! Form::label('details', 'Details', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
+{{--    {!! Form::label('details', 'Details', ['class'=>'col-sm-2 control-label']) !!}--}}
+    <div class="col-sm-6">
+        <label for="details" class="custom">Details</label>
         {!! Form::text('details', isset($invoice) ? $invoice['details'] : null , ['class'=>'form-control', 'placeholder'=>'Details.'] ) !!}
     </div>
-</div>
-<div class="form-group">
-    {!! Form::label('details1', 'Details other:', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
+    <label for="details1" class="custom">Details other</label>
+    <div class="col-sm-6">
         {!! Form::text('details1', isset($invoice) ? $invoice['details1'] : null , ['class'=>'form-control', 'placeholder'=>'Details.'] ) !!}
     </div>
+</div>
+<div class="form-group">
+
 </div>
 
 <hr>
@@ -289,34 +360,32 @@
 <hr>
 
 <div class="form-group">
-    {!! Form::label('details_bottom1', 'Details1', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
+    <div class="col-sm-12">
+        <label for="details_bottom1" class="custom">Details1</label>
         {!! Form::text('details_bottom1', isset($invoice) ? $invoice['details_bottom1'] : null , ['class'=>'form-control', 'placeholder'=>'Details 1'] ) !!}
     </div>
-</div>
-<div class="form-group">
-    {!! Form::label('details_bottom2', 'Details2', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
+    <div class="col-sm-12">
+        <label for="details_bottom2" class="custom">Details2</label>
         {!! Form::text('details_bottom2', isset($invoice) ? $invoice['details_bottom2'] : null , ['class'=>'form-control', 'placeholder'=>'Details 2'] ) !!}
     </div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('document_signer', 'Document signer', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-4">
+    <div class="col-sm-6">
+        <label for="document_signer" class="custom  text-danger">Document signer</label>
         {!! Form::text('document_signer', isset($invoice) ? $invoice['document_signer'] : null , ['class'=>'form-control text-left', 'placeholder'=>'Signer, our name'] ) !!}
     </div>
 
-    {!! Form::label('document_partner_signer', 'Partner signer', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-4">
+    <div class="col-sm-6">
+        <label for="document_partner_signer" class="custom">Partner signer</label>
         {!! Form::text('document_partner_signer', isset($invoice) ? $invoice['document_partner_signer'] : null , ['class'=>'form-control text-left', 'placeholder'=>'Partner signer name'] ) !!}
     </div>
 </div>
 
 
 <div class="form-group">
-    {!! Form::label('details_bottom3', 'Details3', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
+    <div class="col-sm-12">
+        <label for="details_bottom3" class="custom">Details3</label>
         {!! Form::text('details_bottom3', isset($invoice) ? $invoice['details_bottom3'] : null , ['class'=>'form-control text-center', 'placeholder'=>'Details 3'] ) !!}
     </div>
 </div>
@@ -420,7 +489,7 @@
 
         // ------------------------------------------------------------------showHideOtherCurrencyData
         function showHideOtherCurrencyData() {
-			<?php // if invoice in base currency, do not show seperate currency column ?>
+            <?php // if invoice in base currency, do not show seperate currency column ?>
             if ($('#currency_id').val() == 1) {
                 $('.currencyData').hide();
 
@@ -495,7 +564,7 @@
                 total = parseFloat(beforeTax) + parseFloat(tax);
                 totalCurrency = (parseFloat(total) / currencyRate).toFixed(2);
 
-				<?php /* rounded diference of converting to base currency influence amount before tax! */ ?>
+                <?php /* rounded diference of converting to base currency influence amount before tax! */ ?>
                 // beforeTaxBaseCurrency = (beforeTax / currencyRate).toFixed(2) ;
                 beforeTaxBaseCurrency = totalCurrency - taxBaseCurrency;
 
@@ -548,8 +617,8 @@
     </script>
 
     <script>
-        $('#invoicetype_id').on('change', function(){
-            if($(this).val() == 3){
+        $('#invoicetype_id').on('change', function () {
+            if ($(this).val() == 3) {
                 $('#ppr_fields').removeClass('hidden');
             } else {
                 $('#ppr_fields').addClass('hidden');
