@@ -27,10 +27,12 @@
 @stop
 @yield('navigation')
 
-<div>
-    @include('includes.messages')
-    @yield('content')
-</div>
+<main role="main" style="padding-top: 3.5rem;">
+    <div class="container">
+        @include('includes.messages')
+        @yield('content')
+    </div>
+</main>
 
 <div class="sidebar">
     @yield('sidebar')

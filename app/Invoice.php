@@ -4,6 +4,7 @@ namespace App;
 
 use App\Services\SelectedCompanyService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Invoice
@@ -75,6 +76,11 @@ class Invoice extends Model
 	{
 		return $this->hasMany(InvoiceLine::class);
 	}
+
+    public function invoiceAdvancePayments(): HasMany
+    {
+        return $this->hasMany(InvoiceAdvancePayment::class);
+    }
 
     public function invoiceLinesGroupedByVat()
     {

@@ -11,8 +11,7 @@ use App\Vat;
 class InvoiceLine extends Model
 {
 	protected $table = 'invoice_lines';
-	protected $fillable
-		= [
+	protected $fillable = [
 			'invoice_id', 'product_id', 'code', 'title', 'unit_id', 'quantity',
 			'currency_id', 'price', 'vat_id',
 		];

@@ -1,6 +1,10 @@
 <!-- Bootstrap Core CSS -->
-<link rel="stylesheet"
-      href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+{{--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">--}}
+{{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">--}}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+
+{{--<link rel="stylesheet"--}}
+{{--      href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css') }}">--}}
 <link rel="stylesheet"
       href="{{ URL::asset('admin-assets/sb-admin-2/bower_components/bootstrap-social/bootstrap-social.css') }}">
 
@@ -31,11 +35,14 @@
 
 
 <!-- bootstrap-datepicker    -->
-<link rel="stylesheet" href="{{ URL::asset('admin-assets/datepicker/css/datepicker.min.css') }}">
+{{--<link rel="stylesheet" href="{{ URL::asset('admin-assets/datepicker/css/datepicker.min.css') }}">--}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" />
 
 
 <!-- jQuery -->
-<script src="{{ URL::asset('admin-assets/sb-admin-2/bower_components/jquery/dist/jquery.min.js') }}"></script>
+{{--<script src="{{ URL::asset('admin-assets/sb-admin-2/bower_components/jquery/dist/jquery.min.js') }}"></script>--}}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
 
 <style>
     table tbody tr td {

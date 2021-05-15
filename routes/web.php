@@ -35,9 +35,9 @@ Route::get('test', function(\App\Services\InvoiceService $invoiceService){
 });
 
 
-Route::get('login', ['as' => 'login', 'uses' => 'HomeController@login']);
-Route::post('sign-in', ['as' => 'sign-in', 'uses' => 'HomeController@signIn']);
-Route::get('logout', ['as' => 'logout', 'uses' => 'HomeController@logout']);
+Route::get('login', ['as' => 'login', 'uses' => 'App\\Http\\Controllers\\HomeController@login']);
+Route::post('sign-in', ['as' => 'sign-in', 'uses' => 'App\\Http\\Controllers\\HomeController@signIn']);
+Route::get('logout', ['as' => 'logout', 'uses' => 'App\\Http\\Controllers\\HomeController@logout']);
 
 /*
 Route::get('login/facebook', [

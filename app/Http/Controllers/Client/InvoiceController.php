@@ -42,7 +42,9 @@ class InvoiceController extends Controller
 	 */
 	public function index(Request $request)
 	{
-		$partners = $this->company->partners;
+        return view('client.invoices.list');
+
+            $partners = $this->company->partners;
 
 		$structuralunits = $this->invoices->getStructuralunits();
 
@@ -272,6 +274,7 @@ class InvoiceController extends Controller
 	 */
 	public function edit($id, InvoiceService $invoiceService)
 	{
+//	    dd($invoiceService->getInvoiceFormData($this->company, $id));
 		return view('client.invoices.edit', $invoiceService->getInvoiceFormData($this->company, $id));
 	}
 

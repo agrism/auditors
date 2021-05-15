@@ -1,99 +1,84 @@
 @if( \App::bound('Company') )
-    <nav class="navbar navbar-inverse ">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">
-                    <div class="fa fa-adn"></div>
-                </a>
-                <a class="navbar-brand"
-                   href="{{ url(route('client.companies.index'))}}">Client: {{  substr(\App\Services\SelectedCompanyService::getCompany()->title ?? 'not selected', 0,20) }}</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="{{ \Request::route()->getName() == 'client.partners.index' ? 'active' : null }}"><a
-                                href="{{ url(route('client.partners.index')) }}">{{_('Partners')}}</a></li>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand"
+               href="{{ url(route('client.companies.index'))}}">{{  substr(\App\Services\SelectedCompanyService::getCompany()->title ?? 'not selected', 0,20) }}</a>
 
-                    <li class="{{ \Request::route()->getName() == 'client.invoices.index' ? 'active' : null }}"><a
-                                href="{{ url(route('client.invoices.index')) }}">{{_('Invoices')}}</a></li>
-
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {{ \Request::route()->getName() == 'client.partners.index' ? 'active' : null }} "
+                           aria-current="page" href="{{ url(route('client.partners.index')) }}">{{_('Partners')}}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ \Request::route()->getName() == 'client.invoices.index' ? 'active' : null }}"
+                           href="{{ url(route('client.invoices.index')) }}">{{_('Invoices')}}</a>
+                    </li>
                     @if(config('app.debug-available'))
-
-                    <li class="{{ \Request::route()->getName() == 'client.personal-incomes.index' ? 'active' : null }}">
-                        <a href="{{ url(route('client.personal-incomes.index')) }}">{{_('Personal incomes')}}</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ \Request::route()->getName() == 'client.personal-incomes.index' ? 'active' : null }}"
+                               href="{{ url(route('client.personal-incomes.index')) }}">{{_('Personal incomes')}}</a>
+                        </li>
                     @endif
 
+                    <?php
+                    $companyId = \App\Services\SelectedCompanyService::getCompanyId();
+                    ?>
 
-					<?php
-					$companyId = \App\Services\SelectedCompanyService::getCompanyId();
-					?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle @if(in_array(\Request::route()->getName() , ['client.companies.edit', 'client.companies.bank.index', 'client.companies.settings.index'])) active @endif"
+                           href="#"
+                           id="navbarDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            {{_('Self data')}} <span class="caret"></span>
+                        </a>
 
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="true">{{_('Self data')}} <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-
-                            @if($companyId)
-                                <li class="{{ \Request::route()->getName() == 'client.companies.edit' ? 'active' : null }}">
-                                    <a href="{{ url(route('client.companies.edit', $companyId)) }}">{{_('Requisites')}}</a>
-                                </li>
-
-
-                                <li class="{{ strpos(\Request::route()->getName(), 'client.companies.bank') === 0 ? 'active' : null }}">
-                                    <a href="{{ url(route('client.companies.bank.index')) }}">{{_('Other payment receivers')}}</a>
-                                </li>
-
-{{--                                @if(config('app.debug-available'))--}}
-                                <li class="{{ strpos(\Request::route()->getName(),'client.companies.settings') === 0 ? 'active' : null }}">
-                                    <a href="{{ url(route('client.companies.settings.index')) }}">{{_('Settings')}}</a>
-                                </li>
-{{--                                    @endif--}}
-
-                            @endif
-
-                            {{-- <li><a href="#">Another action</a></li> --}}
-                            {{-- <li><a href="#">Something else here</a></li> --}}
-                            <li role="separator" class="divider"></li>
-                            {{-- <li class="dropdown-header">Nav header</li> --}}
-                            {{-- <li><a href="#">Separated link</a></li> --}}
-                            {{-- <li><a href="#">One more separated link</a></li> --}}
-                        </ul>
+                        @if($companyId)
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item"
+                                   href="{{ url(route('client.companies.edit', $companyId)) }}">{{_('Requisites')}}</a>
+                                <a class="dropdown-item"
+                                   href="{{ url(route('client.companies.bank.index')) }}">{{_('Other payment receivers')}}</a>
+                                <a class="dropdown-item"
+                                   href="{{ url(route('client.companies.settings.index')) }}">{{_('Settings')}}</a>
+                            </ul>
+                        @endif
                     </li>
-
-
                 </ul>
 
-                <ul class="nav navbar-nav navbar-right">
+                {{--            </div>--}}
+
+
+                {{--            <div>--}}
+
+                <ul class="nav nav-pills">
+
                     @if(\Auth::check() && \Auth::user()->isAdmin())
-                        <li class="{{ \Request::route()->getName() == 'admin.home' ? 'active' : null }}"><a
+                        <li class="{{ \Request::route()->getName() == 'admin.home' ? 'active' : null }} nav-link"><a
                                     href="{{ url(route('admin.home')) }}">Admin</a></li>
                     @endif
-                    <li>
-                        <a style="color:white;background-color: dimgrey">
-                            [closed:{{ \App\Services\SelectedCompanyService::getCompany()->closed_data_date ?? null  }}]
-                        </a></li>
-{{--                    <li><a href="{{ route('logout') }}">Logout</a></li>--}}
-                    <li class="dropdown">
-
+                    <li class="nav-item dropdown">
                         <?php
-                            $user = explode(' ',\Illuminate\Support\Facades\Auth::user()->name ?? '')[0] ?? 'Account';
+                        $user = explode(' ', \Illuminate\Support\Facades\Auth::user()->name ?? '')[0] ?? 'Account';
                         ?>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{$user}} <span class="caret"></span></a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{$user}} </a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ route('client.user.edit') }}">{{ $user }}</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{{ route('logout') }}">Logout</a></li>
+                            <li><a class="dropdown-item" href="{{ route('client.user.edit') }}">{{ $user }}</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
-            </div><!--/.nav-collapse -->
+
+            </div>
+
         </div>
     </nav>
-    </div>
 @endif

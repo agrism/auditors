@@ -1,30 +1,21 @@
 @if(Session::has('error'))
-    <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">×</span>
-            <span class="sr-only">Close</span>
-        </button>
+    <div class="alert alert-danger alert-dismissible" role="alert">
         {{ Session::get('form_message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 
 @if(Session::has('success'))
-    <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">×</span>
-            <span class="sr-only">Close</span>
-        </button>
+    <div class="alert alert-success alert-dismissible" role="alert">
         {!! Session::get('form_message') !!}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 
 @if(Session::has('warning'))
-    <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">×</span>
-            <span class="sr-only">Close</span>
-        </button>
+    <div class="alert alert-warning alert-dismissible" role="alert">
         {{ Session::get('form_message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 

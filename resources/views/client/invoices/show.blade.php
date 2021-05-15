@@ -498,25 +498,31 @@
             <tr>
                 <td colspan="10" class="no-border"></td>
             </tr>
-            <tr>
 
-                <td colspan="5" class="text-right no-border ">@lang('invoice.total_without_vat') ({{ $vat->name }})</td>
-                <td class="text-right">{{ number_format($withoutVat[$vat->name],2) }}</td>
-                @if($invoice->currency->name !='EUR')
-                    <td class="text-right">{{ number_format($withoutVat[$vat->name] / $invoice->currency_rate ,2) }}</td>
-                @endif
-                <td class="only-left-border"></td>
-            </tr>
+            @if($vat->name !== '-')
+                <tr>
+                    <td colspan="5" class="text-right no-border ">@lang('invoice.total_without_vat') ({{ $vat->name }}):</td>
+                    <td class="text-right">{{ number_format($withoutVat[$vat->name],2) }}</td>
+                    @if($invoice->currency->name !='EUR')
+                        <td class="text-right">{{ number_format($withoutVat[$vat->name] / $invoice->currency_rate ,2) }}</td>
+                    @endif
+                    <td class="only-left-border"></td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-right no-border ">@lang('invoice.total_vat') ({{ $vat->name }}):</td>
+                    <td class="text-right">{{ number_format($withoutVat[$vat->name] * $vat->rate,2)}}</td>
+                    @if($invoice->currency->name !='EUR')
+                        <td class="text-right">{{ number_format($withoutVat[$vat->name] * $vat->rate /  $invoice->currency_rate,2)}}</td>
+                    @endif
+                    <td class="only-left-border"></td>
+                </tr>
+            @endif
             <tr>
-                <td colspan="5" class="text-right no-border ">@lang('invoice.total_vat') ({{ $vat->name }})</td>
-                <td class="text-right">{{ number_format($withoutVat[$vat->name] * $vat->rate,2)}}</td>
-                @if($invoice->currency->name !='EUR')
-                    <td class="text-right">{{ number_format($withoutVat[$vat->name] * $vat->rate /  $invoice->currency_rate,2)}}</td>
+                @if($vat->name !== '-')
+                    <td colspan="5" class="text-right no-border">@lang('invoice.total_with_vat') ({{ $vat->name }}):</td>
+                @else
+                    <td colspan="5" class="text-right no-border">@lang('invoice.total_with_vat_no_vat_name') ({{ $vat->name }}):</td>
                 @endif
-                <td class="only-left-border"></td>
-            </tr>
-            <tr>
-                <td colspan="5" class="text-right no-border">@lang('invoice.total_with_vat') ({{ $vat->name }})</td>
                 <td class="text-right">{{ number_format($withoutVat[$vat->name]+ $withoutVat[$vat->name] * $vat->rate,2)}}</td>
 
                 @if($invoice->currency->name !='EUR')
@@ -530,17 +536,67 @@
     @endforeach
 
 
+    @if($invoice->invoiceAdvancePayments->sum('amount') !== 0)
     <tr>
         <td colspan="10" class="no-border"></td>
     </tr>
     <tr>
-        <td colspan="5" class="text-right no-border">@lang('invoice.total_to_pay') ({{ $invoice->currency->name}}):</td>
+        <td colspan="5" class="text-right no-border">@lang('invoice.total_invoice') ({{ $invoice->currency->name}}):</td>
         <td nowrap class="text-right">{{ number_format($total_total,2)}}</td>
         @if($invoice->currency->name !='EUR')
             <td nowrap class="text-right">{{ number_format($total_total / $invoice->currency_rate,2)}}</td>
         @endif
         <td class="only-left-border"></td>
     </tr>
+    @endif
+
+    <?php $advancePayments = 0;?>
+
+    @if($invoice->invoiceAdvancePayments->count())
+        <tr>
+            <td colspan="10" class="no-border"></td>
+        </tr>
+
+        @foreach($invoice->invoiceAdvancePayments as $payment)
+
+            @if(!$payment->amount){
+                @continue
+            @endif
+
+            <?php $advancePayments += $payment->amount;?>
+            <tr>
+                <td colspan="5" class="text-right no-border">
+                    @lang('invoice.received_prepayment'): {{$payment->date}} ({{ $invoice->currency->name}}):
+                </td>
+                <td class="text-right" nowrap>
+                    {{number_format(-$payment->amount, 2)}}
+                </td>
+                @if($invoice->currency->name !='EUR')
+                    <td nowrap class="text-right">{{ number_format(-$payment->amount / $invoice->currency_rate,2)}}</td>
+                @endif
+                <td class="only-left-border"></td>
+            </tr>
+        @endforeach
+    @endif
+
+    <tr>
+        <td colspan="10" class="no-border"></td>
+    </tr>
+
+    <tr>
+        <td colspan="5" class="text-right no-border">
+            @lang('invoice.total_to_pay') ({{ $invoice->currency->name}}):
+        </td>
+        <td nowrap class="text-right">
+            {{number_format($total_total - $advancePayments, 2)}}
+        </td>
+        @if($invoice->currency->name !='EUR')
+            <td nowrap class="text-right">{{ number_format( ($total_total - $advancePayments) / $invoice->currency_rate,2)}}</td>
+        @endif
+        <td class="only-left-border"></td>
+    </tr>
+
+
     {{--</tbody>--}}
     {{--</table>--}}
     {{--</td>--}}
@@ -553,7 +609,7 @@
 			<?php
 			// require __DIR__ . '/vendor/autoload.php';
 			// use \js\tools\numbers2words\Speller;
-			$sumInWords = \js\tools\numbers2words\Speller::spellCurrency($total_total, app()->getLocale(), $invoice->currency->name);;
+			$sumInWords = \js\tools\numbers2words\Speller::spellCurrency(($total_total - $advancePayments), app()->getLocale(), $invoice->currency->name);;
 			?>
             @lang('invoice.total_to_pay_in_words'): {{ $sumInWords}}
         </td>

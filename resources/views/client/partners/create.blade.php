@@ -7,7 +7,7 @@
         </div>
         <div class="panel-body">
 
-            {!! Form::model('partner', ['class'=>'form-horizontal', 'method'=>'post', 'action'=>'Client\PartnerController@store']) !!}
+            {!! Form::model('partner', ['class'=>'form-horizontal', 'method'=>'post', 'action'=>'\App\Http\Controllers\Client\PartnerController@store']) !!}
             @include('client.partners.form')
 
             {!! Form::submit('Create')!!}

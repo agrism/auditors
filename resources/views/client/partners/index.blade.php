@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 Partners list in system <a href="{{ url(route('client.partners.create'))}}">
-                    <div class="btn btn-success btn-xs fa-plus fa"></div>
+                    <div class="btn btn-success btn-sm fa-plus fa"></div>
                 </a>
             </div>
             <!-- /.panel-heading -->
@@ -31,7 +31,7 @@
                                 <td>{{ $partner->address}}</td>
 
                             </tr>
-                            <tr class="hidden actions" style="background-color: #e3e3e3">
+                            <tr class="d-none actions" style="background-color: #e3e3e3">
                                 <td colspan="10" class="text-center">
                                     {{--                                    <a href="{{ url(route('client.partners.show', $partner->id))}}">--}}
                                     {{--                                        <div class="btn btn-info btn-xs fa   fa-info"></div>--}}
@@ -61,13 +61,13 @@
     <script>
         $('.line').on('click', function(){
             let that = this;
-            let shouldStayHidden = !$(that).next().hasClass('hidden')
+            let shouldStayHidden = !$(that).next().hasClass('d-none')
 
-            $('.actions').addClass('hidden');
+            $('.actions').addClass('d-none');
             if(shouldStayHidden){
                 return;
             }
-            $(that).next().removeClass('hidden');
+            $(that).next().removeClass('d-none');
         });
     </script>
 @stop

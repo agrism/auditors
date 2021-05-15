@@ -144,12 +144,14 @@
                                     <div class="actionOptionns text-center" style="z-index: 2; position:relative;">
 
                                         <div class="text-warning fa fa-file fa-2x showButton1"
+                                                style="cursor: pointer"
                                                 data-toggle1="tooltip" title="{{ _("View") }}" data-placement="top"
                                                 data-toggle="modal"
                                                 data-target="#myModalShow"
                                                 action-url="{{ url(route('client.invoices.show', $invoice->id))}}"></div>
 
                                         <div class="text-info fa-2x fa fa-copy copyButton1"
+                                                style="cursor: pointer"
                                                 data-toggle1="tooltip" title="{{ _("Copy") }}" data-placement="top"
                                                 data-toggle="modal"
                                                 data-target="#myModalCopy"
@@ -159,6 +161,7 @@
 
                                             @if(\Auth::user()->isAdmin())
                                                 <div class="text-info fa fa-lock fa-2x unlockButton1"
+                                                        style="cursor: pointer"
                                                         data-toggle1="tooltip" title="{{ _("UnLock") }}"
                                                         data-placement="top"
                                                         data-toggle="modal"
@@ -173,6 +176,7 @@
                                         @else
 
                                             <div class="text-info fa-md fa fa-unlock fa-2x lockButton1"
+                                                    style="cursor: pointer"
                                                     data-toggle1="tooltip" title="{{ _("Lock") }}" data-placement="top"
                                                     data-toggle="modal"
                                                     data-target="#myModalLock"
@@ -190,6 +194,7 @@
                                             </a>
 
                                             <div type="button"
+                                                    style="cursor: pointer"
                                                     class="text-danger fa-remove fa fa-2x deleteButton1"
                                                     data-toggle1="tooltip" title="{{_("Delete")}}" data-placement="top"
                                                     data-toggle="modal"

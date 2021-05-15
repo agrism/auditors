@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3.0",
+        "php": "^7.4.0",
         "asantibanez/livewire-select": "^2.0",
         "barryvdh/laravel-debugbar": "^3.4",
         "barryvdh/laravel-dompdf": "^0.8.6",
@@ -21,6 +21,7 @@
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "^6.1",
+        "livewire-ui/modal": "^0.1.5",
         "livewire/livewire": "^2.4",
         "maatwebsite/excel": "^3.1"
     },

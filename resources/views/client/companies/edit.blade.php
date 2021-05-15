@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">Company data Edit</h3>
+            <h4 class="panel-title">Company data Edit</h4>
         </div>
         <div class="panel-body">
 

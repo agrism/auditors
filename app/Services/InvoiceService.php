@@ -9,6 +9,7 @@ use App\CompanyBank;
 use App\CompanyVatNumber;
 use App\Currency;
 use App\Invoice;
+use App\InvoiceAdvancePayment;
 use App\InvoiceLine;
 use App\InvoiceType;
 use App\Partner;
@@ -16,6 +17,7 @@ use App\Repositories\Invoice\InvoiceRepository;
 use App\Unit;
 use App\Vat;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class InvoiceService
@@ -35,7 +37,7 @@ class InvoiceService
 	 */
 	public function getInvoiceFormData(Company $company, $invoiceId = null): array
 	{
-		$invoice = Invoice::with('invoiceLines')->where(
+		$invoice = Invoice::with(['invoiceLines', 'invoiceAdvancePayments'])->where(
 			'company_id', $company->id
 		)->find($invoiceId);
 
@@ -157,6 +159,31 @@ class InvoiceService
 			->whereNotIn('id', isset($invoiceLinesIdsExist) && $invoiceLinesIdsExist ? $invoiceLinesIdsExist : []);
 
 		$deletedInvoiceLines->delete();
+
+		InvoiceAdvancePayment::where('invoice_id', $invoiceId)->delete();
+
+		foreach($data['prePaymentAmount'] ?? [] as $index => $prePaymentAmount){
+
+
+            $prePaymentAmount = floatval($prePaymentAmount);
+
+            $date = $data['prePaymentDate'][$index] ?? null;
+
+
+            if($prePaymentAmount && $date){
+
+                try {
+                    $date = Carbon::createFromFormat('d.m.Y', $date)->format('d.m.Y');
+                    $prePaymentLine = new InvoiceAdvancePayment;
+                    $prePaymentLine->amount = ROUND($prePaymentAmount, 2);
+                    $prePaymentLine->date = $date;
+                    $prePaymentLine->invoice_id = $invoiceId;
+                    $prePaymentLine->save();
+                } catch (\Exception $e){
+
+                }
+            }
+        }
 
 		$this->calculateTotalInvoiceAmount($invoice->id);
 

@@ -37,11 +37,14 @@ return [
 	'item_vat_rate' => 'VAT rate',
 	'total_without_vat' => 'without VAT',
 	'total_vat' => 'VAT',
+    'total_invoice' => 'Invoice total',
 	'total_with_vat' => 'Total with VAT',
+	'total_with_vat_no_vat_name' => 'Total not subject to VAT   ',
 	'total_to_pay' => 'Payable total',
 	'total_to_pay_in_words' => 'Payable in words',
 	'seller_representative' => 'Seller representative',
 	'buyer_representative' => 'Buyer representative',
+    'received_prepayment' => 'received prepayment',
 
 	'units' => [
 		'-' => '-',

@@ -9,206 +9,203 @@ use App;
 use App\Structuralunit;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EloquentInvoiceRepository implements InvoiceRepository
 {
 
-	public $companyId;
-	public $company;
+    public $companyId;
+    public $company;
 
-	private function init()
-	{
-		$this->company = App\Services\SelectedCompanyService::getCompany();
-		if (!isset($this->company->id)) {
-			return route('client.companies.index');
-		}
-		$this->companyId = $this->company->id ?? null;
-	}
+    public $partnerId = null;
+    public $details = null;
+    public $typeId = null;
+    public $structId = null;
+    public $dateFrom = null;
+    public $dateTo = null;
 
-	public function getInvoices(array $params)
-	{
-		$this->init();
-		/***
-		 * $params = [
-		 *    'sort'=>[
-		 *        [
-		 *            'orderBy'=>'name',
-		 *            'direction'=>'asc'
-		 *        ],
-		 *        [
-		 *            'orderBy'=>'number',
-		 *            'direction'=>'asc'
-		 *        ],
-		 * ],
-		 *    'filter'=>['partner_id'=>1, number=>'123']
-		 * ];
-		 */
-		// $invoice =  Invoice::where('company_id', $this->companyId);
+    public $sortColumn = null;
+    public $sortDirection = null;
 
-		$invoice = Invoice::select(
-			\DB::raw(
-				'invoices.*, currencies.name as currency_name, partners.name as partnername,
-        structuralunits.title as structuralunitname, invoice_types.title as invoicetypename'
-			)
-		)
-			->leftJoin('partners', 'invoices.partner_id', '=', 'partners.id')
-			->leftJoin('structuralunits', 'invoices.structuralunit_id', '=', 'structuralunits.id')
-			->leftJoin('invoice_types', 'invoices.invoicetype_id', '=', 'invoice_types.id')
-			->leftJoin('currencies', 'invoices.currency_id', '=', 'currencies.id')
-			->where('invoices.company_id', $this->companyId);
+    private function init()
+    {
+        $this->company = App\Services\SelectedCompanyService::getCompany();
+        if (!isset($this->company->id)) {
+            return route('client.companies.index');
+        }
+        $this->companyId = $this->company->id ?? null;
+    }
 
-//		if (!Auth::user()->isAdmin()) {
+    public function getInvoices(array $params)
+    {
+        $this->init();
+        /***
+         * $params = [
+         *    'sort'=>[
+         *        [
+         *            'orderBy'=>'name',
+         *            'direction'=>'asc'
+         *        ],
+         *        [
+         *            'orderBy'=>'number',
+         *            'direction'=>'asc'
+         *        ],
+         * ],
+         *    'filter'=>['partner_id'=>1, number=>'123']
+         * ];
+         */
+        // $invoice =  Invoice::where('company_id', $this->companyId);
+
+        $invoice = DB::table('invoices')->select(
+            \DB::raw(
+                'invoices.id, 
+                invoices.date, 
+                invoices.is_locked, 
+                invoices.number, 
+                invoices.amount_total, 
+                invoices.details_self, 
+                invoices.structuralunit_id, 
+                currencies.name as currency_name, 
+                partners.name as partnername,
+                structuralunits.title as structuralunitname, 
+                invoice_types.title as invoicetypename'
+            )
+        )
+            ->leftJoin('partners', 'invoices.partner_id', '=', 'partners.id')
+            ->leftJoin('structuralunits', 'invoices.structuralunit_id', '=', 'structuralunits.id')
+            ->leftJoin('invoice_types', 'invoices.invoicetype_id', '=', 'invoice_types.id')
+            ->leftJoin('currencies', 'invoices.currency_id', '=', 'currencies.id')
+            ->where('invoices.company_id', $this->companyId);
 
 
-//		$invoice = $invoice->where(function ($q) {
-//			return $q->rightJoin('structuralunits_users', function ($join) {
-//				$join->on('structuralunits.id', '=', 'structuralunits_users.structuralunit_id')
-//					->where('structuralunits_users.user_id', Auth::user()->id);
-//			});
-//		});
+        if ($this->partnerId) {
+            $invoice = $invoice->where('invoices.partner_id', $this->partnerId);
+        }
+
+        if ($this->details) {
+            $invoice = $invoice->where('invoices.details_self', 'LIKE', '%'.$this->details.'%');
+        }
+
+        if ($this->typeId) {
+            $invoice = $invoice->where('invoices.invoicetype_id', $this->typeId);
+        }
+
+        if ($this->structId) {
+            $invoice = $invoice->where('invoices.structuralunit_id', $this->structId);
+        }
+
+        if ($this->dateFrom) {
+            try {
+                $dateFrom = Carbon::createFromFormat('d.m.Y', $this->dateFrom)->startOfDay()->format('Y-m-d H:i:s');
+                $invoice = $invoice->where('invoices.date', '>=', $dateFrom);
+
+            } catch (\Exception $e) {
+
+            }
+        }
+
+        if ($this->dateTo) {
+            try {
+                $dateTo = Carbon::createFromFormat('d.m.Y', $this->dateTo)->startOfDay()->format('Y-m-d H:i:s');
+                $invoice = $invoice->where('invoices.date', '<=', $dateTo);
+
+            } catch (\Exception $e) {
+
+            }
+        }
+
+//        if ($this->dateTo) {
+//            $invoice = $invoice->where('invoices.date', '=<',$this->dateTo);
+//        }
+
+        if (in_array($this->sortColumn, [
+                'id',
+                'amount_total',
+                'date',
+                'number',
+                'partnername',
+                'structuralunitname',
+                'currency_name',
+                'invoicetypename',
+                'details_self',
+            ]) && in_array($this->sortDirection, ['asc', 'desc'])) {
+            $invoice = $invoice->orderBy($this->sortColumn, $this->sortDirection);
+        }
+
+        if (!Auth::user()->isAdmin() && $this->company->structuralunits->count() > 0) {
+            $availableUnitsForUser = Auth::user()->structuralunits->where('company_id', $this->companyId)
+                ->pluck('id')
+                ->all();
+
+            $invoice = $invoice->where(function ($q) use($availableUnitsForUser) {
+                foreach ($availableUnitsForUser as $unit){
+                    $q = $q->orWhere('invoices.structuralunit_id', $unit);
+                }
+            });
+        }
 
 
-//		$invoice = $invoice->rightJoin('structuralunits_users', function ($join) {
-//			$join->on('invoices.structuralunit_id', '=', 'structuralunits_users.structuralunit_id')
-//				->whereIn('structuralunits_users.user_id', Auth::user()->id)
-//			;
-//		});
-//		}
+        try {
+            try {
+                $invoice = $invoice->paginate(15);
+            } catch (\Exception $e) {
+//                dd($e->getMessage());
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            // dd('try to sort none existing column!');
+            return false;
+        }
 
-		if (isset($params['sort'])) {
+        return $invoice;
 
-			ksort($params['sort']);
+    }
 
-			foreach ($params['sort'] as $key => $value) {
+    public function getPartners()
+    {
+        $this->init();
 
-				if (isset($value['orderBy'])) {
+        return Partner::where('company_id', $this->companyId)->orderBy(
+            'name', 'asc'
+        )->get()->map(function ($item) {
+            return (object)[
+                'name' => $item->name,
+                'id' => $item->id,
+            ];
+        });
+    }
 
-					if (!isset($value['direction'])) {
-						$value['direction'] = 'asc';
-					}
+    public function getStructuralunits()
+    {
+        $this->init();
 
-					if ($value['orderBy'] == 'number') {
-						$invoice = $invoice->orderByRaw(
-							'cast(number as unsigned) '.$value['direction']
-						);
-					}
+        $units = Structuralunit::where('company_id', $this->companyId)->orderBy('title', 'asc');
 
-					$invoice = $invoice->orderBy(
-						$value['orderBy'], $value['direction']
-					);
+        if (!Auth::user()->isAdmin()) {
+            $units = $units->whereHas('users', function ($q) {
+                $q->where('users.id', Auth::user()->id);
+            });
+        }
 
-				}
-			}
-		} else {
-			$invoice = $invoice->orderBy('date', 'desc')->orderBy('number', 'desc');
-		}
+        return $units->get()->map(function ($item) {
+            return (object)[
+                'id' => $item->id,
+                'title' => $item->title,
+            ];
+        });
+    }
 
-//		dd($params);
-		if (isset($params['filter'])) {
+    public function getInvoicetypes()
+    {
+        return InvoiceType::orderBy('title', 'asc')->get()->map(function ($item) {
+            return (object)[
+                'id' => $item->id,
+                'title' => $item->title,
+            ];
+        });
+    }
 
-			$filter = $params['filter'];
+    public function create()
+    {
 
-			if (isset($filter['date_from']) && $filter['date_from'] != '') {
-				try {
-					$dateFrom = Carbon::createFromFormat('d.m.Y', $filter['date_from'])
-						->format('Y-m-d');
-					$invoice = $invoice->where('date', '>=', $dateFrom);
-				} catch (\Exception $e) {
-					dd($e->getMessage());
-				}
-			}
-
-			if (isset($filter['date_to']) && $filter['date_to'] != '') {
-				try {
-					$dateTo = Carbon::createFromFormat('d.m.Y', $filter['date_to'])
-						->format('Y-m-d');
-					$invoice = $invoice->where('date', '<=', $dateTo);
-				} catch (\Exception $e) {
-					dd($e->getMessage());
-				}
-			}
-
-			if (isset($filter['partner_id']) && $filter['partner_id'] != '') {
-				$invoice = $invoice->where('partner_id', $filter['partner_id']);
-			}
-			if (isset($filter['details_self'])
-				&& $filter['details_self'] != ''
-			) {
-				$invoice = $invoice->where(
-					"details_self", "like", "%".$filter['details_self']."%"
-				);
-			}
-			if (isset($filter['structuralunit_id'])
-				&& $filter['structuralunit_id'] != ''
-			) {
-				$invoice = $invoice->where(
-					'structuralunit_id', $filter['structuralunit_id']
-				);
-			}
-			if (isset($filter['invoicetype_id'])
-				&& $filter['invoicetype_id'] != ''
-			) {
-				$invoice = $invoice->where(
-					'invoicetype_id', $filter['invoicetype_id']
-				);
-			}
-		}
-//		dd($filter);
-
-		try {
-			$invoice = $invoice->get();
-		} catch (\Illuminate\Database\QueryException $e) {
-			// dd('try to sort none existing column!');
-			return false;
-		}
-
-		if(!Auth::user()->isAdmin() && $this->company->structuralunits->count() > 0){
-			$availableUnitsForUser = Auth::user()->structuralunits->where('company_id', $this->companyId)->pluck('id')->all();
-
-			$invoice = $invoice->filter(function($inv) use($availableUnitsForUser){
-				if(!$inv->structuralunit_id){
-					return true;
-				}
-
-				return in_array($inv->structuralunit_id, $availableUnitsForUser);
-			});
-		}
-
-		return $invoice;
-
-	}
-
-	public function getPartners()
-	{
-		$this->init();
-
-		return Partner::where('company_id', $this->companyId)->orderBy(
-			'name', 'asc'
-		)->get();
-	}
-
-	public function getStructuralunits()
-	{
-		$this->init();
-
-		$units = Structuralunit::where('company_id', $this->companyId)->orderBy('title', 'asc');
-
-		if (!Auth::user()->isAdmin()) {
-			$units = $units->whereHas('users', function ($q) {
-				$q->where('users.id', Auth::user()->id);
-			});
-		}
-
-		return $units->get();
-	}
-
-	public function getInvoicetypes()
-	{
-		return InvoiceType::orderBy('title', 'asc')->get();
-	}
-
-	public function create()
-	{
-
-	}
+    }
 }

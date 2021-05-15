@@ -7,7 +7,7 @@
         </div>
         <div class="panel-body">
 
-            {!! Form::model('partner', ['class'=>'form-horizontal form1', 'method'=>'post', 'action'=>'Client\InvoiceController@store']) !!}
+            {!! Form::model('partner', ['class'=>'form-horizontal form1', 'method'=>'post', 'action'=>'App\Http\Controllers\Client\InvoiceController@store']) !!}
             @include('client.invoices.form')
 
             <div class="form-group" style="margin-top: 10px;">

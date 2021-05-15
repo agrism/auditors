@@ -8,88 +8,43 @@
     </div>
 @endif
 
-<div class="form-group">
-    {!! Form::label('title', 'Title', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('title', isset($company) ? $company['title'] : null , ['class'=>'form-control', 'placeholder'=>'Input title'] ) !!}
-    </div>
-</div>
+<x-input-group label="Title" name="title" value="{{isset($company) ? $company['title'] : null }}" placeholder="Title"></x-input-group>
+<x-input-group label="Address" name="address" value="{{isset($company) ? $company['address'] : null }}" placeholder="Address"></x-input-group>
+<x-input-group label="Reg.No" name="registration_number" value="{{isset($company) ? $company['registration_number'] : null }}" placeholder="registration no"></x-input-group>
+<hr>
 
-<div class="form-group">
-    {!! Form::label('address', 'address', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('address', isset($company) ? $company['address'] : null , ['class'=>'form-control', 'placeholder'=>'Input address'] ) !!}
-    </div>
-</div>
-
-<div class="form-group">
-    {!! Form::label('registration_number', 'Reg.No', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('registration_number', isset($company) ? $company['registration_number'] : null , ['class'=>'form-control', 'placeholder'=>'Input Reg.no'] ) !!}
-    </div>
-</div>
+<x-input-group label="Default bank" name="bank" value="{{isset($company) ? $company['bank'] : null }}" placeholder="Default bank"></x-input-group>
+<x-input-group label="SWIFT" name="swift" value="{{isset($company) ? $company['swift'] : null }}" placeholder="SWIFT"></x-input-group>
+<x-input-group label="Account number" name="account_number" value="{{isset($company) ? $company['account_number'] : null }}" placeholder="Account number"></x-input-group>
 <hr>
 
 
-<div class="form-group">
-    {!! Form::label('bank', 'Default bank', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('bank', isset($company) ? $company['bank'] : null , ['class'=>'form-control', 'placeholder'=>'Input bank name'] ) !!}
-    </div>
-</div>
-
-<div class="form-group">
-    {!! Form::label('swift', 'SWIFT', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('swift', isset($company) ? $company['swift'] : null , ['class'=>'form-control', 'placeholder'=>'Input SWIFT'] ) !!}
-    </div>
-</div>
-
-<div class="form-group">
-    {!! Form::label('account_number', 'Account number', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('account_number', isset($company) ? $company['account_number'] : null , ['class'=>'form-control', 'placeholder'=>'Input account number'] ) !!}
-    </div>
-</div>
-<hr>
 
 @if(isset($company) && isset($company['vatNumbers']) )
     @foreach($company['vatNumbers'] as $vat)
-
-        <div class="form-group">
-            {!! Form::hidden('vat_id[]', $vat->id) !!}
-            {!! Form::label('vat_number', 'Vat number', ['class'=>'col-sm-2 control-label']) !!}
-            <div class="col-sm-9">
-                {!! Form::text('vat_number[]', isset($vat) ? $vat['vat_number'] : null , ['class'=>'form-control', 'placeholder'=>'Input account number'] ) !!}
-            </div>
-            <div class="btn btn-xs btn-danger fa fa-remove remove-vat-number"></div>
-        </div>
-
+        <x-input-group label="VAT number" name="vat_number[]" value="{{isset($vat) ? $vat['vat_number'] : null }}" placeholder="VAT number">
+            <input type="hidden" name="vat_id[]" value="{{$vat->id}}">
+            <span class="input-group-text" role="button">
+                <span class="pointer fa fa-remove remove-vat-number"></span>
+            </span>
+        </x-input-group>
     @endforeach
 @endif
 
-{{-- empty vissible vat no input --}}
-<div class="form-group">
-    {!! Form::label('vat_number', 'Vat number', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-9">
-        {!! Form::text('vat_number[]', null , ['class'=>'form-control', 'placeholder'=>'Input account number'] ) !!}
-    </div>
-    <div class="btn btn-xs btn-danger fa fa-remove remove-vat-number"></div>
-</div>
 
-{{-- empty invissible vat no input for clone --}}
-<div class="form-group vat_number_div hide">
-    {!! Form::label('vat_number', 'Vat number', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-9">
-        {!! Form::text('vat_number[]', null , ['class'=>'form-control', 'placeholder'=>'Input account number'] ) !!}
-    </div>
-    <div class="btn btn-xs btn-danger fa fa-remove remove-vat-number"></div>
+{{--blank to clone--}}
+<div class="vat_number_div d-none">
+    <x-input-group label="VAT number" name="vat_number[]" value="" placeholder="VAT number">
+        <span class="input-group-text" role="button">
+            <span class="pointer fa fa-remove remove-vat-number"></span>
+        </span>
+    </x-input-group>
 </div>
 
 
 <div id="div1"></div>
 
-<div class="form-group">
+<div class="form-group mt-3 mb-3">
     <label class="col-sm-2 control-label">
         <div class="btn btn-primary fa-plus fa" id="addVatNuber"></div>
     </label>
@@ -103,7 +58,7 @@
             var clonedDiv = $('.vat_number_div').clone();
             clonedDiv.find('input:text').val('');
             clonedDiv.removeClass('vat_number_div');
-            clonedDiv.removeClass('hide');
+            clonedDiv.removeClass('d-none');
 
             ($('#div1')).before(clonedDiv);
 
@@ -115,8 +70,10 @@
             count = $('input[name*="vat_number"]').length;
 
             if (count > 2) {
-                $(this).parent().remove();
+                $(this).parent().parent().parent().remove();
             }
         });
+
+        $('#addVatNuber').trigger('click');
     });
 </script>

@@ -37,10 +37,13 @@ return [
 	'total_without_vat' => 'Bez PVN',
 	'total_vat' => 'PVN',
 	'total_with_vat' => 'Kopā ar PVN',
+    'total_with_vat_no_vat_name' => 'Kopā neapliekams ar PVN',
+	'total_invoice' => 'Rēķins kopā',
 	'total_to_pay' => 'Samaksai kopā',
 	'total_to_pay_in_words' => ' Summa vārdiem',
 	'seller_representative' => 'Izpildītāja pārstāvis',
 	'buyer_representative' => 'Saņēmēja pārstāvis',
+    'received_prepayment' => 'saņemta priekšapmaksa',
 
 	'units' => [
 		'mēn' => 'mēn.',

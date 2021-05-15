@@ -2,12 +2,13 @@
 
 Route::get('admin/login/{secret}', [
 	'as' => 'admin.loginAsClient',
-	'uses' => 'Admin\\LoginAsUserController@login',
+	'uses' => 'App\\Http\\Controllers\\Admin\\LoginAsUserController@login',
 ]);
 
 Route::group(
 	[
-		'namespace' => 'Admin', 'middleware' => ['forAdmin'],
+		'namespace' => 'App\\Http\\Controllers\\Admin',
+        'middleware' => ['forAdmin'],
 		'prefix' => 'admin', 'as' => 'admin.',
 	], function () {
 

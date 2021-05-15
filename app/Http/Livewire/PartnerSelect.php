@@ -4,12 +4,17 @@ namespace App\Http\Livewire;
 
 use App\Company;
 use App\Partner;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class PartnerSelect extends Component
 {
-	public \Illuminate\Support\Collection $partners;
+
+    /**
+     * @var Collection
+     */
+	public  $partners;
 	public $selectedPartnerId;
 	public $selectedPartnerName;
 	public $selectedPartnerRegNo;
