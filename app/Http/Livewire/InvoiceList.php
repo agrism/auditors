@@ -18,6 +18,8 @@ class InvoiceList extends Component
 
     public $showModal = false;
 
+    public $showInvoiceFom = false;
+
     public $activeInvoiceId;
     public $invoicePrintLocale;
     public $invoicePrintFormat;
