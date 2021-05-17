@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Company;
 use App\Repositories\Invoice\InvoiceRepository;
+use App\Services\InvoiceService;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,7 +12,7 @@ class InvoiceList extends Component
 {
     use WithPagination;
 
-    protected $listeners = ['parentAction'];
+    protected $listeners = ['parentAction', 'closeInvoice'];
 
     protected $paginationTheme = 'bootstrap';
 
@@ -39,6 +40,7 @@ class InvoiceList extends Component
     public $sortDirection = 'desc';
 
     private $invoiceRepository;
+    private $invoiceService;
 
     private $company;
     private $companyId;
@@ -49,12 +51,8 @@ class InvoiceList extends Component
         parent::__construct($id);
 
         $this->invoiceRepository = app()->make(InvoiceRepository::class);
-    }
+        $this->invoiceService = app()->make(InvoiceService::class);
 
-
-    public function mount(InvoiceRepository $invoiceRepository)
-    {
-        $this->invoiceRepository = $invoiceRepository;
         $this->company = app()->Company;
 
         if (request()->session()->has('companyId')) {
@@ -64,6 +62,13 @@ class InvoiceList extends Component
                 $this->companyId = null;
             }
         }
+    }
+
+
+
+    public function mount(InvoiceRepository $invoiceRepository)
+    {
+
     }
 
     public function render()
@@ -77,7 +82,16 @@ class InvoiceList extends Component
         return view('livewire.invoice-list', ['invoices' => $this->invoices]);
     }
 
+    public function openNewInvoice(){
+        $this->activeInvoiceId = null;
+        $this->showInvoiceFom = true;
+    }
+
     public function setActiveInvoiceId($id){
+        if($this->activeInvoiceId === $id){
+            $this->activeInvoiceId = null;
+            return;
+        }
         $this->activeInvoiceId = $id;
     }
 
@@ -96,6 +110,12 @@ class InvoiceList extends Component
         $this->invoices = $this->getInvoices();
     }
 
+    public function clearFilterForm(){
+        foreach ($this->filter as &$value){
+            $value = null;
+        }
+    }
+
     public function sortBy($column){
         $this->sortColumn = $column;
         $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
@@ -109,6 +129,25 @@ class InvoiceList extends Component
     public function parentAction(){
         $this->activeInvoiceId = 9999;
         $this->showModal = false;
+    }
+
+    public function closeInvoice(){
+        $this->showInvoiceFom = false;
+    }
+
+    public function copyInvoice(){
+        $this->invoiceService->copy($this->company, $this->activeInvoiceId);
+    }
+
+    public function deleteInvoice(){
+        sleep(2);
+//        $this->invoiceService->deleteInvoice($this->company, $this->activeInvoiceId);
+    }
+
+    public function updatingFilterPartnerId(){
+        $this->resetPage();
+
+        $this->invoices = $this->getInvoices();
     }
 
     private function getInvoices(){

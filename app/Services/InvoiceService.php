@@ -142,7 +142,7 @@ class InvoiceService
 				$array['invoice_id'] = $invoice->id;
 				$array['currency_id'] = $invoice->currency_id;
 
-				if ($data['line_id'][$key]) {
+				if (!empty($data['line_id'][$key])) {
 					$lineId = $data['line_id'][$key];
 					$invoiceLinesIdsExist[] = $lineId;// none existing lines will be deleted after update
 					$invoiceLine = InvoiceLine::find($lineId);
@@ -217,8 +217,9 @@ class InvoiceService
 		$invoice->save();
 	}
 
-	public function copy($invoiceId){
-		$invoice = Invoice::find($invoiceId);
+	public function copy(Company $company, $invoiceId){
+        $now = Carbon::now()->format('Y-m-d H:i:s');
+		$invoice = Invoice::where('company_id', $company->id)->find($invoiceId);
 
 		$newInvoice = new Invoice();
 		$data = $invoice->toArray();
@@ -228,12 +229,16 @@ class InvoiceService
 			'd.m.Y'
 		);
 		$data['number'] = 'copy of '.$invoice->number;
+        $data['created_at'] = $now;
+        $data['updated_at'] = $now;
 		$newInvoice = $newInvoice->create($data);
 
 		$invoiceLines = InvoiceLine::where('invoice_id', $invoice->id)->get();
 		foreach ($invoiceLines as $key => $line) {
 			$data = $line->toArray();
 			$data['invoice_id'] = $newInvoice->id;
+			$data['created_at'] = $now;
+			$data['updated_at'] = $now;
 			InvoiceLine::create($data);
 		}
 	}

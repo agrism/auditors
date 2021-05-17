@@ -55,7 +55,6 @@ class PartnerSelect extends Component
 			'selectedPartnerRegNo' => 'required',
 		]);
 
-		Log::debug('save');
 		if(!$partner = Partner::whereId($this->selectedPartnerId)->whereCompanyId($this->companyId)->first()){
 			$partner = new Partner;
 			$partner->company_id = $this->companyId;

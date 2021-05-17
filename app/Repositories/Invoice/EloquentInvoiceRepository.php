@@ -39,22 +39,6 @@ class EloquentInvoiceRepository implements InvoiceRepository
     public function getInvoices(array $params)
     {
         $this->init();
-        /***
-         * $params = [
-         *    'sort'=>[
-         *        [
-         *            'orderBy'=>'name',
-         *            'direction'=>'asc'
-         *        ],
-         *        [
-         *            'orderBy'=>'number',
-         *            'direction'=>'asc'
-         *        ],
-         * ],
-         *    'filter'=>['partner_id'=>1, number=>'123']
-         * ];
-         */
-        // $invoice =  Invoice::where('company_id', $this->companyId);
 
         $invoice = DB::table('invoices')->select(
             \DB::raw(
@@ -130,6 +114,10 @@ class EloquentInvoiceRepository implements InvoiceRepository
                 'details_self',
             ]) && in_array($this->sortDirection, ['asc', 'desc'])) {
             $invoice = $invoice->orderBy($this->sortColumn, $this->sortDirection);
+
+            if($this->sortColumn === 'date'){
+                $invoice = $invoice->orderBy('invoices.created_at', $this->sortDirection);
+            }
         }
 
         if (!Auth::user()->isAdmin() && $this->company->structuralunits->count() > 0) {

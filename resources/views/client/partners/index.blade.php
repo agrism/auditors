@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 Partners list in system <a href="{{ url(route('client.partners.create'))}}">
-                    <div class="btn btn-success btn-sm fa-plus fa"></div>
+                    <div class=" fa-plus fa"></div>
                 </a>
             </div>
             <!-- /.panel-heading -->

@@ -318,6 +318,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            console.log('A1');
+
             $('[data-toggle1="tooltip"]').tooltip();
 
             $('.showActionOptions').on('click', function () {
@@ -477,23 +479,25 @@
                 });
             });
 
-            $('#dp1').datepicker({
+            $('#dp3').datepicker({
                 format: 'dd.mm.yyyy',
                 weekStart: 1,
                 todayBtn: "linked",
                 todayHighlight: true,
                 autoclose: true,
+                clearBtn: true,
 //                calendarWeeks: true,
                 daysOfWeekDisabled: [],
                 daysOfWeekHighlighted: [0, 6],
             });
 
-            $('#dp2').datepicker({
+            $('#dp4').datepicker({
                 format: 'dd.mm.yyyy',
                 weekStart: 1,
                 todayBtn: "linked",
                 todayHighlight: true,
                 autoclose: true,
+                clearBtn: true,
 //                calendarWeeks: true,
                 daysOfWeekDisabled: [],
                 daysOfWeekHighlighted: [0, 6],

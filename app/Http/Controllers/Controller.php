@@ -32,8 +32,7 @@ class Controller extends BaseController
 	private function initCompany()
 	{
 
-		$this->middleware(
-			function ($request, $next) {
+		$this->middleware(function ($request, $next) {
 
 				if ($request->session()->has('companyId')) {
 					$this->companyId = $request->session()->get('companyId');
@@ -44,7 +43,6 @@ class Controller extends BaseController
 				}
 
 				return $next($request);
-			}
-		);
+			});
 	}
 }
