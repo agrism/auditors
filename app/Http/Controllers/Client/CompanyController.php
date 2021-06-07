@@ -33,6 +33,9 @@ class CompanyController extends Controller
 	 */
 	public function index()
 	{
+
+        return redirect('client/new');
+
 		// return 'Client\ClientController@index';
 		// if(! \App::make('Company')){
 		//     return redirect()->route('client.partners.index');

@@ -3,6 +3,8 @@
 <div>
     <a href=""
        wire:click.prevent="sortBy('{{$column}}')"
+       style="font-size: 0.8rem;"
+       class="text-truncate"
     >
         {{$title}}
         <span

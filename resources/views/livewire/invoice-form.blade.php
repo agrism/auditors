@@ -16,13 +16,6 @@
             </h4>
         </div>
         <div class="panel-body">
-
-            {{--            @dump($invoiceAdvancePayments)--}}
-
-            {{--            {!! Form::model('invoice', ['class'=>'form-horizontal form1', 'method'=>'put', 'route' => ['client.invoices.update', 1], 'files' => true ]) !!}--}}
-            {{--            @include('client.invoices.form')--}}
-            {{--            1--}}
-
             <form class="form-horizontal form1"
                   wire:submit.prevent="saveInvoice(Object.fromEntries(new FormData($event.target)))">
                 <div class="row">
@@ -619,6 +612,10 @@
     </div>
 </div>`;
 
+            console.log('form js reload!!!');
+
+            initDatepicker('.date');
+
             if (document.querySelector('#addRepaymentLine').getAttribute('listener') !== 'true') {
                 document.querySelector('#addRepaymentLine').addEventListener('click', function () {
                     addPrepaymentLine();
@@ -788,7 +785,9 @@
             });
 
             window.addEventListener('contentChanged', event => {
-                // document.querySelector('#place_for_prepayments').innerHTML = '';
+                initDatepicker('.date');
+                recalculateInvoiceData();
+                showHideOtherCurrencyData();
                 recalculateInvoiceData();
             });
         });

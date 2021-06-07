@@ -158,7 +158,7 @@ class AuthController extends Controller
 			// make auth
 			Auth::loginUsingId($model->id);
 
-			return redirect()->route('client.companies.index');
+			return redirect()->route('client.new');
 		} else {
 			//create new user
 			$newUser = new User();
@@ -171,7 +171,7 @@ class AuthController extends Controller
 
 			Auth::loginUsingId($newUser->id);
 
-			return redirect()->route('client.companies.index');
+			return redirect()->route('client.new');
 
 		}
 

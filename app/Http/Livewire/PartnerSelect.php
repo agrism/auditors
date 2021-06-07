@@ -4,8 +4,8 @@ namespace App\Http\Livewire;
 
 use App\Company;
 use App\Partner;
+use App\Services\AuthUser;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class PartnerSelect extends Component
@@ -14,7 +14,7 @@ class PartnerSelect extends Component
     /**
      * @var Collection
      */
-	public  $partners;
+	public $partners;
 	public $selectedPartnerId;
 	public $selectedPartnerName;
 	public $selectedPartnerRegNo;
@@ -27,15 +27,18 @@ class PartnerSelect extends Component
 	public function __construct($id = null)
 	{
 		parent::__construct($id);
-		$this->company = app()->Company;
 
-		if (request()->session()->has('companyId')) {
-			$this->companyId = request()->session()->get('companyId');
+        if(!AuthUser::instance()->isLoggedIn()){
+            return redirect('/');
+        }
 
-			if (!$this->company = Company::where('id', $this->companyId)->first()) {
-				$this->companyId = null;
-			}
-		}
+        if(!$this->company = AuthUser::instance()->selectedCompany()){
+            return redirect('/');
+        }
+
+        if(!$this->companyId = AuthUser::instance()->selectedCompanyId()){
+            return redirect('/');
+        }
 	}
 
 	public function edit($id = null){
@@ -46,7 +49,13 @@ class PartnerSelect extends Component
 		$this->selectedPartnerRegNo = $partner->registration_number ?? '';
 		$this->selectedPartnerVatNo = $partner->vat_number ?? '';
 		$this->selectedPartnerAddress = $partner->address ?? '';
+
+		$this->dispatchBrowserEvent('partner_modal_open');
 	}
+
+	public function cancel(){
+	    $this->dispatchBrowserEvent('partner_modal_close');
+    }
 
 	public function save(){
 
@@ -68,8 +77,12 @@ class PartnerSelect extends Component
 		$this->selectedPartnerId = $partner->id;
 		$this->partners = $this->partners();
 
-		$this->emit('modalSave');
+		$this->dispatchBrowserEvent('partner_modal_close');
 	}
+
+	public function updatedSelectedPartnerId(){
+        $this->emit('updatedSelectedId', $this->selectedPartnerId);
+    }
 
 
 	public function mount(){

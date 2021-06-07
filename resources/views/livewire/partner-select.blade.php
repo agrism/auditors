@@ -8,7 +8,6 @@
         <span id="basic-addon1"
               data-bs-toggle="modal"
               role="button"
-              data-bs-target="#partnerEditModal"
               wire:click="edit({{ $selectedPartnerId }})">
             <div class="input-group-append">
                 <span class="input-group-text fa fa-edit"></span>
@@ -19,13 +18,12 @@
 
 
     <!-- Modal -->
-    <div wire:ignore.self class="modal fade" id="partnerEditModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="partnerEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: #b9d4e2;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header info">
                     <h4 class="modal-title">{{ $selectedPartnerId > 0 ? 'Edit' : 'Create' }} Partner</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" aria-label="Close" wire:click="cancel()"></button>
                 </div>
                 <div class="modal-body" style1="margin-left: 15px;margin-right: 15px">
                     <div class="mb-1">
@@ -60,7 +58,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" wire:click="cancel()">Close</button>
                     <button type="button" class="btn btn-primary" wire:click.prevent="save()">Save changes</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -68,7 +66,11 @@
     </div>
 
     <script type="text/javascript">
-        window.livewire.on('modalSave', () => {
+        window.addEventListener('partner_modal_open', event => {
+            $('#partnerEditModal').modal('show');
+        })
+
+        window.addEventListener('partner_modal_close', () => {
             $('#partnerEditModal').modal('hide');
         });
     </script>

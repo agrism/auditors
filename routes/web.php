@@ -72,3 +72,5 @@ Route::get(	'login/google/callback', 'Auth\AuthController@handleGoogleProviderCa
 require(app_path() . '/../routes/Routes/clientRoutes.php');
 require(app_path() . '/../routes/Routes/adminRoutes.php');
 require(app_path() . '/../routes/Routes/apiRoutes.php');
+
+Route::get('test', \App\Http\Livewire\TestRoot::class);

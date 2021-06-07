@@ -4,23 +4,28 @@
     </div>
 
     <div class="col-lg-12">
+
         @if(!$showInvoiceFom)
             <div class="card card-default">
                 <div class="card-header">
                     Invoice list
-                    {{--                    <a href="{{ url(route('client.invoices.create'))}}"--}}
-                    {{--                                    class="btn btn-success btn-sm fa-plus fa"></a>--}}
 
                     <span class="" role="button"
                           wire:click="openNewInvoice">
                         <span class="fa-plus fa"></span>
                     </span>
 
-                    <a href="{{route('client.invoices.index', ['export'=> 'xls'])}}">
+                    <span class="" role="button" style="float: right"
+                          wire:click="shortcutInvoiceOpen">
+                        Create fast record:
+                        <span class="fa-plus fa"></span>
+                    </span>
+
+                    <span href="{{route('client.invoices.index', ['export'=> 'xls'])}}" wire:click="export">
                         <div class="fa fa-file-excel-o"
                              data-bs-toggle="tooltip" data-bs-placement="left" title="EXPORT temporary not working"
                              style="position:fixed;right:0px;padding: 11px; border: 1px solid black;cursor: pointer; background-color: #b6e8fa"></div>
-                    </a>
+                    </span>
                     <!-- /.card-heading -->
 
                     {{--                {{$activeInvoiceId}}--}}
@@ -35,7 +40,7 @@
                                     <td style="padding: 2px 0;max-width: 150px;min-width: 150px;">
                                         <input type="text"
                                                wire:model="filter.dateFrom"
-                                               class="form-control form-control-sm"
+                                               class="form-control form-control-sm date"
                                                readonly
                                                id="dp3"
                                                autocomplete="off"
@@ -44,7 +49,7 @@
                                         >
                                         <input type="text"
                                                wire:model="filter.dateTo"
-                                               class="form-control form-control-sm"
+                                               class="form-control form-control-sm date"
                                                readonly
                                                id="dp4"
                                                autocomplete="off"
@@ -92,18 +97,20 @@
                                         <input type="text"
                                                wire:model.debounce.500ms="filter.details"
                                                class="form-control form-control-sm"
-                                               style="font-size: 11px;padding: 0 8px; width: 90%;float: left"
+                                               style="font-size: 11px;padding: 0 8px;"
                                         >
-                                        <span class="fa fa-close text-center"
-                                              style="padding-left: 7px"
-                                              role="button"
-                                              wire:click="clearFilterForm"
-                                        ></span>
                                     </td>
                                     <td style="padding: 2px 10px">
 
                                     </td>
                                     <td></td>
+                                    <td style="padding: 3px">
+                                        <span class="fa fa-close text-center"
+                                              style="padding: 3px"
+                                              role="button"
+                                              wire:click="clearFilterForm"
+                                        ></span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     {{--                            <th><x-column-title column="id" :sortColumn="$sortColumn" :sortDirection="$sortDirection" title="ID"></x-column-title></th>--}}
@@ -122,7 +129,7 @@
                                     <th>
                                         <x-column-title column="structuralunitname" :sortColumn="$sortColumn"
                                                         :sortDirection="$sortDirection"
-                                                        title="Structural unit"></x-column-title>
+                                                        title="Struct"></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="partnername" :sortColumn="$sortColumn"
@@ -174,8 +181,9 @@
                                         $partnername = str_replace('Akciju sabiedrība', 'A/S', $partnername);
                                         ?>
 
-                                        <td class="text-truncate">{{ $partnername }}</td>
-                                        <td class="text-truncate">{{ $invoice->details_self}}</td>
+                                        <td class="text-truncate" style="max-width: 100px;">{{ $partnername }}</td>
+                                        <td class="text-truncate"
+                                            style="max-width: 150px;">{{ $invoice->details_self}}</td>
                                         <td class="text-center text-truncate">{{ $invoice->currency_name}}</td>
                                         <td class="text-end text-truncate">{{ number_format($invoice->amount_total, 2)}}</td>
 
@@ -207,22 +215,12 @@
                                                 <a href="{{route('client.invoices.show', [ $invoice->id, 'locale'=> 'en'])}}"><span
                                                             class="fa fa-file-pdf-o fa-2x">EN</span></a>
                                             </span>
-
-
-                                                {{--                                            <div class="text-info fa-2x fa fa-copy copyButton1"--}}
-                                                {{--                                                 style="cursor: pointer"--}}
-                                                {{--                                                 data-toggle1="tooltip" title="{{ _("Copy") }}" data-placement="top"--}}
-                                                {{--                                                 data-toggle="modal"--}}
-                                                {{--                                                 data-target="#myModalCopy"--}}
-                                                {{--                                                 action-url="{{ url(route('client.invoices.copy', $invoice->id))}}"></div>--}}
-
                                                 <span style="margin: 10px;">
-{{--                                                <a href="{{route('client.invoices.copy', [ $invoice->id])}}">--}}
                                                     <span
                                                             class="fa fa-copy fa-2x"
+                                                            role="button"
                                                             wire:click="copyInvoice"
                                                     ></span>
-{{--                                                </a>--}}
                                             </span>
 
                                                 @if($invoice->is_locked)
@@ -270,8 +268,6 @@
                                                          class="text-danger fa-remove fa fa-2x deleteButton1"
                                                          data-toggle1="tooltip" title="{{_("Delete")}}"
                                                          data-placement="top"
-                                                         data-toggle="modal"
-                                                         data-target="#myModal"
                                                          action-url="{{ url(route('client.invoices.destroy',  [$invoice->id,'method'=>'delete']))}}"
                                                          wire:click="deleteInvoice"
                                                     ></div>
@@ -300,33 +296,122 @@
         @endif
     </div>
 
+    <script>
+        initDatepicker('.date');
+    </script>
+
+    <x-modal id="shortcut_invoice"
+             title="Create invoice"
+             titleClass="bg-primary text-white"
+             confirmAction="shortcutInvoiceConfirm"
+             cancelAction="shortcutInvoiceCancel"
+             confirmActionClass="btn-primary"
+             confirmActionLabel="Create"
+    >
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">Date</label>
+            <input type="text" class="date form-control @error('shortcutInvoice.date')is-invalid @enderror"
+                   readonly
+                   placeholder="Date"
+                   aria-describedby="basic-addon1" wire:model.defer="shortcutInvoice.date">
+            @error('shortcutInvoice.date') <small class="text-danger error">{{ $message }}</small>@enderror
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">No</label>
+            <input type="text" class="form-control @error('shortcutInvoice.number')is-invalid @enderror"
+                   placeholder="No"
+                   aria-describedby="basic-addon1" wire:model.defer="shortcutInvoice.number">
+            @error('shortcutInvoice.number') <small class="text-danger error">{{ $message }}</small>@enderror
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">Struct</label>
+            <select
+                    wire:model="shortcutInvoice.structId"
+                    class="form-control text-end @error('shortcutInvoice.structId')is-invalid @enderror"
+            >
+                @foreach($structuralunits as $struct)
+                    <option value="{{$struct->id ?? null}}">{{$struct->title ?? 'n/a'}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">Type</label>
+            <select
+                    wire:model="shortcutInvoice.typeId"
+                    class="form-control text-end @error('shortcutInvoice.typeId')is-invalid @enderror"
+            >
+                @foreach($invoicetypes as $type)
+                    <option value="{{$type->id ?? null}}">{{$type->title ?? 'n/a'}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">Partner</label>
+            <livewire:partner-select :selectedPartnerId="$shortcutInvoice['partnerId']"></livewire:partner-select>
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">Details</label>
+            <input type="text" class="form-control @error('shortcutInvoice.details')is-invalid @enderror"
+                   placeholder="Details"
+                   aria-describedby="basic-addon1" wire:model.defer="shortcutInvoice.details">
+            @error('shortcutInvoice.details') <small class="text-danger error">{{ $message }}</small>@enderror
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">Amount without VAT</label>
+            <input type="number" class="form-control @error('shortcutInvoice.amountWithoutVat')is-invalid @enderror"
+                   placeholder="Amount"
+                   aria-describedby="basic-addon1" wire:model="shortcutInvoice.amountWithoutVat">
+            @error('shortcutInvoice.amountWithoutVat') <small class="text-danger error">{{ $message }}</small>@enderror
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">VAT rate</label>
+            <select
+                    wire:model="shortcutInvoice.vatId"
+                    class="form-control text-end @error('shortcutInvoice.vatId')is-invalid @enderror"
+            >
+                @foreach($shortcutInvoice['vatRates'] as $vatRate)
+                    <option value="{{$vatRate['id']}}">{{$vatRate['name']}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">VAT</label>
+            <input type="text" class="form-control @error('shortcutInvoice.amountVat')is-invalid @enderror"
+                   readonly
+                   placeholder="VAT"
+                   aria-describedby="basic-addon1" wire:model="shortcutInvoice.amountVat">
+            @error('shortcutInvoice.amountVat') <small class="text-danger error">{{ $message }}</small>@enderror
+        </div>
+        <div class="mb-1">
+            <label for="" style="font-size: 12px;">Amount with VAT</label>
+            <input type="number" class="form-control @error('shortcutInvoice.amountWithVat')is-invalid @enderror"
+                   placeholder="Amount with VAT"
+                   aria-describedby="basic-addon1" wire:model="shortcutInvoice.amountWithVat">
+            @error('shortcutInvoice.amountWithVat') <small class="text-danger error">{{ $message }}</small>@enderror
+        </div>
+    </x-modal>
+
+
+    <x-modal id="delete_invoice"
+             title="Warning"
+             titleClass="bg-danger text-white"
+             confirmAction="deleteInvoiceConfirm"
+             cancelAction="deleteInvoiceCancel"
+             confirmActionClass="btn-danger"
+    >
+        Confirm to delete invoice No: <strong>{{$activeInvoiceNo}}</strong>?
+    </x-modal>
+
+    <x-modal id="copy_invoice"
+             title="Warning"
+             titleClass="bg-primary text-white"
+             confirmAction="copyInvoiceConfirm"
+             cancelAction="copyInvoiceCancel"
+             confirmActionClass="btn-primary"
+    >
+        Create copy of invoice No: <strong>{{$activeInvoiceNo}}</strong>?
+    </x-modal>
+
 </div>
 
 
-{{--    $showModal: {{$showModal}}--}}
-{{--    @if($showModal)--}}
-{{--        <x-modal action="parentAction">--}}
-{{--            <h6>Select locale:</h6>--}}
-{{--            <div class="form-check">--}}
-{{--                <input class="form-check-input" type="radio" name="selectedLocale" value="lv" id="localeLv"  @if(($invoicePrintLocale ?? null) =='lv') checked="checked" @endif>--}}
-{{--                <label class="form-check-label" for="localeLv">LV</label>--}}
-{{--            </div>--}}
-{{--            <div class="form-check">--}}
-{{--                <input class="form-check-input" type="radio" name="selectedLocale" value="en" id="localeEn" @if(($invoicePrintLocale ?? null) == 'en') checked="checked" @endif>--}}
-{{--                <label class="form-check-label" for="localeEn">EN</label>--}}
-{{--            </div>--}}
-{{--            <hr>--}}
-
-{{--            <h6>Select action:</h6>--}}
-{{--            <div class="form-check">--}}
-{{--                <input class="form-check-input" type="radio" name="selectedAction" value="html" id="actionHtml" checked="checked">--}}
-{{--                <label class="form-check-label" for="actionHtml">Show HTML</label>--}}
-{{--            </div>--}}
-{{--            <div class="form-check">--}}
-{{--                <input class="form-check-input" type="radio" name="selectedAction" value="pdf" id="actionPdf">--}}
-{{--                <label class="form-check-label" for="actionPdf">download PDF</label>--}}
-{{--            </div>--}}
-{{--            <hr>--}}
-{{--            <button class="btn-default">Save</button>--}}
-{{--        </x-modal>--}}
-{{--    @endif--}}

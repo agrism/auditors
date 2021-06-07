@@ -1,25 +1,44 @@
 @props([
-    'title' => 'modal',
-    'id' => null,
-    'closeButtonTitle' => 'Close',
-    'saveButtonTitle' => 'Save',
-    'saveButtonId' => null,
-    '$actionUrl' => '/',
-    'action' => 'submit',
+    'title' => 'Alert',
+    'titleClass' => '',
+    'id' => uniqid(),
+    'confirmAction' => 'submit',
+    'cancelAction' => 'cancel',
+    'cancelActionLabel' => 'Cancel',
+    'confirmActionLabel' => 'Continue',
+    'confirmActionClass' => 'btn-primary'
 ])
 
 
-<div>
-    <div class="" style="position:absolute;width: 80%;min-height: 300px;background-color: white;opacity: 0.8; border: 1px solid grey;position: fixed;z-index: 1000;top: 50%;left: 50%;transform: translate(-50%, -50%);border-radius: 15px;overflow: hidden;box-shadow: 2px 4px 10px grey;">
-        <div style="width: 100%; background-color: #3da1ec; padding: 20px;">
-            {{$title}}
-        </div>
-        <form wire:submit.prevent="{{$action}}">
-            <div style="margin: 10px;">
-                {!! html_entity_decode($slot) !!}
+<div wire:ignore.self class="modal fade" id="{{$id}}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header {{$titleClass}}">
+                <h5 class="modal-title" >{{$title}}</h5>
+                <button type="button" class="btn-close" aria-label="Close" wire:click="{{$cancelAction}}"></button>
             </div>
-        </form>
+            <div class="modal-body">
+                {{$slot}}
+            </div>
+            <div class="modal-footer">
+                <div class="btn btn-secondary" wire:click="{{$cancelAction}}">{{$cancelActionLabel}}</div>
+                <div class="btn {{$confirmActionClass}}"
+                     wire:click="{{$confirmAction}}"
+                >{{$confirmActionLabel}}</div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+    window.addEventListener('closeModal_{{$id}}', event => {
+        console.log('closing modal #'+'{{$id}}')
+        $('#{{$id}}').modal('hide');
+    })
+
+    window.addEventListener('openModal_{{$id}}', event => {
+        $('#{{$id}}').modal('show');
+    })
+</script>
 
 

@@ -7,6 +7,7 @@ use App\Http\Requests\Request;
 use App\InvoiceAdvancePayment;
 use App\InvoiceLine;
 use App\Repositories\Invoice\InvoiceRepository;
+use App\Services\AuthUser;
 use App\Services\InvoiceService;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -15,6 +16,8 @@ class InvoiceForm extends Component
 {
 
     public $invoice = null;
+
+    public $tempId = null;
 
     public $invoiceLines = [];
     public $invoiceAdvancePayments = [];
@@ -40,18 +43,16 @@ class InvoiceForm extends Component
     {
         parent::__construct($id);
 
+        if(!AuthUser::instance()->isLoggedIn()){
+            return redirect('/');
+        }
+
+        if(!$this->company = AuthUser::instance()->selectedCompany()){
+            return redirect('/');
+        }
+
         $this->invoiceRepository = app()->make(InvoiceRepository::class);
         $this->invoiceService = app()->make(InvoiceService::class);
-
-        $this->company = app()->Company;
-
-        if (request()->session()->has('companyId')) {
-            $this->companyId = request()->session()->get('companyId');
-
-            if (!$this->company = Company::where('id', $this->companyId)->first()) {
-                $this->companyId = null;
-            }
-        }
     }
 
     public function render()
@@ -73,11 +74,14 @@ class InvoiceForm extends Component
 
         $this->refreshData();
 
+        $this->render();
+
         $this->dispatchBrowserEvent('contentChanged');
     }
 
     public function mount(InvoiceRepository $invoiceRepository, InvoiceService $invoiceService)
     {
+        $this->tempId = uniqid();
         $this->invoiceRepository = $invoiceRepository;
         $this->invoiceService = $invoiceService;
 

@@ -23,6 +23,8 @@ class PartnerController extends Controller
 
 	public function index()
 	{
+        return redirect()->route('client.new');
+
 		$partners = Partner::where('company_id', $this->companyId)->oldest(
 			'name'
 		)->get();

@@ -173,7 +173,7 @@ class InvoiceService
             if($prePaymentAmount && $date){
 
                 try {
-                    $date = Carbon::createFromFormat('d.m.Y', $date)->format('d.m.Y');
+                    $date = Carbon::createFromFormat('Y-m-d', $date)->format('Y-m-d');
                     $prePaymentLine = new InvoiceAdvancePayment;
                     $prePaymentLine->amount = ROUND($prePaymentAmount, 2);
                     $prePaymentLine->date = $date;
@@ -301,4 +301,10 @@ class InvoiceService
 		});
 
 	}
+
+	public function getInvoice(Company $company, $invoiceId){
+        return Invoice::with('invoiceLines')->where(
+            'company_id', $company->id
+        )->find($invoiceId);
+    }
 }

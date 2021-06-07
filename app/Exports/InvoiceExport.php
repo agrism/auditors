@@ -26,7 +26,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 	private $invoiceEURVatAmountTotal = 0;
 	private $invoiceEURTotalAmountTotal = 0;
 
-	public function __construct(Collection $invoices)
+	public function __construct(\Illuminate\Support\Collection $invoices)
 	{
 		$this->invoices = $invoices;
 		$this->recordCount = $this->invoices->count();
@@ -100,14 +100,16 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 			];
 		}
 
+//		dd($invoice);
+
 		return [
 			$invoice->number ?? null,
 			$invoice->date ?? null,
-			$invoice->partner_name ?? null,
-			$invoice->partner_registration_number ?? null,
+			$invoice->partnername ?? null,
+			$invoice->partner_vat_number ?? null,
 			$invoice->invoiceType->title ?? null,
 			$invoice->structuralunit->title ?? null,
-			$description ?? null,
+            $invoice->details_self ?? null,
 			$invoice->currency_name ?? null,
 			$invoice->amount_total ?? null,
 			$invoiceEURWithoutVatAmount ?? null,

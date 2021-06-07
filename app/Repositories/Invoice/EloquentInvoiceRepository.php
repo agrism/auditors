@@ -44,6 +44,7 @@ class EloquentInvoiceRepository implements InvoiceRepository
             \DB::raw(
                 'invoices.id, 
                 invoices.date, 
+                invoices.vat_number, 
                 invoices.is_locked, 
                 invoices.number, 
                 invoices.amount_total, 
@@ -51,6 +52,8 @@ class EloquentInvoiceRepository implements InvoiceRepository
                 invoices.structuralunit_id, 
                 currencies.name as currency_name, 
                 partners.name as partnername,
+                partners.vat_number as partner_vat_number,
+
                 structuralunits.title as structuralunitname, 
                 invoice_types.title as invoicetypename'
             )

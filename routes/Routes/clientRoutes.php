@@ -8,8 +8,8 @@ Route::group(
         'as' => 'client.',
     ], function () {
 
-    Route::get('invoice-list', [\App\Http\Controllers\Client\InvoiceListController::class, 'index'])->middleware(['forClient']);
-
+    Route::get('invoice-list',
+        [\App\Http\Controllers\Client\InvoiceListController::class, 'index'])->middleware(['forClient']);
 
 
     Route::group([
@@ -81,6 +81,15 @@ Route::group(
             'uses' => 'UserController@update',
         ]);
     });
+
+
+});
+Route::group(
+    [
+        'prefix' => 'client',
+        'as' => 'client.',
+    ], function () {
+    Route::get('new', \App\Http\Livewire\MainApp::class)->name('new');
 
 }
 );

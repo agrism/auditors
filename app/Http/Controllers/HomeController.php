@@ -57,7 +57,7 @@ class HomeController extends Controller
 
 		Auth::loginUsingId($user->id);
 
-		return redirect()->route('client.companies.index');
+		return redirect()->route('client.new');
 	}
 
 	public function logout()

@@ -42,6 +42,8 @@ class InvoiceController extends Controller
 	 */
 	public function index(Request $request)
 	{
+	    return redirect()->route('client.new');
+
         return view('client.invoices.list');
 
             $partners = $this->company->partners;
