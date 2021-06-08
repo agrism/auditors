@@ -57,5 +57,6 @@ return [
 		'gab' => 'pcs.',
 		'reiss' => 'trip',
 		'kompl' => 'set',
+		'tonna' => 'tons',
 	],
 ];

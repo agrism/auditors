@@ -55,6 +55,7 @@ return [
 		'gab' => 'gab.',
 		'reiss' => 'reiss',
 		'kompl' => 'kompl.',
+		'tonna' => 'tonna',
 	],
 
 
