@@ -108,7 +108,7 @@
 
                 <div id="ppr_fields" class="@if(($invoice['invoicetype_id'] ?? 'x')  != 3) d-none @endif">
                     <hr>
-                    <div style="padding-bottom: 2px; border: solid #82e982 3px;margin: 5px 0">
+                    <div style="padding-bottom: 2px; border: solid #82e982 3px;margin: 5px 0; background-color: #82e982;border-radius: 5px;">
                         <div class="row">
                             <div class="col-sm-4">
                                 <label for="goods_address_from" class="custom">Goods delivery From</label>

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -17,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithColumnFormatting, ShouldAutoSize, WithStyles
+class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithColumnFormatting, ShouldAutoSize, WithStyles, WithColumnWidths
 {
 	private $invoices;
 	private $recordCount = 0;
@@ -47,6 +48,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 		return [
 			'Numurs',
 			'Datums',
+			'Samaksas datums',
 			'Partneris',
 			'PVN numurs',
 			'Tips',
@@ -67,24 +69,40 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 	 */
 	public function map($invoice): array
 	{
-		if(isset($invoice->amount_total) && isset($invoice->currency_rate) && isset($invoice->invoiceLines)){
+		if(isset($invoice->amount_total) && isset($invoice->currency_rate) && isset($invoice->invoice_lines)){
+
 			$invoiceEURTotalAmount = ROUND($invoice->amount_total / $invoice->currency_rate, 2);
 
-			$invoiceEURWithoutVatAmount = ROUND($invoice->invoiceLines->sum(function ($line) {
-					return $line->quantity * $line->price;
-				}) / $invoice->currency_rate, 2);
+            $invoiceEURWithoutVatAmount = 0;
+
+			foreach($invoice->invoice_lines as $line){
+                $invoiceEURWithoutVatAmount += ($line->quantity * $line->price);
+            }
+
+            $invoiceEURWithoutVatAmount = ROUND($invoiceEURWithoutVatAmount / $invoice->currency_rate, 2);
 
 			$invoiceEURVatAmount = $invoiceEURTotalAmount - $invoiceEURWithoutVatAmount;
 
-			$description = !empty($invoice->details_self) ? $invoice->details_self : ($invoice->invoiceLines->first()->title ?? null);
-		}
 
-		$this->invoiceEURWithoutVatAmountTotal += ($invoiceEURWithoutVatAmount ?? 0);
-		$this->invoiceEURVatAmountTotal += ($invoiceEURVatAmount ?? 0);
-		$this->invoiceEURTotalAmountTotal += ($invoiceEURTotalAmount ?? 0);
+            $this->invoiceEURWithoutVatAmountTotal += ($invoiceEURWithoutVatAmount ?? 0);
+            $this->invoiceEURVatAmountTotal += ($invoiceEURVatAmount ?? 0);
+            $this->invoiceEURTotalAmountTotal += ($invoiceEURTotalAmount ?? 0);
+
+
+            $invoiceEURVatAmount = number_format($invoiceEURVatAmount, 2, '.', '');
+            $invoiceEURTotalAmount = number_format($invoiceEURTotalAmount, 2, '.', '');
+            $invoiceEURWithoutVatAmount = number_format($invoiceEURWithoutVatAmount, 2, '.', '');
+
+//			$description = !empty($invoice->details_self) ? $invoice->details_self : ($invoice->invoice_lines->first()->title ?? null);
+		} else {
+            $this->invoiceEURWithoutVatAmountTotal += ($invoiceEURWithoutVatAmount ?? 0);
+            $this->invoiceEURVatAmountTotal += ($invoiceEURVatAmount ?? 0);
+            $this->invoiceEURTotalAmountTotal += ($invoiceEURTotalAmount ?? 0);
+        }
 
 		if(($invoice->total ?? false) === true){
 			return [
+				null,
 				null,
 				null,
 				null,
@@ -105,13 +123,14 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 		return [
 			$invoice->number ?? null,
 			$invoice->date ?? null,
+			$invoice->payment_date ?? null,
 			$invoice->partnername ?? null,
 			$invoice->partner_vat_number ?? null,
-			$invoice->invoiceType->title ?? null,
-			$invoice->structuralunit->title ?? null,
+			$invoice->invoicetypename ?? null,
+			$invoice->structuralunitname ?? null,
             $invoice->details_self ?? null,
 			$invoice->currency_name ?? null,
-			$invoice->amount_total ?? null,
+			number_format($invoice->amount_total ?? null, 2,'.', ''),
 			$invoiceEURWithoutVatAmount ?? null,
 			$invoiceEURVatAmount ?? null,
 			$invoiceEURTotalAmount ?? null,
@@ -140,9 +159,9 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 			]
 		];
 
-		$sheet->getStyle('A1:L'.($this->recordCount + 1))->applyFromArray($styleArray);
+		$sheet->getStyle('A1:M'.($this->recordCount + 1))->applyFromArray($styleArray);
 
-		$totalRange = 'J'.($this->recordCount + 2).':L'.($this->recordCount + 2);
+		$totalRange = 'J'.($this->recordCount + 2).':M'.($this->recordCount + 2);
 
 		$styleFilledColor = [
 			'fill' => [
@@ -154,7 +173,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 		$sheet->getStyle($totalRange)->applyFromArray($styleArray);
 		$sheet->getStyle($totalRange)->applyFromArray($styleFilledColor);
 
-		$headRange = 'A1:L1';
+		$headRange = 'A1:M1';
 		$sheet->getStyle($headRange)->applyFromArray($styleFilledColor);
 
 
@@ -165,6 +184,14 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 
 		];
 	}
+
+    public function columnWidths(): array
+    {
+        return [
+            'D' => 40,
+            'H' => 40,
+        ];
+    }
 
 
 }

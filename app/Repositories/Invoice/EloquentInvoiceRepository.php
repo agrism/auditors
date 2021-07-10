@@ -27,6 +27,14 @@ class EloquentInvoiceRepository implements InvoiceRepository
     public $sortColumn = null;
     public $sortDirection = null;
 
+    private $skipPagination = false;
+
+    public function skipPagination(): self
+    {
+        $this->skipPagination = true;
+        return $this;
+    }
+
     private function init()
     {
         $this->company = App\Services\SelectedCompanyService::getCompany();
@@ -44,6 +52,7 @@ class EloquentInvoiceRepository implements InvoiceRepository
             \DB::raw(
                 'invoices.id, 
                 invoices.date, 
+                invoices.payment_date, 
                 invoices.vat_number, 
                 invoices.is_locked, 
                 invoices.number, 
@@ -51,6 +60,7 @@ class EloquentInvoiceRepository implements InvoiceRepository
                 invoices.details_self, 
                 invoices.structuralunit_id, 
                 currencies.name as currency_name, 
+                invoices.currency_rate, 
                 partners.name as partnername,
                 partners.vat_number as partner_vat_number,
 
@@ -109,6 +119,7 @@ class EloquentInvoiceRepository implements InvoiceRepository
                 'id',
                 'amount_total',
                 'date',
+                'payment_date',
                 'number',
                 'partnername',
                 'structuralunitname',
@@ -138,7 +149,25 @@ class EloquentInvoiceRepository implements InvoiceRepository
 
         try {
             try {
-                $invoice = $invoice->paginate(15);
+                if($this->skipPagination){
+                    $invoice = $invoice->paginate(999999999);
+
+                    $invoiceLines = DB::table('invoice_lines')
+                        ->selectRaw('invoice_lines.*')
+                        ->leftJoin('invoices', 'invoice_lines.invoice_id', '=', 'invoices.id')
+                        ->where('company_id', $this->companyId)->get();
+
+
+
+                    foreach($invoice->items() as &$inv){
+                        $inv->invoice_lines = $invoiceLines->where('invoice_id', $inv->id)->all();
+                    }
+
+                } else {
+                    $invoice = $invoice->paginate(15);
+                }
+
+
             } catch (\Exception $e) {
 //                dd($e->getMessage());
             }

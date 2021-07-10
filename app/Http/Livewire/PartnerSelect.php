@@ -20,6 +20,9 @@ class PartnerSelect extends Component
 	public $selectedPartnerRegNo;
 	public $selectedPartnerVatNo;
 	public $selectedPartnerAddress;
+	public $selectedPartnerBank;
+	public $selectedPartnerSwift;
+	public $selectedPartnerAccountNumber;
 
 	private $company;
 	private int $companyId;
@@ -49,6 +52,9 @@ class PartnerSelect extends Component
 		$this->selectedPartnerRegNo = $partner->registration_number ?? '';
 		$this->selectedPartnerVatNo = $partner->vat_number ?? '';
 		$this->selectedPartnerAddress = $partner->address ?? '';
+		$this->selectedPartnerBank = $partner->bank ?? '';
+		$this->selectedPartnerSwift = $partner->swift ?? '';
+		$this->selectedPartnerAccountNumber = $partner->account_number ?? '';
 
 		$this->dispatchBrowserEvent('partner_modal_open');
 	}
@@ -72,6 +78,9 @@ class PartnerSelect extends Component
 		$partner->registration_number = $this->selectedPartnerRegNo;
 		$partner->vat_number = $this->selectedPartnerVatNo;
 		$partner->address = $this->selectedPartnerAddress;
+		$partner->bank = $this->selectedPartnerBank;
+		$partner->swift = $this->selectedPartnerSwift;
+		$partner->account_number = $this->selectedPartnerAccountNumber;
 		$partner->save();
 
 		$this->selectedPartnerId = $partner->id;

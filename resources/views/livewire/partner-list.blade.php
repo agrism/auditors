@@ -191,6 +191,30 @@
                 @error('active.address') <small
                         class="text-danger error">{{ $message }}</small>@enderror
             </div>
+            <div class="mb-1">
+                <label for="" style="font-size: 12px;">Bank</label>
+                <input type="text" class="form-control @error('active.bank')is-invalid @enderror"
+                       placeholder="Bank" aria-describedby="basic-addon1"
+                       wire:model.defer="active.bank">
+                @error('active.bank') <small
+                        class="text-danger error">{{ $message }}</small>@enderror
+            </div>
+            <div class="mb-1">
+                <label for="" style="font-size: 12px;">SWIFT</label>
+                <input type="text" class="form-control @error('active.swift')is-invalid @enderror"
+                       placeholder="SWIFT" aria-describedby="basic-addon1"
+                       wire:model.defer="active.swift">
+                @error('active.swift') <small
+                        class="text-danger error">{{ $message }}</small>@enderror
+            </div>
+            <div class="mb-1">
+                <label for="" style="font-size: 12px;">Bank account</label>
+                <input type="text" class="form-control @error('active.accountNumber')is-invalid @enderror"
+                       placeholder="Bank account" aria-describedby="basic-addon1"
+                       wire:model.defer="active.accountNumber">
+                @error('active.accountNumber') <small
+                        class="text-danger error">{{ $message }}</small>@enderror
+            </div>
         </div>
     </x-modal>
 </div>

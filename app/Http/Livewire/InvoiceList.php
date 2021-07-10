@@ -52,8 +52,11 @@ class InvoiceList extends Component
     private $company;
     private $companyId;
 
+    private $runningExport = false;
+
     public function __construct($id = null)
     {
+
         parent::__construct($id);
 
         if (!AuthUser::instance()->isLoggedIn()) {
@@ -162,7 +165,7 @@ class InvoiceList extends Component
 
     public function parentAction()
     {
-        $this->activeInvoiceId = 9999;
+        $this->activeInvoiceId = 9999999999;
     }
 
     public function closeInvoice()
@@ -221,6 +224,8 @@ class InvoiceList extends Component
     public function export()
     {
 //        $invoices->load(['company', 'partner', 'invoiceLines', 'currency', 'invoiceType', 'structuralunit']);
+
+        $this->runningExport = true;
 
         $invoices = collect($this->getInvoices()->all());
 
@@ -360,6 +365,10 @@ class InvoiceList extends Component
 
     private function getInvoices()
     {
+        if($this->runningExport){
+            $this->invoiceRepository->skipPagination();
+        }
+
         $this->invoiceRepository->partnerId = $this->filter['partnerId'];
         $this->invoiceRepository->details = $this->filter['details'];
         $this->invoiceRepository->typeId = $this->filter['typeId'];

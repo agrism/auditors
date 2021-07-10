@@ -56,6 +56,30 @@
                         @error('selectedPartnerAddress') <small
                                 class="text-danger error">{{ $message }}</small>@enderror
                     </div>
+                    <div class="mb-1">
+                        <label for="" style="font-size: 12px;">Bank</label>
+                        <input type="text" class="form-control @error('selectedPartnerBank')is-invalid @enderror"
+                               placeholder="Bank" aria-describedby="basic-addon1"
+                               wire:model.defer="selectedPartnerBank">
+                        @error('selectedPartnerBank') <small
+                                class="text-danger error">{{ $message }}</small>@enderror
+                    </div>
+                    <div class="mb-1">
+                        <label for="" style="font-size: 12px;">SWIFT</label>
+                        <input type="text" class="form-control @error('selectedPartnerSwift')is-invalid @enderror"
+                               placeholder="SWIFT" aria-describedby="basic-addon1"
+                               wire:model.defer="selectedPartnerSwift">
+                        @error('selectedPartnerSwift') <small
+                                class="text-danger error">{{ $message }}</small>@enderror
+                    </div>
+                    <div class="mb-1">
+                        <label for="" style="font-size: 12px;">Account number</label>
+                        <input type="text" class="form-control @error('selectedPartnerAccountNumber')is-invalid @enderror"
+                               placeholder="Account number" aria-describedby="basic-addon1"
+                               wire:model.defer="selectedPartnerAccountNumber">
+                        @error('selectedPartnerAccountNumber') <small
+                                class="text-danger error">{{ $message }}</small>@enderror
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" wire:click="cancel()">Close</button>

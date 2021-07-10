@@ -21,7 +21,7 @@
                         <span class="fa-plus fa"></span>
                     </span>
 
-                    <span href="{{route('client.invoices.index', ['export'=> 'xls'])}}" wire:click="export">
+                    <span wire:click="export">
                         <div class="fa fa-file-excel-o"
                              data-bs-toggle="tooltip" data-bs-placement="left" title="EXPORT temporary not working"
                              style="position:fixed;right:0px;padding: 11px; border: 1px solid black;cursor: pointer; background-color: #b6e8fa"></div>

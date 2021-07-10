@@ -29,6 +29,9 @@ class PartnerList extends Component
         'regNo' => null,
         'vatNo' => null,
         'address' => null,
+        'bank' => null,
+        'swift' => null,
+        'accountNumber' => null,
     ];
 
     public $sortColumn = 'name';
@@ -97,6 +100,9 @@ class PartnerList extends Component
             'address' => $partner->address,
             'regNo' => $partner->registration_number,
             'vatNo' => $partner->vat_number,
+            'bank' => $partner->bank,
+            'swift' => $partner->swift,
+            'accountNumber' => $partner->account_number,
         ];
 
         $this->dispatchBrowserEvent('openModal_handle_partner');
@@ -143,6 +149,9 @@ class PartnerList extends Component
             'regNo' => null,
             'vatNo' => null,
             'address' => null,
+            'bank' => null,
+            'swift' => null,
+            'accountNumber' => null,
         ];
 
         return $this;
@@ -167,6 +176,9 @@ class PartnerList extends Component
         $partner->registration_number = $this->active['regNo'];
         $partner->vat_number = $this->active['vatNo'];
         $partner->address = $this->active['address'];
+        $partner->bank = $this->active['bank'];
+        $partner->swift = $this->active['swift'];
+        $partner->account_number = $this->active['accountNumber'];
 
         $partner->save();
 
