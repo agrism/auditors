@@ -72,7 +72,7 @@
                 <div class="row">
                     <div class="col col-sm-6">
                         <label for="vat_number" class="custom  text-danger">Vat No</label>
-                        {!! Form::select('vat_number',isset($companyVatNumbers) ? $companyVatNumbers->pluck('vat_number', 'vat_number') : [] ,isset($invoice) ? $invoice['vat_number'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Select optional VAT no'] ) !!}
+                        {!! Form::select('vat_number',isset($companyVatNumbers) ? $companyVatNumbers->pluck('vat_number', 'vat_number') : [] ,isset($invoice) ? $invoice['vat_number'] :  ($companyVatNumbers[0]->vat_number ?? null) , ['class'=>'form-control form-control-sm', 'placeholder'=>'Select optional VAT no'] ) !!}
                     </div>
                     <div class="col col-sm-6">
                         <div class="row">
@@ -416,10 +416,13 @@
                         {!! Form::text('details_bottom3', isset($invoice) ? $invoice['details_bottom3'] : null , ['class'=>'form-control form-control-sm text-center', 'placeholder'=>'Details 3'] ) !!}
                     </div>
                 </div>
+                <div style="min-height: 100px;">
+
+                </div>
 
 
                 {{--            2--}}
-                <div class="form-group" style="margin-top: 10px;">
+                <div class="form-group" style="margin-top: 10px; position: fixed; bottom: 2px;">
                     <div class="col-sm-12">
 
                         <input type="submit"
@@ -429,10 +432,16 @@
                                wire:click="$set('goToListAfterSave', false)"
                         >
                         <input type="submit"
-                               class="btn btn-primary"
+                               class="btn btn-success"
                                name="submit-name"
                                value="Update and return to list"
                                wire:click="$set('goToListAfterSave', true)"
+                        >
+                        <input type="submit"
+                               class="btn btn-warning"
+                               name="submit-name"
+                               value="Exit without saving"
+                               wire:click="$set('goToListWithoutSave', true)"
                         >
                     </div>
                 </div>
@@ -476,7 +485,11 @@
                     '5': 0,
                     '6': 0,
                     '7': 0,
-                    '8': 0
+                    '8': 0,
+                    '9': 0,
+                    '10': 0,
+                    '11': 0,
+                    '12': 0
                 };
                 var invoiceTotatWithOutVatForSpecificVatRateBaseCurrency = {
                     '1': 0,
@@ -486,7 +499,11 @@
                     '5': 0,
                     '6': 0,
                     '7': 0,
-                    '8': 0
+                    '8': 0,
+                    '9': 0,
+                    '10': 0,
+                    '11': 0,
+                    '12': 0
                 };
 
                 var invoiceTotalCurency = 0;
@@ -508,7 +525,7 @@
                     invoiceTotatWithOutVatForSpecificVatRateBaseCurrency[vat_id] += parseFloat(lineTotalInBaseCurrency);
                 });
 
-                var vats = <?php echo json_encode($vats) ?>;
+                var vats = <?php echo json_encode($vats); ?>;
 
 
                 for (var key in vats) {
@@ -611,8 +628,6 @@
         </div>
     </div>
 </div>`;
-
-            console.log('form js reload!!!');
 
             initDatepicker('.date');
 

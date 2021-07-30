@@ -184,7 +184,7 @@ class InvoiceList extends Component
 
     public function copyInvoiceConfirm()
     {
-        $this->invoiceService->copy($this->company, $this->activeInvoiceId);
+        $this->activeInvoiceId = $this->invoiceService->copy($this->company, $this->activeInvoiceId);
         $this->dispatchBrowserEvent('closeModal_copy_invoice');
     }
 
@@ -275,13 +275,13 @@ class InvoiceList extends Component
             'structuralunit_id' => $this->shortcutInvoice['structId'],
             'invoicetype_id' => $this->shortcutInvoice['typeId'],
             'title' => [
-                $this->shortcutInvoice['details'],
+                $this->shortcutInvoice['details'] ?? date('Y-m-d'), // title is required
             ],
             'unit_id' => [
                 6,
             ],
             'price' => [
-                $this->shortcutInvoice['amountWithoutVat'],
+                floatval($this->shortcutInvoice['amountWithoutVat']),
             ],
             'quantity' => [
                 1,
@@ -316,8 +316,8 @@ class InvoiceList extends Component
     {
         $rate = $this->getVatRateById($this->shortcutInvoice['vatId']);
 
-        $this->shortcutInvoice['amountVat'] = ROUND($this->shortcutInvoice['amountWithoutVat'] * $rate, 2);
-        $this->shortcutInvoice['amountWithVat'] = ROUND($this->shortcutInvoice['amountWithoutVat'] + $this->shortcutInvoice['amountVat'],
+        $this->shortcutInvoice['amountVat'] = ROUND(floatval($this->shortcutInvoice['amountWithoutVat']) * $rate, 2);
+        $this->shortcutInvoice['amountWithVat'] = ROUND(floatval($this->shortcutInvoice['amountWithoutVat']) + floatval($this->shortcutInvoice['amountVat']),
             2);
     }
 
@@ -325,8 +325,8 @@ class InvoiceList extends Component
     {
         $rate = $this->getVatRateById($this->shortcutInvoice['vatId']);
 
-        $this->shortcutInvoice['amountWithoutVat'] = ROUND($this->shortcutInvoice['amountWithVat'] / (1 + $rate), 2);
-        $this->shortcutInvoice['amountVat'] = ROUND($this->shortcutInvoice['amountWithVat'] - $this->shortcutInvoice['amountWithoutVat'],
+        $this->shortcutInvoice['amountWithoutVat'] = ROUND(floatval($this->shortcutInvoice['amountWithVat']) / (1 + $rate), 2);
+        $this->shortcutInvoice['amountVat'] = ROUND(floatval($this->shortcutInvoice['amountWithVat']) - floatval($this->shortcutInvoice['amountWithoutVat']),
             2);
     }
 
@@ -336,15 +336,15 @@ class InvoiceList extends Component
         $rate = $this->getVatRateById($this->shortcutInvoice['vatId']);
 
         if ($this->shortcutInvoice['amountWithoutVat']) {
-            $this->shortcutInvoice['amountWithoutVat'] = round($this->shortcutInvoice['amountWithoutVat'], 2);
-            $this->shortcutInvoice['amountVat'] = ROUND($this->shortcutInvoice['amountWithoutVat'] * $rate, 2);
-            $this->shortcutInvoice['amountWithVat'] = ROUND($this->shortcutInvoice['amountWithoutVat'] + $this->shortcutInvoice['amountVat'],
+            $this->shortcutInvoice['amountWithoutVat'] = round(floatval($this->shortcutInvoice['amountWithoutVat']), 2);
+            $this->shortcutInvoice['amountVat'] = ROUND(floatval($this->shortcutInvoice['amountWithoutVat']) * $rate, 2);
+            $this->shortcutInvoice['amountWithVat'] = ROUND(floatval($this->shortcutInvoice['amountWithoutVat']) + floatval($this->shortcutInvoice['amountVat']),
                 2);
             return;
         }
 
-        $this->shortcutInvoice['amountWithoutVat'] = ROUND($this->shortcutInvoice['amountWithVat'] / (1 + $rate), 2);
-        $this->shortcutInvoice['amountVat'] = ROUND($this->shortcutInvoice['amountWithVat'] - $this->shortcutInvoice['amountWithoutVat'],
+        $this->shortcutInvoice['amountWithoutVat'] = ROUND(floatval($this->shortcutInvoice['amountWithVat']) / (1 + $rate), 2);
+        $this->shortcutInvoice['amountVat'] = ROUND(floatval($this->shortcutInvoice['amountWithVat']) - floatval($this->shortcutInvoice['amountWithoutVat']),
             2);
     }
 

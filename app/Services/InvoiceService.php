@@ -128,6 +128,8 @@ class InvoiceService
 
 		$invoice->update($data);
 
+        $invoiceLinesIdsExist = [];
+
 		foreach ($data['title'] as $key => $val) {
 			if ($val) {
 
@@ -149,21 +151,19 @@ class InvoiceService
 					$invoiceLine->update($array);
 				} else {
 					$invoiceLine = new InvoiceLine();
-					$invoiceLine->create($array);
-					$invoiceLinesIdsExist[] = $invoiceLine->id;
+					$createdRecordId = $invoiceLine->create($array)->id;
+					$invoiceLinesIdsExist[] = $createdRecordId;
 				}
 			}
 		}
 
-		$deletedInvoiceLines = InvoiceLine::where('invoice_id', $invoice->id)
-			->whereNotIn('id', isset($invoiceLinesIdsExist) && $invoiceLinesIdsExist ? $invoiceLinesIdsExist : []);
+        $invoiceLinesIdsExist = array_filter($invoiceLinesIdsExist);
 
-		$deletedInvoiceLines->delete();
+		InvoiceLine::where('invoice_id', $invoice->id)->whereNotIn('id', $invoiceLinesIdsExist)->delete();
 
 		InvoiceAdvancePayment::where('invoice_id', $invoiceId)->delete();
 
 		foreach($data['prePaymentAmount'] ?? [] as $index => $prePaymentAmount){
-
 
             $prePaymentAmount = floatval($prePaymentAmount);
 
@@ -217,7 +217,7 @@ class InvoiceService
 		$invoice->save();
 	}
 
-	public function copy(Company $company, $invoiceId){
+	public function copy(Company $company, $invoiceId): int {
         $now = Carbon::now()->format('Y-m-d H:i:s');
 		$invoice = Invoice::where('company_id', $company->id)->find($invoiceId);
 
@@ -241,6 +241,8 @@ class InvoiceService
 			$data['updated_at'] = $now;
 			InvoiceLine::create($data);
 		}
+
+		return $newInvoice->id;
 	}
 
 	public function lockInvoice($invoiceId){

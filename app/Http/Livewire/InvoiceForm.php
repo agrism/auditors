@@ -6,6 +6,7 @@ use App\Company;
 use App\Http\Requests\Request;
 use App\InvoiceAdvancePayment;
 use App\InvoiceLine;
+use Illuminate\Support\Collection;
 use App\Repositories\Invoice\InvoiceRepository;
 use App\Services\AuthUser;
 use App\Services\InvoiceService;
@@ -23,6 +24,7 @@ class InvoiceForm extends Component
     public $invoiceAdvancePayments = [];
 
     public $goToListAfterSave = true;
+    public $goToListWithoutSave = false;
 
     public $currencies = [];
     public $bank = [];
@@ -62,6 +64,14 @@ class InvoiceForm extends Component
 
     public function saveInvoice($formData): void
     {
+        if($this->goToListWithoutSave){
+            $this->goToListWithoutSave = false;
+            $this->emit('closeInvoice');
+            $this->dispatchBrowserEvent('contentChanged');
+            return;
+        }
+
+
         $this->save($formData);
 
         if ($this->goToListAfterSave) {
@@ -106,7 +116,26 @@ class InvoiceForm extends Component
 
         $r = $this->invoiceService->getInvoiceFormData($this->company, $this->invoiceId);
 
+        Log::debug('refreshData');
+
         $this->invoice = $r['invoice'];
+
+        // $this->invoice['vat_number'] = 1;
+
+        Log::debug('---: '. json_encode($r['companyVatNumbers']->first()));
+
+        if($r['companyVatNumbers'] instanceof Collection){
+            Log::debug('collection');
+
+            if($first = $r['companyVatNumbers']->first()){
+
+                Log::debug($first->vat_number);
+                if($this->invoice && isset($this->invoice['vat_number']) && $this->invoice['vat_number'] === null){
+                    $this->invoice['vat_number'] = $first->vat_number ?? null;
+                }
+                Log::debug(json_encode($this->invoice));
+            }
+        }
 
         $this->invoiceLines = [];
 
@@ -153,7 +182,12 @@ class InvoiceForm extends Component
 
         $request = request();
 
+        // Log::debug('$request0', $request->all());
+        // Log::debug('------------------------------------------------------');
+
         $request->request->add($newData);
+
+        // Log::debug('$request', $request->all());
 
         $this->invoiceService->saveInvoice($request, $this->company, $this->invoiceId);
     }
