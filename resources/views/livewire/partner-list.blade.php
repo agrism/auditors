@@ -162,25 +162,48 @@
     >
         <div class="modal-body" style1="margin-left: 15px;margin-right: 15px">
             <div class="mb-1">
-                <label for="" style="font-size: 12px;">Name</label>
+                <label for="" style="font-size: 12px;display: block">Name
+                    @if($active['name'])
+                        <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$active['name']}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>
+                    @endif
+                </label>
                 <input type="text" class="form-control @error('active.name')is-invalid @enderror"
                        placeholder="Partner name"
-                       aria-describedby="basic-addon1" wire:model.defer="active.name">
+                       aria-describedby="basic-addon1" wire:model="active.name">
                 @error('active.name') <small class="text-danger error">{{ $message }}</small>@enderror
             </div>
 
             <div class="mb-1">
-                <label for="" style="font-size: 12px;">Reg.No</label>
+                <label for="" style="font-size: 12px;display: block">Reg.No
+                    @if($active['regNo'])
+                        <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$active['regNo']}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>
+                    @endif
+                </label>
                 <input type="text" class="form-control @error('active.regNo')is-invalid @enderror"
                        placeholder="Reg. No" aria-describedby="basic-addon1"
-                       wire:model.defer="active.regNo">
+                       wire:model="active.regNo">
                 @error('active.regNo') <small class="text-danger error">{{ $message }}</small>@enderror
             </div>
             <div class="mb-1">
-                <label for="" style="font-size: 12px;">VAT No</label>
+                <label for="" style="font-size: 12px; display: block;">VAT No
+                    @if($active['vatNo'])
+                        <?php
+                        $countryCode = preg_replace('/[^A-Z]/', '', $active['vatNo'] );
+                        if(strlen($countryCode) === 2){
+                        $number = substr(trim($active['vatNo']), 2);
+                        if($number){
+                        ?>
+                        <a style="display: block; float: right" href="https://ec.europa.eu/taxation_customs/vies/viesquer.do?ms={{$countryCode}}&iso={{$countryCode}}&vat={{$number}}" target="_blank">Pārbaudīt ec.europa.eu</a>
+                        <?php
+                        }
+                        }
+                        ?>
+{{--                        <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$active['vatNo']}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>--}}
+                    @endif
+                </label>
                 <input type="text" class="form-control @error('active.vatNo')is-invalid @enderror"
                        placeholder="VAT No." aria-describedby="basic-addon1"
-                       wire:model.defer="active.vatNo">
+                       wire:model="active.vatNo">
                 @error('active.vatNo') <small class="text-danger error">{{ $message }}</small>@enderror
             </div>
             <div class="mb-1">
@@ -191,6 +214,8 @@
                 @error('active.address') <small
                         class="text-danger error">{{ $message }}</small>@enderror
             </div>
+            <br>
+            <hr>
             <div class="mb-1">
                 <label for="" style="font-size: 12px;">Bank</label>
                 <input type="text" class="form-control @error('active.bank')is-invalid @enderror"

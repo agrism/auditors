@@ -359,7 +359,17 @@
 
                     @foreach($invoiceAdvancePayments as $index =>  $pre)
                         <div class="row default_advance_payment_form_" style="position:relative;">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
+                                <label for="prePaymentDate" class="custom">Details</label>
+                                <input type="text"
+                                       value="{{$pre->details ?? null}}"
+                                       name="prePaymentDetails[{{$index}}]"
+                                       class="form-control form-control-sm text-start"
+                                       placeholder="details if needed"
+                                >
+                            </div>
+
+                            <div class="col-sm-4">
                                 <label for="prePaymentDate" class="custom">Prepayment payment date</label>
                                 <input type="text"
                                        name="prePaymentDate[{{$index}}]"
@@ -367,7 +377,7 @@
                                        class="form-control form-control-sm date" placeholder="Input date" readonly>
                             </div>
 
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label for="prePaymentAmount" class="custom">Prepayment amount</label>
                                 <div class="input-group">
                                     <input type="text"
@@ -608,7 +618,17 @@
             var prepaymentLineIndex = 100;
             const prepaymentLine = `
 <div class="row default_advance_payment_form" style="position:relative;">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
+        <label for="prePaymentDate" class="custom">Details</label>
+        <input type="text"
+               value=""
+               name="prePaymentDetails[]"
+               class="form-control form-control-sm text-start"
+               placeholder="details if needed"
+        >
+    </div>
+
+        <div class="col-sm-4">
         <label for="prePaymentDate" class="custom">Prepayment payment date</label>
         <input type="text"
                 name="prePaymentDate[]"
@@ -616,7 +636,7 @@
                class="form-control form-control-sm date" placeholder="Input date" readonly>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         <label for="prePaymentAmount" class="custom">Prepayment amount</label>
         <div class="input-group">
             <input type="text"

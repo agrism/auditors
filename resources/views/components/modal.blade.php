@@ -10,12 +10,14 @@
 ])
 
 
+
 <div wire:ignore.self class="modal fade" id="{{$id}}" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header {{$titleClass}}">
                 <h5 class="modal-title" >{{$title}}</h5>
-                <button type="button" class="btn-close" aria-label="Close" wire:click="{{$cancelAction}}"></button>
+                <button  class="btn-close" aria-label="Close" wire:click="{{$cancelAction}}">
+                </button>
             </div>
             <div class="modal-body">
                 {{$slot}}
@@ -40,5 +42,3 @@
         $('#{{$id}}').modal('show');
     })
 </script>
-
-

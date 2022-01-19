@@ -188,10 +188,17 @@ class InvoiceController extends Controller
 		libxml_use_internal_errors(true);
 		$invoice = Invoice::with(
 			[
-				'company', 'partner', 'currency', 'invoicelines',
-				'invoicelines.unit', 'invoicelines.vat', 'invoicelines.currency',
+				'company', 'partner', 'currency', 'invoiceLines',
+				'invoiceLines.unit', 'invoiceLines.vat', 'invoiceLines.currency',
 			]
 		)->where('company_id', $this->companyId)->find($id);
+
+        $invoice->invoiceLines->map(function($line){
+            $line->title = str_replace('@br', '<br>', htmlspecialchars($line->title));
+            return $line;
+        });
+
+        // dd($invoice->invoicelines);
 
 		$vats = vat::get();
 

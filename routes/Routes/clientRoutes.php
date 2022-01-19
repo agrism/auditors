@@ -80,6 +80,11 @@ Route::group(
             'as' => 'user.update',
             'uses' => 'UserController@update',
         ]);
+
+        Route::get('cash-expenses/{id}', [
+            'as' => 'cash-expenses.show',
+            'uses'=> 'CashExpenseController@show',
+        ]);
     });
 
 

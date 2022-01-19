@@ -7,7 +7,7 @@
         </div>
         <div class="panel-body">
 
-            {!! Form::model('bank', ['class'=>'form-horizontal', 'method'=>'post', 'action'=>'Client\CompanyBankController@store']) !!}
+            {!! Form::model('bank', ['class'=>'form-horizontal', 'method'=>'post', 'action'=>'App\Http\Controllers\Client\CompanyBankController@store']) !!}
             @include('client.companies.banks.form')
 
             {!! Form::submit('Create')!!}

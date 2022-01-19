@@ -168,6 +168,7 @@ class InvoiceService
             $prePaymentAmount = floatval($prePaymentAmount);
 
             $date = $data['prePaymentDate'][$index] ?? null;
+            $details = $data['prePaymentDetails'][$index] ?? null;
 
 
             if($prePaymentAmount && $date){
@@ -178,6 +179,7 @@ class InvoiceService
                     $prePaymentLine->amount = ROUND($prePaymentAmount, 2);
                     $prePaymentLine->date = $date;
                     $prePaymentLine->invoice_id = $invoiceId;
+                    $prePaymentLine->details = $details;
                     $prePaymentLine->save();
                 } catch (\Exception $e){
 

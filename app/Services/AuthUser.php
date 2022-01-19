@@ -30,7 +30,7 @@ class AuthUser
         }
     }
 
-    public static function instance(){
+    public static function instance(): AuthUser{
         if(!static::$instance){
             !static::$instance = new self();
         }
@@ -44,6 +44,14 @@ class AuthUser
 
     public function userId(){
         return $this->user->id ?? null;
+    }
+
+    public function userEmail(){
+        return $this->user->email ?? null;
+    }
+
+    public function userName(){
+        return $this->user->name ?? null;
     }
 
     public function setCompany($id)

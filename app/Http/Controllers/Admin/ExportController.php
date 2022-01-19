@@ -94,6 +94,7 @@ SELECT i.*, il.quantity, il.vat_id, SUM(ROUND(quantity * price,2)) AS sum, vats.
 partners.name AS p_name, partners.registration_number AS p_regnumber, partners.vat_number AS p_vatnumber,
 companies.title AS c_name, companies.registration_number AS c_regnumber,
 currencies.name AS currency_name,
+invoice_types.title AS type_name,
 structuralunits.title AS structuralunit
 
 
@@ -112,6 +113,9 @@ ON (i.company_id =  companies.id)
 
 LEFT JOIN currencies
 ON (i.currency_id =  currencies.id)
+
+LEFT JOIN invoice_types
+ON (i.invoicetype_id =  invoice_types.id)
 
 LEFT JOIN structuralunits
 ON (i.structuralunit_id =  structuralunits.id)
@@ -215,7 +219,10 @@ GROUP BY il.invoice_id, il.vat_id
 				//---docNo
 				$docNo = $xml->createElement('DocNo');
 				$docNo = $financialDoc->appendChild($docNo);
-				$text = $xml->createTextNode($invoice['number']);
+
+                $type = ($invoice['type_name'] ?? null) === 'avanss' ? 'avanss ' : '';
+
+				$text = $xml->createTextNode($type.$invoice['number']);
 				$docNo->appendChild($text);
 
 				//--DocSerial
@@ -463,5 +470,3 @@ GROUP BY il.invoice_id, il.vat_id
 		return view('admin.export.index', compact('companies', 'data'));
 	}
 }
-
-

@@ -29,8 +29,10 @@
                                     href="{{ url(route('admin.export')) }}">{{_('Export data')}}</a></li>
                         <li class="{{ \Request::route()->getName() == 'admin.npi' ? 'active' : null }}"><a
                                     href="{{ url(route('admin.npi')) }}">{{_('NPI')}}</a></li>
-                        <li class="{{ \Request::route()->getName() == 'admin.working-hours' ? 'active' : null }}"><a
-                                    href="{{ url(route('admin.working-hours')) }}">{{_('Working hours')}}</a></li>
+                        <li class="{{ \Request::route()->getName() == 'admin.working-hours.index' ? 'active' : null }}"><a
+                                    href="{{ url(route('admin.working-hours.index')) }}">{{_('Working hours')}}</a></li>
+                        <li class="{{ \Request::route()->getName() == 'admin.vacations.index' ? 'active' : null }}"><a
+                                    href="{{ url(route('admin.vacations.index')) }}">{{_('Vacations')}}</a></li>
                     </ul>
                 </li>
 

@@ -25,7 +25,7 @@ class WorkingHoursController extends Controller
 		$data = [];
 		$companies = Company::orderBy('title', 'asc')->get();
 
-		$period = CarbonPeriod::create(Carbon::now()->startOfMonth()->startOfYear()->format('Y-m-d'),
+		$period = CarbonPeriod::create(Carbon::now()->startOfMonth()->subDay()->startOfYear()->format('Y-m-d'),
 			'1 month',
 			Carbon::now()->endOfMonth()->endOfYear()->format('Y-m-d'));
 

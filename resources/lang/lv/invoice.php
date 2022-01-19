@@ -56,6 +56,11 @@ return [
 		'reiss' => 'reiss',
 		'kompl' => 'kompl.',
 		'tonna' => 'tonna',
+		'lapa' => 'lapa',
+		'diena' => 'diena',
+        'metrs' => 'metrs',
+        'atlaide' => 'atlaide',
+        'stunda' => 'stunda',
 	],
 
 

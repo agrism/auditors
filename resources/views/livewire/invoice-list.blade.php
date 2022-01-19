@@ -313,6 +313,7 @@
             <input type="text" class="date form-control @error('shortcutInvoice.date')is-invalid @enderror"
                    readonly
                    placeholder="Date"
+                   onchange="this.dispatchEvent(new InputEvent('input'))"
                    aria-describedby="basic-addon1" wire:model.defer="shortcutInvoice.date">
             @error('shortcutInvoice.date') <small class="text-danger error">{{ $message }}</small>@enderror
         </div>
@@ -413,5 +414,3 @@
     </x-modal>
 
 </div>
-
-

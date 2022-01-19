@@ -30,7 +30,6 @@
         font-family: DejaVu Sans, sans-serif;
         font-size: 10px;
         border-collapse: collapse;
-
     }
 
     table tr td {
@@ -171,7 +170,7 @@
           $width = $fontMetrics->get_text_width($text, $font, $size);
 
           $w = $pdf->get_width() - $width +80;
-          $y = $pdf->get_height() - $text_height - 35;
+          $y = $pdf->get_height() - $text_height - 30;
 
           $pdf->page_text($w, $y, $text, $font, $size);
 
@@ -453,7 +452,7 @@
     @foreach($invoice->invoiceLines as $line)
         <tr>
             <td>{{ $line->code }}</td>
-            <td>{{ $line->title }}</td>
+            <td>{!! $line->title !!}</td>
             <td class="text-center">
                 @if(1)
                 @lang('invoice.units.'.$line->unit->name)
@@ -566,7 +565,7 @@
             <?php $advancePayments += $payment->amount;?>
             <tr>
                 <td colspan="5" class="text-right no-border">
-                    @lang('invoice.received_prepayment'): {{$payment->date}} ({{ $invoice->currency->name}}):
+                    {{$payment->details.($payment->details ? ', ' : '')}} @lang('invoice.received_prepayment'): {{$payment->date}} ({{ $invoice->currency->name}}):
                 </td>
                 <td class="text-right" nowrap>
                     {{number_format(-$payment->amount, 2)}}
@@ -687,4 +686,3 @@
     {{-- Page <span class="pagenum"></span> --}}
     {{-- {{ $invoice->details_bottom3}}  --}}
 </div>
-

@@ -123,10 +123,18 @@ Route::group(
 	Route::post(
 		'npi', ['as' => 'npi.handle', 'uses' => 'NpiController@handle']
 	);
-	Route::get('working-hours', ['as' => 'working-hours', 'uses' => 'WorkingHoursController@index']);
-	Route::post(
-		'working-hours', ['as' => 'working-hours.handle', 'uses' => 'WorkingHoursController@handle']
-	);
+
+	Route::group(['prefix'=> 'working-hours', 'as' => 'working-hours.'], function(){
+        Route::get('/', ['as' => 'index', 'uses' => 'WorkingHoursController@index']);
+        Route::post('/', ['as' => 'handle', 'uses' => 'WorkingHoursController@handle']);
+    });
+
+    Route::group(['prefix'=> 'vacations', 'as' => 'vacations.'], function(){
+        Route::get('/', ['as' => 'index', 'uses' => 'VacationsController@index']);
+        Route::post('/', ['as' => 'handle', 'uses' => 'VacationsController@handle']);
+    });
+
+
 
 	Route::get(
 		'prepare-login-as-user/{id}', ['as' => 'prepare-login-as-user', 'uses' => 'LoginAsUserController@prepareLogin']

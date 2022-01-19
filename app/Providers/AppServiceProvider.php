@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use App\Repositories\CashExpense\CashExpenseRepository;
+use App\Repositories\CashExpense\EloquentCashExpenseRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,7 +31,6 @@ class AppServiceProvider extends ServiceProvider
             'App\\Repositories\\PersonalIncome\\PersonalIncomeRepository',
             'App\\Repositories\\PersonalIncome\\EloquentPersonalIncomeRepository'
         );
-
 
         app()->singleton(
             'Company',
