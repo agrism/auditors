@@ -116,13 +116,9 @@ Route::group(
 	Route::resource('invoices', 'InvoiceController');
 	Route::resource('invoices', 'InvoiceController');
 
-	Route::get(
-		'export', ['as' => 'export', 'uses' => 'ExportController@export']
-	);
+	Route::get('export', ['as' => 'export', 'uses' => 'ExportController@export']);
 	Route::get('npi', ['as' => 'npi', 'uses' => 'NpiController@create']);
-	Route::post(
-		'npi', ['as' => 'npi.handle', 'uses' => 'NpiController@handle']
-	);
+	Route::post('npi', ['as' => 'npi.handle', 'uses' => 'NpiController@handle']);
 
 	Route::group(['prefix'=> 'working-hours', 'as' => 'working-hours.'], function(){
         Route::get('/', ['as' => 'index', 'uses' => 'WorkingHoursController@index']);
@@ -132,6 +128,11 @@ Route::group(
     Route::group(['prefix'=> 'vacations', 'as' => 'vacations.'], function(){
         Route::get('/', ['as' => 'index', 'uses' => 'VacationsController@index']);
         Route::post('/', ['as' => 'handle', 'uses' => 'VacationsController@handle']);
+    });
+
+    Route::group(['prefix'=> 'vat', 'as' => 'vat.'], function(){
+        Route::get('/', ['as' => 'index', 'uses' => 'VatController@index']);
+        Route::post('/', ['as' => 'handle', 'uses' => 'VatController@handle']);
     });
 
 

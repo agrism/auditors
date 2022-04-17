@@ -4,7 +4,9 @@
 
     <div class="col-md-12">
         <h3>Vacations</h3>
-        <form action="{{route('admin.vacations.handle')}}" method="post">
+        <form action="{{route('admin.vacations.handle')}}" method="post"
+              enctype="multipart/form-data"
+        >
             @csrf
 
             <div class="form-group col-ms-12">
@@ -18,9 +20,9 @@
 
 
             <div class="form-group col-ms-12">
-                <textarea name="data" id="" cols="30" rows="10" class="form-control">
-                    {{request()->get('data')}}
-                </textarea>
+
+                <input type="file" name="data" class="form-control" value="{{request()->data}}">
+
             </div>
             <div class="form-group col-ms-12">
                 <button class="btn btn-default">Submit</button>
@@ -29,41 +31,29 @@
 
         <table class="table">
             <thead>
-            <th>period</th>
-            <th>working days</th>
-            <th>from</th>
-            <th>to</th>
-            <th>holidays</th>
-            <th>total days</th>
+            <th>date used</th>
+            <th>working days used</th>
+            <th>date earned</th>
+            <th>working days earned</th>
+            <th>working days accumulated</th>
             </thead>
             <tbody>
-            @foreach($data as $period => $periodData)
-                @foreach($periodData as $monthItem)
-
-                    @if(!isset($monthItem['working-days']))
-                        @continue
-                    @endif
-
-                    <tr>
-                        <td>{{$period}}</td>
-                        <td>{{$monthItem['working-days']}}</td>
-                        <td>{{$monthItem['from']}}</td>
-                        <td>{{$monthItem['to']}}</td>
-                        <td>{{$monthItem['holidays']}}</td>
-                        <td>{{$monthItem['days']}}</td>
-                    </tr>
-                @endforeach
+            @foreach($data['items'] ?? [] as $item)
+                <tr>
+                    <td>{{$item->usedDate}}</td>
+                    <td>{{$item->usedDays}}</td>
+                    <td>{{$item->earnedDate}}</td>
+                    <td>{{$item->earnedDays}}</td>
+                    <td>{{$item->accumulatedDays}}</td>
+                </tr>
             @endforeach
             </tbody>
             <thead>
-            <tr>
-                <th></th>
-                <th>{{$data['total']['working-days'] ?? '-'}}</th>
-                <th></th>
-                <th></th>
-                <th>{{$data['total']['holidays'] ?? '-'}}</th>
-                <th>{{$data['total']['days'] ?? '-'}}</th>
-            </tr>
+            <th>-</th>
+            <th>{{$data['totalUsed'] ?? '-'}}</th>
+            <th>-</th>
+            <th>{{$data['totalEarned'] ?? '-'}}</th>
+            <th>-</th>
             </thead>
         </table>
 

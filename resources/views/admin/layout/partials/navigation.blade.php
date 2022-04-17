@@ -33,6 +33,8 @@
                                     href="{{ url(route('admin.working-hours.index')) }}">{{_('Working hours')}}</a></li>
                         <li class="{{ \Request::route()->getName() == 'admin.vacations.index' ? 'active' : null }}"><a
                                     href="{{ url(route('admin.vacations.index')) }}">{{_('Vacations')}}</a></li>
+                        <li class="{{ \Request::route()->getName() == 'admin.vat.index' ? 'active' : null }}"><a
+                                    href="{{ url(route('admin.vat.index')) }}">{{_('Vat return')}}</a></li>
                     </ul>
                 </li>
 

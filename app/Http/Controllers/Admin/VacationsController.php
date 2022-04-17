@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Validator;
-use App\Calendar;
+use App\Company;
 use App\Employee;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use App\EmployeeHistory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,192 +12,257 @@ use App\Http\Controllers\Controller;
 
 class VacationsController extends Controller
 {
-    private $data = [];
+    private $data = [
+        'items' => [],
+        'totalEarned' => 0,
+        'totalUsed' => 0,
+    ];
 
     private $activeEmployeeId;
 
     private $selectedCompanyId = 22;
 
+    protected $companyMap = [
+        'avatermo' => 'AVA TERMO, SIA',
+        'zsapini' => 'ZSApini,SIA',
+        'inno' => 'InnoBalticum, SIA',
+        '3ro' => '3ro, SIA',
+        'ambros' => 'Ambross, SIA',
+        'egomedia' => 'Ego Media, SIA',
+        'aike' => 'Aike Trading, SIA',
+        'Paragrafs' => 'Paragrafs, SIA',
+        'anprojekcti' => 'AN Projekti, SIA',
+        'kezberi' => 'Ķezberi, SIA',
+    ];
+
+    protected $ignoreCompanies = [
+        'Grohmann',
+        'onetrading',
+        'LAWANDFIN',
+    ];
+
+    protected $ignoreEmloyees = [
+        'test1 test',
+        'test2 test',
+        'test test',
+    ];
+
     public function handle(Request $request)
     {
-        $data                   = $request->get('data');
-        $this->activeEmployeeId = $request->get('employee_id');
 
-        $data = preg_split('/\n|\r\n?/',
-            $data);
+        if ($employeeId = $request->employee_id) {
 
-        $newData = [];
+            if ($empl = Employee::with(['employeeHistory' => function($h){
+                $h->orderBy('date', 'asc');
+            }])->where('id', $employeeId)->first()) {
 
-        $daysTotal        = 0;
-        $workingDaysTotal = 0;
-        $holidaysTotal    = 0;
+                $this->activeEmployeeId = $empl->id;
 
-        $data = array_filter($data);
+                $accumulatedDays = 0;
 
-        foreach ($data as $period) {
+                $currentMonthLastDate = null;
 
-            if ( !$period) {
+                foreach ($empl->employeeHistory as $item) {
+
+                    if(!$currentMonthLastDate){
+                        $currentMonthLastDate = Carbon::parse($item->date)->lastOfMonth();
+                    }
+
+
+                    $currentDate = Carbon::parse($item->date);
+
+
+                    $buff = $this->bufferFactory(round($accumulatedDays,2));
+
+                    while($currentMonthLastDate->lessThan($currentDate)){
+
+
+                        $buff = $this->bufferFactory($accumulatedDays);
+
+                        $buff['earnedDate'] = $currentMonthLastDate->format('Y-m-d');
+                        $buff['earnedDays'] = 1.67;
+                        $accumulatedDays += 1.67;
+                        $buff['accumulatedDays'] = $accumulatedDays;
+
+                        $this->pushData($buff);
+
+                        $currentMonthLastDate->addDay()->lastOfMonth();
+                    }
+
+                    $buff = $this->bufferFactory(round($accumulatedDays,2));
+
+
+                    switch ($item->type) {
+                        case EmployeeHistory::TYPE_USED_VACATION:
+                            {
+                                $buff['usedDate'] = $item->date;
+                                $buff['usedDays'] = $item->days;
+                                $accumulatedDays -= $item->days;
+                                break;
+                            };
+                        case EmployeeHistory::TYPE_ACCUMULATED_VACATION:
+                            {
+                                $buff['earnedDate'] = $item->date;
+                                $buff['earnedDays'] = $item->days;
+                                $accumulatedDays += $item->days;
+                                break;
+                            };
+                    }
+
+
+                    $buff['accumulatedDays'] = round($accumulatedDays,2);
+
+                    $this->pushData($buff);
+                }
+            }
+
+            return $this->index($request);
+        }
+
+
+        if ($request->newEmployeeName && $request->newEmployeeNameCompanyId && $request->newEmployeeName) {
+
+            if (Employee::query()->where('name', $request->newEmployeeName)->where('company_id', $request->newEmployeeNameCompanyId)->first()) {
+                dd('Employee exists already: ' . $request->newEmployeeName);
+            }
+
+            $newEmployee = new Employee;
+            $newEmployee->company_id = $request->newEmployeeNameCompanyId;
+            $newEmployee->name = trim($request->newEmployeeName);
+            $newEmployee->registration_number = '-';
+            $newEmployee->save();
+        }
+
+
+        if (!$file = $request->get('jsonData')) {
+            if (!$file = $request->file('data')) {
+                return $this->index($request);
+            }
+            $file = $file->get();
+        }
+
+        $file = json_decode($file);
+
+        foreach ($file as $fileCompany) {
+
+            if (in_array($fileCompany->title, $this->ignoreCompanies)) {
                 continue;
             }
 
-            $buffer = preg_split('/\t/',
-                $period);
+            if (!isset($this->companyMap[$fileCompany->title])) {
 
-            if (empty($buffer[0]) || empty($buffer[1])) {
+                dump('missing map for company : ' . $fileCompany->title);
                 continue;
             }
 
-            $from = $buffer[0];
-            $to   = $buffer[1];
+            if (!$dbCompany = Company::query()->where('title', $this->companyMap[$fileCompany->title])->first()) {
+                dump('missing mapped value in db, value: ' . $this->companyMap[$fileCompany->title]);
+                continue;
+            }
 
-            $days        = 0;
-            $workingDays = 0;
-            $holidays    = 0;
 
-            foreach (
-                CarbonPeriod::create($from,
-                    $to) as $dateObject
-            ) {
+            foreach ($fileCompany->employees as $fileEmployee) {
 
-                $days++;
+                $fullNameStartingSurname = sprintf('%s %s', trim($fileEmployee->surname), trim($fileEmployee->name));
 
-                if (
-                $currentDay = Calendar::where('date',
-                    $dateObject->format('Y-m-d'))
-                    ->first()
-                ) {
-                    if ($currentDay->type !== 'regular') {
-                        $holidays++;
+                $fullNameStartingSurname = preg_replace('/[,0-9]/', '', $fullNameStartingSurname);
+                $fullNameStartingSurname = trim($fullNameStartingSurname);
+
+                if (in_array($fullNameStartingSurname, $this->ignoreEmloyees)) {
+                    continue;
+                }
+
+                if (!$dbEmployee = $dbCompany->employees->where('name', $fullNameStartingSurname)->where('company_id', $dbCompany->id)->first()) {
+                    dump('Employee not found in db, employee: ' . $fullNameStartingSurname);
+                    dump('existing customers', $dbCompany->employees->pluck('name')->toArray());
+
+                    $csrfToken = csrf_token();
+                    $route = route('admin.vacations.handle');
+                    $jsonData = json_encode($file);
+
+                    $form = <<<HTML
+                <form action="$route" method="post"  enctype="multipart/form-data" >
+                    <input type="hidden" name="_token" value="$csrfToken" >
+                    <input type="text" name="newEmployeeNameCompanyId" value="{$dbCompany->id}" >
+                    <input type="text" name="newEmployeeName" value="{$fullNameStartingSurname}" class="form-control">
+                    <input type="hidden" name="jsonData" class="form-control" value='{$jsonData}'>
+                    <input type="submit" value="create customer">
+                </form>
+HTML;
+
+                    echo $form;
+
+                    die;
+                }
+
+                foreach ($fileEmployee->vacation_working_days as $vacationWorkingDayInFile) {
+
+                    if ($vacationWorkingDayInFile !== Carbon::parse($vacationWorkingDayInFile)->format('Y-m-d')) {
+                        dd('Date is not in correct format, value: ' . $vacationWorkingDayInFile);
                         continue;
                     }
-                }
-
-                if ($dateObject->isWeekend()) {
-                    $holidays++;
-                    continue;
-                }
-
-                $workingDays++;
-
-                if ( !$this->selectedCompanyId || !$this->activeEmployeeId) {
-                    continue;
-                }
 
 
-                if ( !$vacationDate = EmployeeHistory::where('company_id',
-                    $this->companyId)
-                    ->where('employee_id',
-                        $this->activeEmployeeId)
-                    ->where('type', EmployeeHistory::TYPE_USED_VACATION)
-                    ->where('date',
-                        $dateObject->format('Y-m-d'))
-                    ->first()
-                ) {
-                    EmployeeHistory::insert([
-                        'date'        => $dateObject->format('Y-m-d'),
-                        'company_id'  => $this->selectedCompanyId,
-                        'employee_id' => $this->activeEmployeeId,
-                        'type'        => EmployeeHistory::TYPE_USED_VACATION,
-                        'days'   => 1,
-                        'created_at'  => now(),
-                        'updated_at'  => now(),
-                    ]);
-                }
+                    if (EmployeeHistory::where('date', $vacationWorkingDayInFile)->where('employee_id', $dbEmployee->id)->where('company_id', $dbCompany->id)->first()) {
+                        continue;
+                    }
 
-
-            }
-
-            $workingDaysTotal += $workingDays;
-            $holidaysTotal    += $holidays;
-            $daysTotal        += $days;
-
-
-            $newData[date('m.Y',
-                strtotime($buffer[0]))][] = [
-                'from'         => $from,
-                'to'           => $to,
-                'days'         => $days,
-                'holidays'     => $holidays,
-                'working-days' => $workingDays,
-            ];
-        }
-
-        $first = array_key_first($newData);
-        $last  = array_key_last($newData);
-
-        try {
-
-            foreach (
-                CarbonPeriod::create(Carbon::createFromFormat('m.Y',
-                    $first),
-                    Carbon::createFromFormat('m.Y',
-                        $last)) as $per
-            ) {
-                $newPer = $per->format('m.Y');
-
-                if ( !isset($newData[$newPer])) {
-                    $newData[$newPer][] = [
-                        'from'         => '-',
-                        'to'           => '-',
-                        'days'         => 0,
-                        'holidays'     => 0,
-                        'working-days' => 0,
-                    ];
+                    $e = new EmployeeHistory;
+                    $e->company_id = $dbCompany->id;
+                    $e->date = $vacationWorkingDayInFile;
+                    $e->employee_id = $dbEmployee->id;
+                    $e->days = 1;
+                    $e->type = EmployeeHistory::TYPE_USED_VACATION;
+                    $e->save();
                 }
             }
-
-        } catch (\Exception $exception) {
-
         }
 
-        uksort($newData,
-            function (
-                $a,
-                $b
-            ) {
-
-                $a = Carbon::createFromFormat('m.Y',
-                    $a);
-                $b = Carbon::createFromFormat('m.Y',
-                    $b);
-
-                return $a->greaterThan($b);
-            });
-
-        $newData['total'] = [
-            'from'         => '-',
-            'to'           => '-',
-            'days'         => $daysTotal,
-            'holidays'     => $holidaysTotal,
-            'working-days' => $workingDaysTotal,
-        ];
-
-        $this->data = $newData;
-
-        return $this->index($request);
+        return $this->index($request)->with('success', 'true')->with('form_message', 'done');
 
     }
+
 
     public function index(Request $request)
     {
         $data = $this->data;
 
-        $employees = Employee::where('company_id',
-            $this->selectedCompanyId)
-            ->get();
+        $employees = Employee::where('company_id', $this->selectedCompanyId)->get();
 
         $employees = $employees->prepend(new Employee)
-            ->map(function ($record)
-            {
+            ->map(function ($record) {
 
                 $record->active = $record->id == $this->activeEmployeeId;
 
                 return $record;
             });
 
-        return view('admin.vacations.index',
-            compact('data',
-                'employees'));
+        return view('admin.vacations.index', compact('data', 'employees'));
+    }
+
+    public function bufferFactory(float $accumulatedDays = 0.00): array
+    {
+        return [
+            'usedDate' => null,
+            'usedDays' => null,
+            'earnedDate' => null,
+            'earnedDays' => null,
+            'accumulatedDays' => $accumulatedDays,
+        ];
+    }
+
+    public function pushData(array $data): self
+    {
+
+
+        $this->data['items'][] = (object)$data;
+        $this->data['totalUsed'] -= $data['usedDays'];
+        $this->data['totalEarned'] += $data['earnedDays'];
+        return $this;
+    }
+
+    public function addEarned(){
+
     }
 
 }

@@ -75,6 +75,17 @@ class MainApp extends Component
             ],
 
         ],
+        // 'help' =>[
+        //     // 'items' => [
+        //     //     'edit-create-partner'            => [
+        //     //         'title'                     => 'Edit/Create partner',
+        //     //         'active'                    => false,
+        //     //         'available'                 => true,
+        //     //         'shouldAuth'                => true,
+        //     //         'shouldHaveSelectedCompany' => true,
+        //     //     ],
+        //     // ],
+        // ],
     ];
 
     public function render()

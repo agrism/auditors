@@ -152,7 +152,7 @@
                     <th width="">Code</th>
                     <th width="">Service/good</th>
                     <th width="120px">Unit</th>
-                    <th width="120">Quentity</th>
+                    <th width="120">Quantity</th>
                     <th width="120">Price</th>
                     <th width="120" class="currencyData">
                         <div id="invoice_curency_name"></div>

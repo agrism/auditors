@@ -36,7 +36,7 @@
                 <div class="modal-body" style1="margin-left: 15px;margin-right: 15px">
                     <div class="mb-1">
                         <label for="" style="font-size: 12px;display: block;">Name @if($selectedPartnerName)
-                                <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$selectedPartnerName}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>
+                                <a style="display: block; float: right" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$selectedPartnerName}}&search%5Bwhere%5D=name" target="_blank">Pārbaudīt firmas.lv</a>
                             @endif
                             <br><span style="color: green">VALID: Zeme, SIA or Bērziņš Dainis</span><br><span style="color:red;text-decoration: line-through;">NOT VALID: SIA Zeme or Dainis Bērziņš</span>
 
@@ -50,7 +50,7 @@
                     <div class="mb-1">
                         <label for="" style="font-size: 12px; display: block">Reg.No
                             @if($selectedPartnerRegNo)
-                                <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$selectedPartnerRegNo}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>
+                                <a style="display: block; float: right" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$selectedPartnerRegNo}}&search%5Bwhere%5D=code" target="_blank">Pārbaudīt firmas.lv</a>
                             @endif
                         </label>
                         <input type="text" class="form-control @error('selectedPartnerRegNo')is-invalid @enderror"

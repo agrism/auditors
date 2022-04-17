@@ -20,27 +20,6 @@ class ExportController extends Controller
 	{
 
 		$data = $request->all();
-////        $invoices = Company::find(9);
-//        $invoices = Invoice::where('company_id', $this->companyId )
-//            ->with(['partner'=>function($q){
-//                $q->select('id', 'name');
-//            } ])
-//            ->with('currency')
-//            ->with('invoiceLines.vat')
-//           ->get();
-//
-//        $invoices = $invoices->each(function($model){
-//            $model['DocPartnerName'] = $model->partner->name;
-//            $model['DocCurrency'] = $model->currency->name;
-////            $model['DocAmount'] = $model->amount_total;
-//
-//            $model->invoiceLines = $model->invoiceLines->each(function($lineModel) {
-//                $lineModel['LineVatRate'] = $lineModel->vat->rate;
-//                $lineModel['LineVatRate'] = $lineModel->vat->rate;
-//            });
-//        });
-//
-//        return $invoices;
 
 		$xml = new \DOMDocument('1.0', 'utf-8');
 
@@ -129,81 +108,6 @@ AND i.date <= '".$to."'
 GROUP BY il.invoice_id, il.vat_id
         "
 		);
-
-//        dd($invoices);
-
-//        echo 'ii';
-//        die;
-
-//        return $invoices;
-//
-//        $array = [];
-//        foreach ($invoices as $inv)
-//        {
-//            $model = new Invoice();
-//            foreach ((array)$inv as $k => $v)
-//            {
-////                echo '<pre>';
-////                var_dump($k);
-////                echo '</pre>';
-//                $model->setAttribute($k, $v);
-//            }
-//            $array[] = $model;
-////            var_dump($model->invoiceLines()->get());
-////            die;
-//        }
-////        return $array;
-////        return $invoices;
-//        $coll = new Collection($array);
-////        return $coll;
-//        echo '<pre>';
-//        var_dump($coll);
-//        echo '</pre>';
-//
-//        return 'k';
-
-
-//        $invoices = $invoices->each(function($invoice, $keyInvoice){
-////            echo '<pre>';
-////            var_dump($invoice['invoiceLines']);
-////            echo '<pre>';
-//            $invoice['invoiceLines']->each(function($line, $keyLine) use ($keyInvoice){
-//                $line[]['rrr'] = $keyLine;
-//            });
-//        });
-
-//        dd($invoices);
-
-//        foreach ($invoices as $key1 => $invoice)
-//        {
-//            foreach ($invoice['invoice_lines'] as $key2 => $line)
-//            {
-//                $invoices[$key1]['invoice_lines'][$key2]['sum'] = ROUND($line['sum'], 2);
-//                $invoices[$key1]['invoice_lines'][$key2]['debetAccount'] = '23xx';
-//                $invoices[$key1]['invoice_lines'][$key2]['creditAccount'] = '61xx ' . $invoice['details_self'];
-//                $invoices[$key1]['invoice_lines'][$key2]['LineSupplementaryNoticeID'] = '1';
-//
-//
-//                $invoices[$key1]['invoice_lines'][] = [
-//                    'sum'                       => ROUND(ROUND($line['sum'], 2) * $line['vat']['rate'], 2),
-//                    'vat'                       => $line['vat'],
-//                    'debetAccount'              => '23xx',
-//                    'creditAccount'             => '57xx',
-//                    'LineSupplementaryNoticeID' => '1',
-//                    'currency'                  => $line['currency']
-//
-//                ];
-//            }
-//
-//        }
-
-
-//die();
-//        echo '<pre>';
-//        var_dump( (array)$invoices[0] );
-//        echo '</pre>';
-//
-//        die;
 
 		$lastId = '';
 		foreach ($invoices as $invoice) {

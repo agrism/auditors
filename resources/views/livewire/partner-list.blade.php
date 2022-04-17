@@ -164,7 +164,7 @@
             <div class="mb-1">
                 <label for="" style="font-size: 12px;display: block">Name
                     @if($active['name'])
-                        <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$active['name']}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>
+                        <a style="display: block; float: right" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$active['name']}}&search%5Bwhere%5D=name" target="_blank">Pārbaudīt firmas.lv</a>
                     @endif
                 </label>
                 <input type="text" class="form-control @error('active.name')is-invalid @enderror"
@@ -176,7 +176,7 @@
             <div class="mb-1">
                 <label for="" style="font-size: 12px;display: block">Reg.No
                     @if($active['regNo'])
-                        <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$active['regNo']}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>
+                        <a style="display: block; float: right" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$active['regNo']}}&search%5Bwhere%5D=code" target="_blank">Pārbaudīt firmas.lv</a>
                     @endif
                 </label>
                 <input type="text" class="form-control @error('active.regNo')is-invalid @enderror"

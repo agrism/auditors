@@ -38,4 +38,9 @@ class Employee extends Model
             'registration_number' => 'required|min:2',
         ];
     }
+
+    public function employeeHistory()
+    {
+        return $this->hasMany(EmployeeHistory::class);
+    }
 }
