@@ -2,24 +2,28 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Employee
  *
- * @property int    id
- * @property string name
- * @property string role
- * @property int    company_id
- * @property string registration_number
+ * @property int $id
+ * @property string $name
+ * @property string $role
+ * @property int $company_id
+ * @property string $registration_number
+ * @property string $description
  */
 class EmployeeHistory extends Model
 {
+    use SoftDeletes, HasFactory;
 
-    const TYPE_USED_VACATION        = 'used_vacation';
-    const TYPE_ACCUMULATED_VACATION = 'accumulated_vacation';
-    const TYPE_START                = 'start';
-    const TYPE_END                  = 'end';
+    const TYPE_USED_VACATION = 'used_vacation';
+    const TYPE_EARNED_VACATION = 'earned_vacation';
+    const TYPE_START = 'start';
+    const TYPE_END = 'end';
 
     protected $table = 'employee_histories';
 
@@ -27,7 +31,8 @@ class EmployeeHistory extends Model
     public function hasStarted(
         int $companyId,
         int $employeeId
-    ) : bool {
+    ): bool
+    {
         return boolval($this->where('employee_id',
             $employeeId)
             ->where('type',
@@ -40,7 +45,8 @@ class EmployeeHistory extends Model
     public function hasEnded(
         int $companyId,
         int $employeeId
-    ) : bool {
+    ): bool
+    {
         return boolval($this->where('employee_id',
             $employeeId)
             ->where('company_id',
@@ -51,10 +57,11 @@ class EmployeeHistory extends Model
     }
 
     public function active(
-        int $companyId,
-        int $employeeId,
+        int    $companyId,
+        int    $employeeId,
         string $date
-    ) : bool {
+    ): bool
+    {
         return boolval($this->where('employee_id',
             $employeeId)
             ->where('company_id',
@@ -76,7 +83,8 @@ class EmployeeHistory extends Model
     public function getStartDate(
         int $companyId,
         int $employeeId
-    ) : ?string {
+    ): ?string
+    {
         return $this->where('company_id',
                 $companyId)
                 ->where('employee_id',
@@ -90,7 +98,8 @@ class EmployeeHistory extends Model
     private function getEndDate(
         int $companyId,
         int $employeeId
-    ) : ?string {
+    ): ?string
+    {
         return $this->where('company_id',
                 $companyId)
                 ->where('employee_id',

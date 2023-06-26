@@ -10,66 +10,73 @@ use Illuminate\Support\Arr;
 class MainApp extends Component
 {
 
-    public    $activeCompanyId = 'x';
-    protected $listeners       = ['changeActiveCompany' => 'setActiveCompanyId'];
-    private   $nav             = [
-        'companies'       => [
-            'title'                     => 'My companies',
-            'active'                    => true,
-            'available'                 => true,
-            'shouldAuth'                => true,
+    public $activeCompanyId = 'x';
+    protected $listeners = ['changeActiveCompany' => 'setActiveCompanyId'];
+    private $nav = [
+        'companies' => [
+            'title' => 'My companies',
+            'active' => true,
+            'available' => true,
+            'shouldAuth' => true,
             'shouldHaveSelectedCompany' => false,
 
         ],
-        'partners'        => [
-            'title'                     => 'Partners',
-            'active'                    => false,
-            'available'                 => true,
-            'shouldAuth'                => true,
+        'partners' => [
+            'title' => 'Partners',
+            'active' => false,
+            'available' => true,
+            'shouldAuth' => true,
             'shouldHaveSelectedCompany' => true,
         ],
-        'invoices'        => [
-            'title'                     => 'Invoices',
-            'active'                    => false,
-            'available'                 => true,
-            'shouldAuth'                => true,
+        'invoices' => [
+            'title' => 'Invoices',
+            'active' => false,
+            'available' => true,
+            'shouldAuth' => true,
             'shouldHaveSelectedCompany' => true,
         ],
-        'cash-expenses'   => [
-            'title'                     => 'Cash expenses',
-            'active'                    => false,
-            'available'                 => true,
-            'shouldAuth'                => true,
+        'cash-expenses' => [
+            'title' => 'Cash expenses',
+            'active' => false,
+            'available' => true,
+            'shouldAuth' => true,
             'shouldHaveSelectedCompany' => true,
         ],
         'personal-income' => [
-            'title'                     => 'Personal Income',
-            'active'                    => false,
-            'available'                 => false,
-            'shouldAuth'                => true,
+            'title' => 'Personal Income',
+            'active' => false,
+            'available' => false,
+            'shouldAuth' => true,
             'shouldHaveSelectedCompany' => true,
         ],
-        'other'           => [
+        'other' => [
             'items' => [
-                'company-data'            => [
-                    'title'                     => 'Company data',
-                    'active'                    => false,
-                    'available'                 => true,
-                    'shouldAuth'                => true,
+                'company-data' => [
+                    'title' => 'Company data',
+                    'active' => false,
+                    'available' => true,
+                    'shouldAuth' => true,
                     'shouldHaveSelectedCompany' => true,
                 ],
                 'other-payment-receivers' => [
-                    'title'                     => 'Other payment receivers',
-                    'active'                    => false,
-                    'available'                 => true,
-                    'shouldAuth'                => true,
+                    'title' => 'Other payment receivers',
+                    'active' => false,
+                    'available' => true,
+                    'shouldAuth' => true,
                     'shouldHaveSelectedCompany' => true,
                 ],
-                'settings'                => [
-                    'title'                     => 'Settings',
-                    'active'                    => false,
-                    'available'                 => false,
-                    'shouldAuth'                => true,
+                'settings' => [
+                    'title' => 'Settings',
+                    'active' => false,
+                    'available' => false,
+                    'shouldAuth' => true,
+                    'shouldHaveSelectedCompany' => true,
+                ],
+                'vacations' => [
+                    'title' => 'Vacation',
+                    'active' => false,
+                    'available' => true,
+                    'shouldAuth' => true,
                     'shouldHaveSelectedCompany' => true,
                 ],
             ],
@@ -92,15 +99,14 @@ class MainApp extends Component
     {
         foreach ($this->nav as $navSysName => &$nav) {
             if (
-            in_array($navSysName,
-                [
-                    'personal-income',
-                    // 'cash-expenses'
-                ])
+                in_array($navSysName,
+                    [
+                        'personal-income',
+                        // 'cash-expenses'
+                    ])
             ) {
                 // $nav['available'] = config('app.debug-available');
-                $nav['available'] = AuthUser::instance()
-                        ->userId() === 9;
+                $nav['available'] = AuthUser::instance()->userId() === 9;
             }
         }
 
@@ -166,7 +172,7 @@ class MainApp extends Component
 
     public function activateComponent(string $name)
     {
-        if ( !in_array($name,
+        if (!in_array($name,
             array_keys($this->nav()))
         ) {
 
@@ -188,7 +194,7 @@ class MainApp extends Component
                 $fullKey = $navSysName;
             }
 
-            $fullKey = $fullKey.'.active';
+            $fullKey = $fullKey . '.active';
 
             if ($navSysName !== $name) {
 
@@ -224,45 +230,40 @@ class MainApp extends Component
     {
     }
 
-    public function getNav() : array
+    public function getNav(): array
     {
-        foreach ($this->nav as $key0 => &$nav){
-            if(isset($nav['shouldHaveSelectedCompany'])){
+        foreach ($this->nav as $key0 => &$nav) {
+            if (isset($nav['shouldHaveSelectedCompany'])) {
                 $nav['available'] = $nav['shouldHaveSelectedCompany'] ? AuthUser::instance()->selectedCompany() : true;
             }
 
             $isAtLeastOneItemAvailable = false;
 
-            foreach ($nav['items'] ?? [] as $key => $nav1){
-                if(isset($nav1['shouldHaveSelectedCompany'])){
+            foreach ($nav['items'] ?? [] as $key => $nav1) {
+                if (isset($nav1['shouldHaveSelectedCompany'])) {
                     $nav['items'][$key]['available'] = $nav1['shouldHaveSelectedCompany'] ? boolval(AuthUser::instance()->selectedCompany()) : true;
 
-                    if($nav['items'][$key]['available'] ){
+                    if ($nav['items'][$key]['available']) {
                         $isAtLeastOneItemAvailable = true;
                     }
                 }
             }
 
-            if($isAtLeastOneItemAvailable){
+            if ($isAtLeastOneItemAvailable) {
                 continue;
             }
 
-
-
-            if(isset($nav['items'])){
+            if (isset($nav['items'])) {
                 // dd($nav);
                 unset($this->nav[$key0]);
             }
-
         }
-
-
 
         return $this->nav;
     }
 
-    public function updating(){
+    public function updating()
+    {
         $this->dispatchBrowserEvent('open_event');
-
     }
 }

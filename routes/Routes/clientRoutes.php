@@ -83,18 +83,10 @@ Route::group(
 
         Route::get('cash-expenses/{id}', [
             'as' => 'cash-expenses.show',
-            'uses'=> 'CashExpenseController@show',
+            'uses' => 'CashExpenseController@show',
         ]);
     });
-
-
 });
-Route::group(
-    [
-        'prefix' => 'client',
-        'as' => 'client.',
-    ], function () {
+Route::group(['prefix' => 'client', 'as' => 'client.',], function () {
     Route::get('new', \App\Http\Livewire\MainApp::class)->name('new');
-
-}
-);
+});

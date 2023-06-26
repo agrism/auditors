@@ -119,7 +119,7 @@
         </div>
 
 
-        {{--        {{json_encode($this->nav)}}--}}
+{{--                {{json_encode($this->nav)}}--}}
         <div class="container">
             @if(!$companyId)
                 <livewire:company-list/>
@@ -137,7 +137,9 @@
                 <livewire:other.other-payment-receivers>
             @elseif($this->activeComponent() === 'personal-income')
                 <livewire:personal-income.personal-income-list>
-             @endif
+            @elseif($this->activeComponent() === 'other.vacations')
+                <livewire:vacations.vacation-summary>
+            @endif
 
         </div>
 

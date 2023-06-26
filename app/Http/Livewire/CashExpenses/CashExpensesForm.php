@@ -522,7 +522,7 @@ class CashExpensesForm extends Component
         }
 
 
-        $calc = VatCalculator::factory($this->expenseLine['amount_with_vat'] ?? 0.00,
+        $calc = VatCalculator::factory(floatval($this->expenseLine['amount_with_vat'] ?? 0.00),
             $this->expenseLine['vat_calculator_name'] ?? '')
             ->calculate();
 

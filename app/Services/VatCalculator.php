@@ -32,8 +32,8 @@ class VatCalculator
         float $amountWitVat,
         string $calcName = self::NO
     ) : self {
-        return new self($amountWitVat,
-            $calcName);
+        return new self($amountWitVat, $calcName);
+
     }
 
     public function getCalculator() : array

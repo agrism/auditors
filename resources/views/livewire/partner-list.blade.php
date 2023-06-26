@@ -188,7 +188,8 @@
                 <label for="" style="font-size: 12px; display: block;">VAT No
                     @if($active['vatNo'])
                         <?php
-                        $countryCode = preg_replace('/[^A-Z]/', '', $active['vatNo'] );
+//                        $countryCode = preg_replace('/[^A-Z]/', '', $active['vatNo'] );
+                        $countryCode = preg_replace('/[^A-Z]/', '', substr(trim($active['vatNo']), 0, 2));
                         if(strlen($countryCode) === 2){
                         $number = substr(trim($active['vatNo']), 2);
                         if($number){

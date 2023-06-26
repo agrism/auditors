@@ -56,7 +56,7 @@
                                 <?php
                                 // $countryCode = preg_replace('/[^A-Z]/', '', $selectedPartnerVatNo );
 
-                                $countryCode = substr($selectedPartnerVatNo, 0, 2);
+                                $countryCode = preg_replace('/[^A-Z]/', '', substr(trim($selectedPartnerVatNo), 0, 2));
                                 if(strlen($countryCode) === 2){
                                     // $number = substr(trim($selectedPartnerVatNo), 2);
                                     $number = substr(trim($selectedPartnerVatNo), 2);
