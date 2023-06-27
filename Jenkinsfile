@@ -8,7 +8,7 @@ pipeline {
     stage("Deploy to remote"){
         steps {
             sh 'ssh root@${staging_server} "mkdir -p /var/www/auditors.lv/${BUILDVERSION}"'
-            sh 'scp -r ${WORKSPACE}/* root@${staging_server}:/var/www/snipets.kilograms.lv/${BUILDVERSION}'
+            sh 'scp -r ${WORKSPACE}/* root@${staging_server}:/var/www/auditors.lv/${BUILDVERSION}'
 
             echo "Current build version :: $BUILDVERSION"
         }
