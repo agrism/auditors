@@ -16,7 +16,7 @@ pipeline {
     stage("run composer"){
         steps {
             sh '''
-                ssh root@${staging_server} "cd /var/www/auditors.lv/${BUILDVERSION} && composer install"
+                ssh root@${staging_server} "cd /var/www/auditors.lv/${BUILDVERSION} && composer install && npm run build"
             '''
         }
     }

@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->integer('is_admin')->nullable();
             $table->integer('is_developer')->nullable();
-            $table->timestamps()->default('0000-00-00 00:00:00');
+            $table->timestamps();
         });
     }
 
