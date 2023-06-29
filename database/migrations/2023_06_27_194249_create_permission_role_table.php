@@ -17,7 +17,7 @@ class CreatePermissionRoleTable extends Migration
             $table->unsignedInteger('permission_id');
             $table->unsignedInteger('role_id');
             $table->timestamp('cretaed_at')->useCurrent()->useCurrentOnUpdate();
-            $table->timestamp('updated_at')->default('0000-00-00 00:00:00');
+            $table->timestamp('updated_at');
         });
     }
 

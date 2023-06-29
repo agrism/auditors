@@ -24,8 +24,8 @@ class CreateInvoiceLines2Table extends Migration
             $table->integer('currency_id')->default(0);
             $table->float('price', 20, 3)->default(0.000);
             $table->integer('vat_id')->default(0);
-            $table->timestamps()->default('0000-00-00 00:00:00');
-            
+            $table->timestamps();
+
             $table->foreign('invoice_id', 'invoice_lines_2_ibfk_1')->references('id')->on('invoices');
             $table->foreign('vat_id', 'invoice_lines_2_ibfk_2')->references('id')->on('vats');
         });

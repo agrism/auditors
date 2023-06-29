@@ -17,7 +17,7 @@ class CreateRolesTable extends Migration
             $table->increments('id');
             $table->string('name', 50)->default('0');
             $table->string('label', 50)->default('0');
-            $table->timestamps()->default('0000-00-00 00:00:00');
+            $table->timestamps();
         });
     }
 

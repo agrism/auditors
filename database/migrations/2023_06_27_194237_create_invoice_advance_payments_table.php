@@ -16,7 +16,7 @@ class CreateInvoiceAdvancePaymentsTable extends Migration
         Schema::create('invoice_advance_payments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('invoice_id')->nullable();
-            $table->date('date')->default('0000-00-00');
+            $table->date('date')->nullable();
             $table->string('details', 255)->nullable();
             $table->float('amount', 20, 2)->nullable();
             $table->timestamps();

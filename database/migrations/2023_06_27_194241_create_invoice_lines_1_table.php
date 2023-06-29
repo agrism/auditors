@@ -24,7 +24,7 @@ class CreateInvoiceLines1Table extends Migration
             $table->integer('currency_id')->default(0);
             $table->float('price', 10, 3)->default(0.000);
             $table->integer('vat_id')->default(0);
-            $table->timestamps()->default('0000-00-00 00:00:00');
+            $table->timestamps();
         });
     }
 

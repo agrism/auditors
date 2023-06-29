@@ -16,8 +16,8 @@ class CreateInvoicesTable extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number', 50)->nullable();
-            $table->date('date')->default('0000-00-00');
-            $table->date('payment_date')->default('0000-00-00');
+            $table->date('date')->nullable();
+            $table->date('payment_date')->nullable();
             $table->integer('company_id')->nullable();
             $table->string('vat_number', 50)->nullable();
             $table->integer('partner_id')->nullable();
@@ -51,7 +51,7 @@ class CreateInvoicesTable extends Migration
             $table->float('amount_tatal_base_currency')->nullable();
             $table->boolean('is_locked')->nullable();
             $table->integer('locker_user_id')->nullable();
-            $table->timestamps()->default('0000-00-00 00:00:00');
+            $table->timestamps();
         });
     }
 

@@ -18,7 +18,7 @@ class CreatePermissionsTable extends Migration
             $table->string('name', 50)->nullable();
             $table->string('label', 50)->nullable();
             $table->timestamp('created_at')->useCurrent()->useCurrentOnUpdate();
-            $table->timestamp('updated_at')->default('0000-00-00 00:00:00');
+            $table->timestamp('updated_at');
         });
     }
 

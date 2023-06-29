@@ -24,6 +24,9 @@ class OtherPaymentReceivers extends Component
         'comment' => null,
     ];
 
+    protected $invoiceRepository;
+    protected $invoiceService;
+
     protected $paginationTheme = 'bootstrap';
 
     public $active = [

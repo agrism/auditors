@@ -71,7 +71,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
 	{
 		if(isset($invoice->amount_total) && isset($invoice->currency_rate) && isset($invoice->invoice_lines)){
 
-			$invoiceEURTotalAmount = ROUND($invoice->amount_total / $invoice->currency_rate, 2);
+			$invoiceEURTotalAmount = ROUND($invoice->amount_total / ($invoice->currency_rate ?: 1), 2);
 
             $invoiceEURWithoutVatAmount = 0;
 
@@ -79,7 +79,7 @@ class InvoiceExport implements FromCollection, WithMapping, WithHeadings, WithCo
                 $invoiceEURWithoutVatAmount += ($line->quantity * $line->price);
             }
 
-            $invoiceEURWithoutVatAmount = ROUND($invoiceEURWithoutVatAmount / $invoice->currency_rate, 2);
+            $invoiceEURWithoutVatAmount = ROUND($invoiceEURWithoutVatAmount / ($invoice->currency_rate ?: 1), 2);
 
 			$invoiceEURVatAmount = $invoiceEURTotalAmount - $invoiceEURWithoutVatAmount;
 

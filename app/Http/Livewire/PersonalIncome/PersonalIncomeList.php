@@ -41,7 +41,7 @@ class PersonalIncomeList extends Component
     }
 
     public function boot(){
-        dd(1);
+//        dd(1);
     }
 
 
