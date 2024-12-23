@@ -46,7 +46,7 @@ class CreateInvoicesTable extends Migration
             $table->integer('currency_id')->nullable();
             $table->integer('structuralunit_id')->nullable();
             $table->integer('invoicetype_id')->nullable();
-            $table->float('currency_rate')->nullable();
+            $table->float('currency_rate', 8, 5)->nullable();
             $table->float('amount_total')->nullable();
             $table->float('amount_tatal_base_currency')->nullable();
             $table->boolean('is_locked')->nullable();

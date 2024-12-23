@@ -492,7 +492,7 @@ class CashExpensesForm extends Component
                     ->where('id',
                         $this->expenseLine['partner_id'])
                     ->where(function($q){
-                        $q->whereNull('vat_number')->orWhereRaw(DB::raw('length(vat_number) < 10'));
+                        $q->whereNull('vat_number')->orWhereRaw('length(vat_number) < ?', [10]);
                     })
                     ->first()
                 ) {
@@ -536,16 +536,16 @@ class CashExpensesForm extends Component
                     $this->expenseLine['id'])
                 ->update([
                     'no'                  => intval($this->expenseLine['no']),
-                    'date'                => $date,
-                    'partner_id'          => $this->expenseLine['partner_id'],
-                    'document_no'         => $this->expenseLine['document_no'],
-                    'amount_with_vat'     => $this->expenseLine['amount_with_vat'],
-                    'budget_id'           => $this->expenseLine['budget_id'],
-                    'account_id'          => $this->expenseLine['account_id'],
-                    'description'         => $this->expenseLine['description'],
+                    'date'                => $date ?: null,
+                    'partner_id'          => $this->expenseLine['partner_id'] ?? null,
+                    'document_no'         => $this->expenseLine['document_no'] ?: null,
+                    'amount_with_vat'     => $this->expenseLine['amount_with_vat'] ?: null,
+                    'budget_id'           => $this->expenseLine['budget_id'] ?: null,
+                    'account_id'          => $this->expenseLine['account_id'] ?: null,
+                    'description'         => $this->expenseLine['description'] ?: null,
                     'amount_vat'          => $calc->getVat(),
                     'amount_without_vat'  => $calc->getAmountWithOutVat(),
-                    'vat_calculator_name' => $this->expenseLine['vat_calculator_name'],
+                    'vat_calculator_name' => $this->expenseLine['vat_calculator_name'] ?:null,
                     'updated_at'          => date('Y-m-d H:i:s'),
                     'vat_calculation'     => $calc->export(),
                 ]);

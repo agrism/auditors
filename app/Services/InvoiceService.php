@@ -135,7 +135,7 @@ class InvoiceService
 
 				$array = [];
 				$array['code'] = substr(($data['code'][$key] ?? ''), 0, 15);
-				$array['title'] = $data['title'][$key] ?? null;
+				$array['title'] = substr($data['title'][$key] ?? null, 0, 350);
 				$array['unit_id'] = $data['unit_id'][$key] ?? null;
 				$array['price'] = floatval($data['price'][$key] ?? null);
 				$array['quantity'] = floatval($data['quantity'][$key] ?? null);

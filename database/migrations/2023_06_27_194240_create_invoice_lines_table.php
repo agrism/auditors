@@ -18,7 +18,7 @@ class CreateInvoiceLinesTable extends Migration
             $table->unsignedInteger('invoice_id')->default(0);
             $table->integer('product_id')->default(0);
             $table->string('code', 20)->nullable();
-            $table->string('title')->nullable();
+            $table->string('title', 350)->nullable();
             $table->unsignedInteger('unit_id')->nullable();
             $table->float('quantity')->default(0);
             $table->integer('currency_id')->default(0);
