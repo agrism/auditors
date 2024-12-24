@@ -19,6 +19,7 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
+            rm -f bootstrap/cache/*.php
             composer install --no-dev --optimize-autoloader
             npm install
             npm run build
