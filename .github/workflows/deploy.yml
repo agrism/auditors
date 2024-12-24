@@ -24,7 +24,7 @@ jobs:
             echo "Checking bootstrap/cache directory..."
             ls -la bootstrap/cache/
 
-            # Force remove with sudo if needed
+            echo "Force remove with sudo if needed"
             sudo rm -f bootstrap/cache/*.php
 
             echo "Verifying removal..."
