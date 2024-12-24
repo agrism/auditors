@@ -19,15 +19,17 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
+
+            php artisan optimize:clear
             rm -f bootstrap/cache/*.php
+
             composer install --no-dev --optimize-autoloader
             npm install
             npm run build
-            php artisan cache:clear
-            php artisan config:clear
+
             php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+
+            php artisan optimize
+            php artisan event:cache
 
             echo "🚀 Application deployed!"
