@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ForClient;
 use App\Services\InvoiceService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -7,19 +8,17 @@ use Illuminate\Support\Facades\Route;
 Route::get(
     '/', [
         'middleware' => 'auth', function () {
-
             if (Auth::check()) {
                 return redirect()->route('client.index');
             }
 
             return redirect()->route('login');
-
         },
     ]
 );
 
 
-Route::get('test', function(\App\Services\InvoiceService $invoiceService){
+Route::get('test', function (InvoiceService $invoiceService) {
     $invoiceService->fillInvoiceData();
 });
 
@@ -32,3 +31,15 @@ Route::get('logout', ['as' => 'logout', 'uses' => 'App\\Http\\Controllers\\HomeC
 require(app_path() . '/../routes/Routes/clientRoutes.php');
 require(app_path() . '/../routes/Routes/adminRoutes.php');
 require(app_path() . '/../routes/Routes/apiRoutes.php');
+
+Route::group(
+    [
+        'middleware' => [ForClient::class],
+        'prefix' => 'private',
+        'as' => 'private.',
+    ], function () {
+        Route::get('/', function(){
+           echo 'v2 coming soon!';
+        })->name('index');
+    }
+);

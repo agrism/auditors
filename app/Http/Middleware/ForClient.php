@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Services\SelectedCompanyService;
 use Closure;
 use Auth;
-use Illuminate\Support\Facades\App;
 
 class ForClient
 {
@@ -22,6 +21,10 @@ class ForClient
 		if (!Auth::check()) {
 			return redirect()->route('login');
 		}
+
+        if(str_starts_with($request->route()->getName(), 'private')){
+            return $next($request);
+        }
 
 		// ja ejam uz citiem routem izņemot client.companies.index - lai nebūtu redireckts loopā
 		// un uz client.companies.show - kas, piešķir ID
