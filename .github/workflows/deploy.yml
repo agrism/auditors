@@ -20,16 +20,24 @@ jobs:
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
 
-            php artisan optimize:clear
-            rm -f bootstrap/cache/*.php
+            # Debug check
+            echo "Checking bootstrap/cache directory..."
+            ls -la bootstrap/cache/
+
+            # Force remove with sudo if needed
+            sudo rm -f bootstrap/cache/*.php
+
+            echo "Verifying removal..."
+            ls -la bootstrap/cache/
 
             composer install --no-dev --optimize-autoloader
             npm install
             npm run build
 
+            php artisan optimize:clear
             php artisan migrate --force
-
-            php artisan optimize
+            php artisan config:cache
+            php artisan view:cache
             php artisan event:cache
 
             echo "🚀 Application deployed!"
