@@ -79,7 +79,7 @@
                                                    name="password" placeholder="Password">
                                         </div>
                                         <div class="row">
-                                            <button class="btn btn-warning btn-user btn-block">Login</button>
+                                            <button class="btn btn-primary btn-user btn-block">Login</button>
                                         </div>
 
                                     </form>
