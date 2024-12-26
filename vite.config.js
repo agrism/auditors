@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
     plugins: [
@@ -8,17 +7,5 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
-        viteStaticCopy({
-            targets: [
-                {
-                    src: 'resources/admin-assets/*',
-                    dest: 'admin-assets'
-                },
-                {
-                    src: 'resources/virtual-select/*',
-                    dest: 'virtual-select'
-                },
-            ]
-        })
     ],
 });

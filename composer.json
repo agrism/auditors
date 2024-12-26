@@ -14,13 +14,14 @@
         "laravel/tinker": "^2.8",
         "laravelcollective/html": "^6.4",
         "livewire/livewire": "^2.12",
-        "maatwebsite/excel": "^3.1"
+        "maatwebsite/excel": "^3.1",
+        "mauricius/laravel-htmx": "^0.7.0"
     },
     "require-dev": {
         "bennett-treptow/laravel-migration-generator": "^4.3",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
-        "laravel/sail": "^1.18",
+        "laravel/sail": "^1.39",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.1",
