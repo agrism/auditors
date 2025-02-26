@@ -150,7 +150,7 @@
                 <table class="table table-hover table-condensed ">
                     <thead>
                     <th width="">Code</th>
-                    <th width="">Service/good</th>
+                    <th width="">Service/good1</th>
                     <th width="120px">Unit</th>
                     <th width="120">Quantity</th>
                     <th width="120">Price</th>
@@ -499,7 +499,8 @@
                     '9': 0,
                     '10': 0,
                     '11': 0,
-                    '12': 0
+                    '12': 0,
+                    '13': 0
                 };
                 var invoiceTotatWithOutVatForSpecificVatRateBaseCurrency = {
                     '1': 0,
@@ -513,7 +514,8 @@
                     '9': 0,
                     '10': 0,
                     '11': 0,
-                    '12': 0
+                    '12': 0,
+                    '13': 0
                 };
 
                 var invoiceTotalCurency = 0;
