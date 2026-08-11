@@ -90,6 +90,10 @@ class InvoiceService
 	{
 		$data = $request->all();
 
+        if(!empty($data['details1'])){
+            $data['details1'] = substr($data['details1'] ?? '', 0, 255);
+        }
+
 		$data['company_id'] = $company->id;
 
 		if (isset($data['bank_id']) && $data['bank_id']) {
