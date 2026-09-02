@@ -86,7 +86,33 @@
             color: #804000;
             background-color: #fff;
             border-color: #006633;
-            box-shadow: 0 0 0 0.2rem rgba(0, 102, 51, 0.25);
+        .invoice-lines-table td {
+            padding: 4px 3px !important;
+            vertical-align: middle !important;
+        }
+        .invoice-lines-table input.form-control,
+        .invoice-lines-table select.form-select,
+        .invoice-lines-table select.form-control,
+        .invoice-lines-table textarea.form-control {
+            height: 34px !important;
+            min-height: 34px !important;
+            max-height: 34px !important;
+            padding: 4px 8px !important;
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+            box-sizing: border-box !important;
+        }
+        .invoice-lines-table textarea.form-control {
+            resize: none !important;
+            overflow: hidden !important;
+        }
+        .invoice-lines-table .remove-line {
+            height: 34px !important;
+            width: 34px !important;
+            padding: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
     </style>
 @stop
@@ -195,7 +221,7 @@
 </div>
 
 <div class="table-responsive mb-2">
-    <table class="table table-modern align-middle mb-0">
+    <table class="table table-modern align-middle mb-0 invoice-lines-table">
         <thead>
         <tr class="bg-slate-50">
             <th style="width: 100px;">Kods</th>
@@ -217,33 +243,33 @@
             @foreach($invoice->invoiceLines as $line)
                 <tr>
                     <td>
-                        {!! Form::text('code[]', isset($line) ? $line['code'] : null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm input-sm line_code line-1 text-end', 'placeholder'=>'Kods'] ) !!}
+                        {!! Form::text('code[]', isset($line) ? $line['code'] : null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm line_code line-1 text-end', 'placeholder'=>'Kods'] ) !!}
                     </td>
                     <td>
                         {!! Form::hidden('line_id[]', $line->id) !!}
-                        {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'height: 32px; min-width:200px','class'=>'form-control form-control-sm input-sm line_title line-1', 'placeholder'=>'Nosaukums'] ) !!}
+                        {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'height: 34px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
                     </td>
                     <td>
-                        {!! Form::select('unit_id[]', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_unit line-1 text-end'] ) !!}
+                        {!! Form::select('unit_id[]', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
                     </td>
 
                     <td>
-                        {!! Form::text('quantity[]', isset($line) ? $line['quantity'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_quantity line-1 text-end', 'placeholder'=>'0'] ) !!}
+                        {!! Form::text('quantity[]', isset($line) ? $line['quantity'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm line_quantity line-1 text-end', 'placeholder'=>'0'] ) !!}
                     </td>
                     <td>
-                        {!! Form::text('price[]', isset($line) ? $line['price'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_price line-1 text-end', 'placeholder'=>'0.00'] ) !!}
+                        {!! Form::text('price[]', isset($line) ? $line['price'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm line_price line-1 text-end', 'placeholder'=>'0.00'] ) !!}
                     </td>
                     <td class="currencyData">
-                        {!! Form::text('total[]',  isset($line) ? ROUND($line['price'] * $line['quantity'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm input-sm line_total line-1 text-end ', 'placeholder'=>'0.00', 'readonly'] ) !!}
+                        {!! Form::text('total[]',  isset($line) ? ROUND($line['price'] * $line['quantity'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm line_total line-1 text-end ', 'placeholder'=>'0.00', 'readonly'] ) !!}
                     </td>
                     <td>
-                        {!! Form::text('total_base_currency[]',  isset($line) ? ROUND($line['price'] * $line['quantity'] * $line['currency_rate'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm input-sm line_total_base_currency line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
+                        {!! Form::text('total_base_currency[]',  isset($line) ? ROUND($line['price'] * $line['quantity'] * $line['currency_rate'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm line_total_base_currency line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
                     </td>
                     <td>
-                        {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,isset($line) ? $line['vat_id'] : null , ['style'=>'min-width:70px', 'class'=>'form-control form-control-sm input-sm line_vat_id line-1'] ) !!}
+                        {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,isset($line) ? $line['vat_id'] : null , ['style'=>'min-width:70px', 'class'=>'form-select form-select-sm line_vat_id line-1'] ) !!}
                     </td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 remove-line" title="Dzēst rindu">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-line" title="Dzēst rindu">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
@@ -254,32 +280,32 @@
         {{-- empty line starts --}}
         <tr id="line-empty-div" class="d-none">
             <td>
-                {!! Form::text('code[]', null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm input-sm line_code line-1 text-end', 'placeholder'=>'Kods'] ) !!}
+                {!! Form::text('code[]', null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm line_code line-1 text-end', 'placeholder'=>'Kods'] ) !!}
             </td>
             <td>
                 {!! Form::hidden('line_id[]', null) !!}
-                {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'height: 32px', 'class'=>'form-control form-control-sm input-sm line_title line-1', 'placeholder'=>'Nosaukums'] ) !!}
+                {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'height: 34px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
             </td>
             <td>
-                {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id , ['class'=>'form-control form-control-sm input-sm line_unit line-1 text-end'] ) !!}
+                {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id , ['class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
             </td>
             <td>
-                {!! Form::text('quantity[]', null , ['class'=>'form-control form-control-sm input-sm line_quantity line-1 text-end', 'placeholder'=>'0'] ) !!}
+                {!! Form::text('quantity[]', null , ['class'=>'form-control form-control-sm line_quantity line-1 text-end', 'placeholder'=>'0'] ) !!}
             </td>
             <td>
-                {!! Form::text('price[]', null , ['class'=>'form-control form-control-sm input-sm line_price line-1 text-end', 'placeholder'=>'0.00'] ) !!}
+                {!! Form::text('price[]', null , ['class'=>'form-control form-control-sm line_price line-1 text-end', 'placeholder'=>'0.00'] ) !!}
             </td>
             <td class="currencyData">
-                {!! Form::text('total[]', null , ['class'=>'form-control form-control-sm input-sm line_total line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
+                {!! Form::text('total[]', null , ['class'=>'form-control form-control-sm line_total line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
             </td>
             <td>
-                {!! Form::text('total_base_currency[]', null , ['class'=>'form-control form-control-sm input-sm line_total_base_currency line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
+                {!! Form::text('total_base_currency[]', null , ['class'=>'form-control form-control-sm line_total_base_currency line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
             </td>
             <td>
-                {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,$vats[0]->id , ['class'=>'form-control form-control-sm input-sm line_vat_id line-1'] ) !!}
+                {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,$vats[0]->id , ['class'=>'form-select form-select-sm line_vat_id line-1'] ) !!}
             </td>
             <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 remove-line" title="Dzēst rindu">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-line" title="Dzēst rindu">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </td>
