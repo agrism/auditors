@@ -107,6 +107,11 @@ class BackupDatabaseToGoogleDrive extends Command
 
     private function sendNotificationEmail(array $details): void
     {
+        // Only send notification emails in production environment unless forced
+        if (!app()->environment('production', 'prod') && !$this->option('force')) {
+            return;
+        }
+
         $recipient = config('services.google_drive.notification_email', '7924@inbox.lv');
         if (!$recipient) {
             return;
