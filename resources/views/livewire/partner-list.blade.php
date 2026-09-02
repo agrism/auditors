@@ -79,51 +79,55 @@
                         <table class="table table-modern align-middle mb-0">
                             <thead>
                             <tr>
-                                <th>
+                                <th style="min-width: 250px;">
                                     <x-column-title column="name" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Nosaukums"></x-column-title>
+                                </th>
+                                <th style="width: 200px;">
+                                    <x-column-title column="registration_number" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection"
+                                                    title="Reģistrācijas Nr."></x-column-title>
                                 </th>
                                 <th>
                                     <x-column-title column="address" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Adrese"></x-column-title>
                                 </th>
-                                <th>
-                                    <x-column-title column="registration_number" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection"
-                                                    title="Reģistrācijas Nr."></x-column-title>
-                                </th>
-                                <th style="width: 50px;"></th>
+                                <th style="width: 40px;"></th>
                             </tr>
                             </thead>
-                        <tbody>
-                        @forelse($partners as $partner)
-                            <tr class="line text-truncate {{ (preg_match('/copy/',$partner->id)) ? 'table-warning' : '' }}"
-                                wire:click="openEdit({{$partner->id}})"
-                                role="button"
-                                style="cursor: pointer;">
-                                <td class="text-truncate fw-medium">
-                                    {{ $partner->name }}
-                                </td>
-                                <td class="text-truncate text-muted">
-                                    {{ $partner->address }}
-                                </td>
-                                <td class="text-truncate">
-                                    <span class="badge bg-light text-dark border">{{ $partner->registration_number }}</span>
-                                </td>
-                                <td class="text-end">
-                                    <i class="fa-solid fa-chevron-right text-muted opacity-25"></i>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    <i class="fa-regular fa-folder-open fs-3 d-block mb-2 text-slate-400"></i>
-                                    Nav atrasts neviens partneris.
-                                </td>
-                            </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
+                            <tbody>
+                            @forelse($partners as $partner)
+                                <tr class="line text-truncate {{ (preg_match('/copy/',$partner->id)) ? 'table-warning' : '' }}"
+                                    wire:click="openEdit({{$partner->id}})"
+                                    role="button"
+                                    style="cursor: pointer;">
+                                    <td class="text-truncate">
+                                        <div class="fw-semibold text-slate-800">{{ $partner->name }}</div>
+                                    </td>
+                                    <td class="text-truncate">
+                                        @if(!empty($partner->registration_number))
+                                            <span class="font-monospace text-slate-700 fw-medium">{{ $partner->registration_number }}</span>
+                                        @else
+                                            <span class="text-muted small">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-truncate text-muted">
+                                        {{ $partner->address ?: '-' }}
+                                    </td>
+                                    <td class="text-end text-muted">
+                                        <i class="fa-solid fa-chevron-right opacity-25"></i>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        <i class="fa-regular fa-folder-open fs-3 d-block mb-2 text-slate-400"></i>
+                                        Nav atrasts neviens partneris.
+                                    </td>
+                                </tr>
+                            @endforelse
+                            </tbody>
+                        </table>
                 </div>
             </div>
             @if($partners->hasPages())
