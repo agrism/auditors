@@ -156,7 +156,7 @@ class GoogleDriveService
             throw new \RuntimeException("Could not open file for reading: {$filePath}");
         }
 
-        $response = $this->httpClient->post('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', [
+        $response = $this->httpClient->post('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true', [
             'headers' => [
                 'Authorization' => "Bearer {$token}",
             ],
@@ -211,6 +211,8 @@ class GoogleDriveService
                 'q' => $query,
                 'fields' => 'files(id, name, createdTime)',
                 'pageSize' => 50,
+                'supportsAllDrives' => 'true',
+                'includeItemsFromAllDrives' => 'true',
             ],
         ]);
 
@@ -219,7 +221,7 @@ class GoogleDriveService
 
         foreach ($data['files'] ?? [] as $file) {
             $fileId = $file['id'];
-            $this->httpClient->delete("https://www.googleapis.com/drive/v3/files/{$fileId}", [
+            $this->httpClient->delete("https://www.googleapis.com/drive/v3/files/{$fileId}?supportsAllDrives=true", [
                 'headers' => [
                     'Authorization' => "Bearer {$token}",
                 ],
