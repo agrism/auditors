@@ -23,6 +23,8 @@ class InvoiceList extends Component
     public $showModal = false;
 
     public $showInvoiceFom = false;
+    public $goToListAfterSave = true;
+    public $goToListWithoutSave = false;
 
     public $activeInvoiceId;
     public $activeInvoiceNo;

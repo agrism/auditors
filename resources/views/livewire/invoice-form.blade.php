@@ -1,3 +1,4 @@
+<div>
     <style>
         .invoice-lines-table td {
             padding: 4px 3px !important;
