@@ -66,6 +66,8 @@ class CashExpensesList extends Component
                 'ce.no',
                 'ce.date',
                 'empl.name',
+                DB::raw('(SELECT COALESCE(SUM(cel.amount_with_vat), 0) FROM cash_expense_lines cel WHERE cel.cash_expenses_id = ce.id) as total_amount'),
+                DB::raw('(SELECT COUNT(cel.id) FROM cash_expense_lines cel WHERE cel.cash_expenses_id = ce.id) as lines_count'),
             ])
             ->leftJoin('employees as empl',
                 'ce.employee_id',

@@ -322,6 +322,22 @@ h1, h2, h3, h4, h5, h6, .display-font {
     outline: none;
 }
 
+/* Standardized Small Form Controls & Buttons */
+.form-control-sm,
+.form-select-sm,
+.input-group-sm > .form-control,
+.input-group-sm > .form-select,
+.input-group-sm > .input-group-text,
+.input-group-sm > .btn,
+.filter-btn-sm {
+    padding: 0.35rem 0.65rem !important;
+    font-size: 0.85rem !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    line-height: 1.4 !important;
+    border-radius: var(--radius-sm) !important;
+}
+
 /* Modern Tables */
 .table-modern, .table {
     width: 100%;

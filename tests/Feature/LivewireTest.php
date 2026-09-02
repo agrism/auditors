@@ -67,4 +67,16 @@ class LivewireTest extends TestCase
         Livewire::test(PartnerList::class, ['activeCompanyId' => $company->id])
             ->assertStatus(200);
     }
+
+    public function test_livewire_cash_expenses_list(): void
+    {
+        $user = $this->getTestUser();
+        $company = $this->getTestCompany();
+
+        $this->actingAs($user);
+        session(['companyId' => $company->id]);
+
+        Livewire::test(\App\Http\Livewire\CashExpenses\CashExpensesList::class)
+            ->assertStatus(200);
+    }
 }

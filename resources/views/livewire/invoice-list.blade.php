@@ -123,10 +123,9 @@
                         <!-- Clear Filters Button -->
                         <div class="col-xl-1 col-lg-3 col-md-4">
                             <button type="button"
-                                    class="btn btn-sm btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-1"
+                                    class="btn btn-sm btn-outline-secondary filter-btn-sm w-100 d-inline-flex align-items-center justify-content-center gap-1"
                                     wire:click="clearFilterForm"
-                                    title="Notīrīt visus filtrus"
-                                    style="height: 31px;">
+                                    title="Notīrīt visus filtrus">
                                 <i class="fa-solid fa-rotate-left"></i>
                                 <span>{{ __('Notīrīt') }}</span>
                             </button>
