@@ -1,5 +1,5 @@
 <div>
-    <div wire:loading style="position: absolute">
+    <div wire:loading.delay wire:target="setActiveEmployeeId" style="position: absolute; z-index: 10;">
         <x-loading loading="true"></x-loading>
     </div>
 
@@ -25,6 +25,24 @@
                 @endif
             </div>
 
+            @if(!$activeEmployeeId)
+                <!-- Modern Business Search Bar -->
+                <div class="bg-slate-50 border-bottom px-4 py-3">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-6 col-lg-4">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-magnifying-glass text-primary-500"></i> {{ __('Meklēt darbinieku') }}
+                            </label>
+                            <input type="text"
+                                   id="vacationEmployeeSearch"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Ievadiet darbinieka vārdu..."
+                                   onkeyup="var val = this.value.toLowerCase(); document.querySelectorAll('#vacationTable tbody tr').forEach(function(r){ r.style.display = r.innerText.toLowerCase().includes(val) ? '' : 'none'; });">
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="card-body p-0">
                 @if($activeEmployeeId)
                     <div class="p-3">
@@ -32,7 +50,7 @@
                     </div>
                 @else
                     <div class="table-responsive">
-                        <table class="table table-modern align-middle mb-0">
+                        <table class="table table-modern align-middle mb-0" id="vacationTable">
                             <thead>
                                 <tr>
                                     <th style="width: 50px;">Nr.</th>

@@ -1,5 +1,5 @@
 <div>
-    <div wire:loading style="position: absolute">
+    <div wire:loading.delay wire:target="filter, new, openEdit, sortBy" style="position: absolute; z-index: 10;">
         <x-loading loading="true"></x-loading>
     </div>
 
@@ -12,68 +12,78 @@
                             <i class="fa-solid fa-money-bill-transfer fs-5"></i>
                         </div>
                         <div>
-                            <h5 class="mb-0 fw-bold">{{ __('Cash Expenses') }}</h5>
-                            <span class="small text-muted">{{ __('Manage company cash expense reports and print advance declarations') }}</span>
+                            <h5 class="mb-0 fw-bold">{{ __('Avansu norēķini') }}</h5>
+                            <span class="small text-muted">{{ __('Pārvaldiet uzņēmuma avansu norēķinus un izdrukājiet avansa deklarācijas') }}</span>
                         </div>
                     </div>
 
                     <button class="btn btn-modern btn-modern-primary btn-sm" wire:click="new()">
-                        <i class="fa-solid fa-plus me-1"></i> {{ __('New Cash Expense') }}
+                        <i class="fa-solid fa-plus me-1"></i> {{ __('Jauns avansa norēķins') }}
                     </button>
+                </div>
+
+                <!-- Modern Business Filter Bar -->
+                <div class="bg-slate-50 border-bottom px-4 py-3">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-regular fa-calendar text-primary-500"></i> {{ __('Datums') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.date"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Piem., 2026-09...">
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-hashtag text-primary-500"></i> {{ __('Dokumenta Nr.') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.no"
+                                   class="form-control form-control-sm bg-white font-monospace"
+                                   placeholder="Piem., 01/2026...">
+                        </div>
+                        <div class="col-lg-5 col-md-8">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-user text-primary-500"></i> {{ __('Persona / Saņēmējs') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.name"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Meklēt pēc personas vārda...">
+                        </div>
+                        <div class="col-lg-1 col-md-4">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-1"
+                                    wire:click="clearFilterForm"
+                                    title="Notīrīt filtru"
+                                    style="height: 31px;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>{{ __('Notīrīt') }}</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-modern align-middle mb-0">
                             <thead>
-                            <tr class="bg-slate-50 border-bottom">
-                                <td style="padding: 4px 8px;">
-                                    <input type="text"
-                                           wire:model="filter.date"
-                                           class="form-control form-control-sm"
-                                           placeholder="Filter Date"
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-                                <td style="padding: 4px 8px;">
-                                    <input type="text"
-                                           wire:model="filter.no"
-                                           class="form-control form-control-sm"
-                                           placeholder="Filter No."
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-                                <td style="padding: 4px 8px;">
-                                    <input type="text"
-                                           wire:model="filter.name"
-                                           class="form-control form-control-sm"
-                                           placeholder="Filter Person"
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-                                <td style="padding: 4px 8px; width: 140px;" class="text-end">
-                                    <button class="btn btn-sm btn-outline-secondary py-0 px-2"
-                                            wire:click="clearFilterForm"
-                                            title="Clear Filters">
-                                        <i class="fa-solid fa-xmark"></i> Clear
-                                    </button>
-                                </td>
-                            </tr>
                             <tr>
                                 <th>
                                     <x-column-title column="date" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection" title="Date"></x-column-title>
+                                                    :sortDirection="$sortDirection" title="Datums"></x-column-title>
                                 </th>
                                 <th>
                                     <x-column-title column="no" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection" title="No"></x-column-title>
+                                                    :sortDirection="$sortDirection" title="Numurs"></x-column-title>
                                 </th>
                                 <th>
                                     <x-column-title column="name" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection"
-                                                    title="Person"></x-column-title>
+                                                    title="Persona"></x-column-title>
                                 </th>
-                                <th class="text-end" style="width: 160px;">{{ __('Actions') }}</th>
+                                <th class="text-end" style="width: 160px;">{{ __('Darbības') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -93,33 +103,36 @@
                                     <td class="text-end" onclick="event.stopPropagation();">
                                         <a href="{{ route('client.cash-expenses.show', [$cashExpense->id, 'locale' => 'lv']) }}"
                                            target="_blank"
-                                           class="btn btn-sm btn-outline-danger py-1 px-2 me-1"
-                                           title="Print / PDF">
-                                            <i class="fa-solid fa-file-pdf me-1"></i> PDF
+                                           class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill bg-white shadow-xs fw-medium text-decoration-none me-1"
+                                           title="PDF (LV)">
+                                            <i class="fa-solid fa-file-pdf text-danger"></i> PDF
                                         </a>
-                                        <button class="btn btn-sm btn-outline-primary py-1 px-2"
+                                        <button class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 px-2.5 py-1 rounded-pill shadow-xs fw-semibold"
                                                 wire:click="openEdit({{$cashExpense->id}})"
-                                                title="Edit">
+                                                title="Labot">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
                                     </td>
                                 </tr>
-                                <tr class="@if($cashExpense->id !== $this->activeId) d-none @endif actions bg-slate-50 border-bottom">
+                                <tr class="@if($cashExpense->id !== $this->activeId) d-none @endif actions bg-primary-50 bg-opacity-25 border-bottom border-primary-100">
                                     <td colspan="4" class="p-3">
-                                        <div class="d-flex align-items-center justify-content-center gap-3">
+                                        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 py-1">
                                             <a href="{{ route('client.cash-expenses.show', [$cashExpense->id, 'locale' => 'lv']) }}"
                                                target="_blank"
-                                               class="btn btn-modern btn-modern-secondary btn-sm">
-                                                <i class="fa-solid fa-file-pdf text-danger me-1"></i> {{ __('Print / Download PDF (LV)') }}
+                                               class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium text-decoration-none">
+                                                <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                <span>{{ __('PDF LV') }}</span>
                                             </a>
                                             <a href="{{ route('client.cash-expenses.show', [$cashExpense->id, 'locale' => 'en']) }}"
                                                target="_blank"
-                                               class="btn btn-modern btn-modern-secondary btn-sm">
-                                                <i class="fa-solid fa-file-pdf text-danger me-1"></i> {{ __('Print / Download PDF (EN)') }}
+                                               class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium text-decoration-none">
+                                                <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                <span>{{ __('PDF EN') }}</span>
                                             </a>
-                                            <button class="btn btn-modern btn-modern-primary btn-sm"
+                                            <button class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill shadow-xs fw-semibold"
                                                     wire:click="openEdit({{$cashExpense->id}})">
-                                                <i class="fa-solid fa-pen-to-square me-1"></i> {{ __('Edit Report') }}
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                <span>{{ __('Labot norēķinu') }}</span>
                                             </button>
                                         </div>
                                     </td>
@@ -128,7 +141,7 @@
                                 <tr>
                                     <td colspan="4" class="text-center text-muted py-4">
                                         <i class="fa-regular fa-folder-open fs-3 d-block mb-2 text-slate-400"></i>
-                                        {{ __('No cash expenses found.') }}
+                                        {{ __('Nav atrasts neviens avansu norēķins.') }}
                                     </td>
                                 </tr>
                             @endforelse

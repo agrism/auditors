@@ -24,78 +24,95 @@
                 </button>
             </div>
 
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-modern align-middle mb-0">
-                        <thead>
-                        <tr class="bg-slate-50 border-bottom">
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model.debounce.500ms="filter.payment_receiver"
-                                       class="form-control form-control-sm"
-                                       placeholder="Filtrēt saņēmēju"
-                                       onchange="this.dispatchEvent(new InputEvent('input'))">
-                            </td>
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model.debounce.500ms="filter.bank"
-                                       class="form-control form-control-sm"
-                                       placeholder="Filtrēt banku"
-                                       onchange="this.dispatchEvent(new InputEvent('input'))">
-                            </td>
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model.debounce.500ms="filter.swift"
-                                       class="form-control form-control-sm"
-                                       placeholder="Filtrēt SWIFT"
-                                       onchange="this.dispatchEvent(new InputEvent('input'))">
-                            </td>
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model.debounce.500ms="filter.account_number"
-                                       class="form-control form-control-sm"
-                                       placeholder="Filtrēt kontu"
-                                       onchange="this.dispatchEvent(new InputEvent('input'))">
-                            </td>
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model.debounce.500ms="filter.comment"
-                                       class="form-control form-control-sm"
-                                       placeholder="Filtrēt komentāru"
-                                       onchange="this.dispatchEvent(new InputEvent('input'))">
-                            </td>
-                            <td style="padding: 4px 8px;" class="text-end">
-                                <button class="btn btn-sm btn-outline-secondary py-0 px-2"
-                                        wire:click="clearFilterForm"
-                                        title="Notīrīt filtru">
-                                    <i class="fa-solid fa-xmark"></i> Notīrīt
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <x-column-title column="payment_receiver" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection" title="Saņēmējs"></x-column-title>
-                            </th>
-                            <th>
-                                <x-column-title column="bank" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection" title="Banka"></x-column-title>
-                            </th>
-                            <th>
-                                <x-column-title column="swift" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection" title="SWIFT"></x-column-title>
-                            </th>
-                            <th>
-                                <x-column-title column="account_number" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection" title="Bankas konts"></x-column-title>
-                            </th>
-                            <th>
-                                <x-column-title column="comment" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection" title="Komentārs"></x-column-title>
-                            </th>
-                            <th style="width: 50px;"></th>
-                        </tr>
-                        </thead>
+                <!-- Modern Business Filter Bar -->
+                <div class="bg-slate-50 border-bottom px-4 py-3">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-user-tag text-primary-500"></i> {{ __('Saņēmējs') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.payment_receiver"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Meklēt saņēmēju...">
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-building-columns text-primary-500"></i> {{ __('Banka') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.bank"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Bankas nosaukums...">
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-bolt text-primary-500"></i> {{ __('SWIFT') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.swift"
+                                   class="form-control form-control-sm bg-white font-monospace"
+                                   placeholder="SWIFT kods...">
+                        </div>
+                        <div class="col-xl-2 col-lg-6 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-money-check text-primary-500"></i> {{ __('Bankas konts') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.account_number"
+                                   class="form-control form-control-sm bg-white font-monospace"
+                                   placeholder="LV00...">
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-8">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-comment text-primary-500"></i> {{ __('Komentārs') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.comment"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Piezīmes...">
+                        </div>
+                        <div class="col-xl-1 col-lg-2 col-md-4">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-1"
+                                    wire:click="clearFilterForm"
+                                    title="Notīrīt filtru"
+                                    style="height: 31px;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>{{ __('Notīrīt') }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <x-column-title column="payment_receiver" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Saņēmējs"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="bank" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Banka"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="swift" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="SWIFT"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="account_number" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Bankas konts"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="comment" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Komentārs"></x-column-title>
+                                </th>
+                                <th style="width: 50px;"></th>
+                            </tr>
+                            </thead>
                         <tbody>
                         @forelse($paymentReceivers as $receiver)
                             <tr class="line text-truncate {{ (preg_match('/copy/', $receiver->id)) ? 'table-warning' : '' }}"
