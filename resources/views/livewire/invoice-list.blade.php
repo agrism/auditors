@@ -13,8 +13,8 @@
                             <i class="fa-solid fa-file-invoice-dollar fs-5"></i>
                         </div>
                         <div>
-                            <h5 class="mb-0 fw-bold">{{ __('Invoice List') }}</h5>
-                            <span class="small text-muted">{{ __('Manage, create and filter company invoices') }}</span>
+                            <h5 class="mb-0 fw-bold">{{ __('Rēķinu saraksts') }}</h5>
+                            <span class="small text-muted">{{ __('Pārvaldiet, veidojiet un filtrējiet uzņēmuma rēķinus') }}</span>
                         </div>
                     </div>
 
@@ -39,128 +39,144 @@
                     </div>
                 </div>
 
+                <!-- Modern Business Filter Bar -->
+                <div class="bg-slate-50 border-bottom px-4 py-3">
+                    <div class="row g-2 align-items-end">
+                        <!-- Date Range Filter -->
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-regular fa-calendar text-primary-500"></i> {{ __('Datuma periods') }}
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <input type="text"
+                                       wire:model="filter.dateFrom"
+                                       class="form-control form-control-sm date bg-white"
+                                       readonly
+                                       id="dp3"
+                                       autocomplete="off"
+                                       placeholder="No"
+                                       onchange="this.dispatchEvent(new InputEvent('input'))">
+                                <span class="input-group-text bg-white text-muted px-1.5"><i class="fa-solid fa-arrow-right" style="font-size: 0.65rem;"></i></span>
+                                <input type="text"
+                                       wire:model="filter.dateTo"
+                                       class="form-control form-control-sm date bg-white"
+                                       readonly
+                                       id="dp4"
+                                       autocomplete="off"
+                                       placeholder="Līdz"
+                                       onchange="this.dispatchEvent(new InputEvent('input'))">
+                            </div>
+                        </div>
+
+                        <!-- Invoice Type Filter -->
+                        <div class="col-xl-2 col-lg-3 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-file-invoice text-primary-500"></i> {{ __('Rēķina veids') }}
+                            </label>
+                            <select wire:model="filter.typeId" class="form-select form-select-sm bg-white">
+                                <option value="">{{ __('- Visi veidi -') }}</option>
+                                @foreach($invoicetypes as $type)
+                                    <option value="{{$type->id}}" @if($type->id === $filter['typeId']) selected @endif>{{$type->title}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Structural Unit Filter -->
+                        <div class="col-xl-2 col-lg-3 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-sitemap text-primary-500"></i> {{ __('Struktūrvienība') }}
+                            </label>
+                            <select wire:model="filter.structId" class="form-select form-select-sm bg-white">
+                                <option value="">{{ __('- Visas struktūrv. -') }}</option>
+                                @foreach($structuralunits as $type)
+                                    <option value="{{$type->id}}" @if($type->id === $filter['structId']) selected @endif>{{$type->title}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Partner Filter -->
+                        <div class="col-xl-2 col-lg-4 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-handshake text-primary-500"></i> {{ __('Partneris') }}
+                            </label>
+                            <select wire:model="filter.partnerId" class="form-select form-select-sm bg-white">
+                                <option value="">{{ __('- Visi partneri -') }}</option>
+                                @foreach($partners as $partner)
+                                    <option value="{{$partner->id}}" @if($partner->id === $filter['partnerId']) selected @endif>{{$partner->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Description / Search -->
+                        <div class="col-xl-2 col-lg-5 col-md-8">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-magnifying-glass text-primary-500"></i> {{ __('Meklēt aprakstā') }}
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <input type="text"
+                                       wire:model.debounce.500ms="filter.details"
+                                       class="form-control form-control-sm bg-white"
+                                       placeholder="Ievadiet tekstu...">
+                            </div>
+                        </div>
+
+                        <!-- Clear Filters Button -->
+                        <div class="col-xl-1 col-lg-3 col-md-4">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-1"
+                                    wire:click="clearFilterForm"
+                                    title="Notīrīt visus filtrus"
+                                    style="height: 31px;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>{{ __('Notīrīt') }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-modern align-middle mb-0">
                             <thead>
-                            <tr class="bg-slate-50 border-bottom">
-                                    <td style="padding: 0;">
-                                    </td>
-                                    <td style="padding: 2px 0;max-width: 150px;min-width: 150px;">
-                                        <input type="text"
-                                               wire:model="filter.dateFrom"
-                                               class="form-control form-control-sm date"
-                                               readonly
-                                               id="dp3"
-                                               autocomplete="off"
-                                               placeholder="No"
-                                               style="font-size: 11px;padding: 0 8px; width: 50%; float: left"
-                                               onchange="this.dispatchEvent(new InputEvent('input'))"
-                                        >
-                                        <input type="text"
-                                               wire:model="filter.dateTo"
-                                               class="form-control form-control-sm date"
-                                               readonly
-                                               id="dp4"
-                                               autocomplete="off"
-                                               placeholder="Līdz"
-                                               style="font-size: 11px;padding: 0 8px; width: 50%;"
-                                               onchange="this.dispatchEvent(new InputEvent('input'))"
-                                        >
-                                    </td>
-                                    <td style="padding: 2px 0">
-                                        <select wire:model="filter.typeId"
-                                                class="form-control form-control-sm"
-                                                style="font-size: 11px;padding: 0 8px">
-                                            <option value="">- Veids -</option>
-                                            @foreach($invoicetypes as $type)
-                                                <option value="{{$type->id}}"
-                                                        @if($type->id === $filter['typeId']) selected @endif>{{$type->title}}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="padding: 2px 0;">
-                                        <select wire:model="filter.structId"
-                                                class="form-control form-control-sm"
-                                                style="font-size: 11px;padding: 0 8px">
-                                            <option value="">- Struktūrv. -</option>
-                                            @foreach($structuralunits as $type)
-                                                <option value="{{$type->id}}"
-                                                        @if($type->id === $filter['structId']) selected @endif>{{$type->title}}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="padding: 2px 0">
-                                        <select wire:model="filter.partnerId"
-                                                class="form-control form-control-sm "
-                                                style="font-size: 11px;padding: 0 8px">
-                                            <option value="">- Partneris -</option>
-                                            @foreach($partners as $partner)
-                                                <option value="{{$partner->id}}"
-                                                        @if($partner->id === $filter['partnerId']) selected @endif>{{$partner->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="padding: 2px 0">
-                                        <input type="text"
-                                               wire:model.debounce.500ms="filter.details"
-                                               class="form-control form-control-sm"
-                                               placeholder="Meklēt aprakstā"
-                                               style="font-size: 11px;padding: 0 8px;"
-                                        >
-                                    </td>
-                                    <td style="padding: 2px 10px">
-
-                                    </td>
-                                    <td></td>
-                                    <td style="padding: 3px">
-                                        <span class="fa-solid fa-xmark text-center text-danger"
-                                              style="padding: 3px; cursor: pointer;"
-                                              role="button"
-                                              title="Notīrīt filtru"
-                                              wire:click="clearFilterForm"
-                                        ></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        <x-column-title column="number" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Numurs"></x-column-title>
-                                    </th>
-                                    <th>
-                                        <x-column-title column="date" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Datums"></x-column-title>
-                                    </th>
-                                    <th>
-                                        <x-column-title column="invoicetypename" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Veids"></x-column-title>
-                                    </th>
-                                    <th>
-                                        <x-column-title column="structuralunitname" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection"
-                                                        title="Struktūrv."></x-column-title>
-                                    </th>
-                                    <th>
-                                        <x-column-title column="partnername" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection"
-                                                        title="Partneris"></x-column-title>
-                                    </th>
-                                    <th>
-                                        <x-column-title column="details_self" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection"
-                                                        title="Apraksts"></x-column-title>
-                                    </th>
-                                    <th>
-                                        <x-column-title column="currency_name" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection"
-                                                        title="Valūta"></x-column-title>
-                                    </th>
-                                    <th>
-                                        <x-column-title column="amount_total" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Summa"></x-column-title>
-                                    </th>
-                                </tr>
-                                </thead>
+                            <tr>
+                                <th>
+                                    <x-column-title column="number" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Numurs"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="date" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Datums"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="invoicetypename" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Veids"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="structuralunitname" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection"
+                                                    title="Struktūrv."></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="partnername" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection"
+                                                    title="Partneris"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="details_self" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection"
+                                                    title="Iekšējais komentārs"></x-column-title>
+                                </th>
+                                <th class="text-center">
+                                    <x-column-title column="currency_name" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection"
+                                                    title="Valūta"></x-column-title>
+                                </th>
+                                <th class="text-end">
+                                    <x-column-title column="amount_total" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Summa"></x-column-title>
+                                </th>
+                            </tr>
+                            </thead>
                                 <tbody>
 
 
