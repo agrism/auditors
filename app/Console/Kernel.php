@@ -12,7 +12,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('db:backup-google-drive')
+            ->dailyAt('02:00')
+            ->environments(['production', 'prod'])
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/backup.log'));
     }
 
     /**
