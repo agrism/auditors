@@ -11,10 +11,11 @@ class DatabaseBackupService
     /**
      * Create an SQL dump of the database.
      *
+     * @param string|null $database Specific database name (optional)
      * @param string|null $outputPath Optional destination path
      * @return string Full path to the generated .sql backup file
      */
-    public function dumpDatabase(?string $outputPath = null): string
+    public function dumpDatabase(?string $database = null, ?string $outputPath = null): string
     {
         $backupDir = storage_path('app/backups');
         if (!is_dir($backupDir)) {
@@ -26,7 +27,7 @@ class DatabaseBackupService
 
         $host = $dbConfig['host'] ?? '127.0.0.1';
         $port = $dbConfig['port'] ?? 3306;
-        $database = $dbConfig['database'] ?? 'auditors';
+        $database = $database ?? ($dbConfig['database'] ?? 'auditors');
         $username = $dbConfig['username'] ?? '';
         $password = $dbConfig['password'] ?? '';
 

@@ -95,7 +95,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Auditors.lv sistēmas atskaite</h1>
+            <h1>{{ $backupDetails['subject_name'] ?? 'Auditors.lv' }} sistēmas atskaite</h1>
         </div>
 
         <div class="content">
@@ -105,13 +105,17 @@
 
             <p style="font-size: 15px; line-height: 1.5; margin-top: 0;">
                 @if($backupDetails['success'] ?? false)
-                    MySQL datubāzes rezerves kopija ir veiksmīgi noģenerēta un saglabāta Google Drive mapē.
+                    MySQL datubāzes (<strong>{{ $backupDetails['database'] ?? 'auditors' }}</strong>) rezerves kopija ir veiksmīgi noģenerēta un saglabāta Google Drive mapē.
                 @else
                     Rezerves kopijas veidošanas procesā radās kļūda: <strong>{{ $backupDetails['error'] ?? 'Nezināma kļūda' }}</strong>
                 @endif
             </p>
 
             <table>
+                <tr>
+                    <th>Datubāze</th>
+                    <td><span class="code">{{ $backupDetails['database'] ?? '-' }}</span></td>
+                </tr>
                 <tr>
                     <th>Faila nosaukums</th>
                     <td><span class="code">{{ $backupDetails['file_name'] ?? '-' }}</span></td>
@@ -160,7 +164,7 @@
         </div>
 
         <div class="footer">
-            Šis ir automātisks paziņojums no Auditors.lv servera cron procesa.
+            Šis ir automātisks paziņojums no {{ $backupDetails['subject_name'] ?? 'Auditors.lv' }} servera cron procesa.
         </div>
     </div>
 </body>

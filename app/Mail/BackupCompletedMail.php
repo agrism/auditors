@@ -28,10 +28,11 @@ class BackupCompletedMail extends Mailable
     public function envelope(): Envelope
     {
         $status = $this->backupDetails['success'] ?? false ? '✓ Veiksmīgi' : '✗ Kļūda';
+        $appName = $this->backupDetails['subject_name'] ?? 'auditors.lv';
         $date = date('Y-m-d H:i');
 
         return new Envelope(
-            subject: "[Auditors.lv] Datubāzes rezerves kopija ({$status}) - {$date}",
+            subject: "[{$appName}] Datubāzes rezerves kopija ({$status}) - {$date}",
         );
     }
 

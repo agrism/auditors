@@ -14,6 +14,8 @@ class BackupDatabaseToGoogleDrive extends Command
      * @var string
      */
     protected $signature = 'db:backup-google-drive 
+                            {--database= : Specify database to backup (e.g. auditors or biathlon)}
+                            {--subject= : Custom subject/title for the email notification (e.g. biatlons.kilograms.lv)}
                             {--local-only : Only create local backup without uploading to Google Drive}
                             {--force : Force upload even if not in production environment}
                             {--keep= : Override default retention days for remote cleanup}';
@@ -23,12 +25,15 @@ class BackupDatabaseToGoogleDrive extends Command
      *
      * @var string
      */
-    protected $description = 'Create a compressed MySQL database backup and upload it to Google Drive (Production)';
+    protected $description = 'Create a MySQL database backup and upload it to Google Drive (Production)';
 
     public function handle(DatabaseBackupService $backupService, GoogleDriveService $driveService): int
     {
         $startTime = microtime(true);
-        $this->info('Starting database backup process...');
+        $targetDb = $this->option('database') ?: config('database.connections.mysql.database', 'auditors');
+        $subjectName = $this->option('subject') ?: ($targetDb === 'biathlon' ? 'biatlons.kilograms.lv' : 'auditors.lv');
+
+        $this->info("Starting database backup process for <comment>{$targetDb}</comment>...");
 
         // Verify production environment unless --force or --local-only is passed
         $isProduction = app()->environment('production', 'prod');
@@ -40,8 +45,8 @@ class BackupDatabaseToGoogleDrive extends Command
 
         try {
             // 1. Create SQL database dump
-            $this->info('Dumping database...');
-            $filePath = $backupService->dumpDatabase();
+            $this->info("Dumping database [{$targetDb}]...");
+            $filePath = $backupService->dumpDatabase($targetDb);
             $fileName = basename($filePath);
             $fileSize = round(filesize($filePath) / 1024 / 1024, 2);
 
@@ -77,6 +82,8 @@ class BackupDatabaseToGoogleDrive extends Command
             // 4. Send notification email
             $this->sendNotificationEmail([
                 'success' => true,
+                'subject_name' => $subjectName,
+                'database' => $targetDb,
                 'file_name' => $fileName,
                 'file_size_mb' => $fileSize,
                 'duration_seconds' => $duration,
@@ -95,6 +102,8 @@ class BackupDatabaseToGoogleDrive extends Command
             $duration = round(microtime(true) - $startTime, 2);
             $this->sendNotificationEmail([
                 'success' => false,
+                'subject_name' => $subjectName,
+                'database' => $targetDb,
                 'error' => $e->getMessage(),
                 'duration_seconds' => $duration,
                 'server_host' => gethostname(),
