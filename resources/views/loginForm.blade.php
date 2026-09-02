@@ -1,147 +1,73 @@
 @extends('client.layout.master')
 
 @section('navigation')
-
 @stop
 
 @section('content')
-
-    <?php /*
-<form method="POST" action="/auth/login">
-  {!! csrf_field() !!}
-
-
-  <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-        {!! Form::label('email', 'Email') !!}
-        {!! Form::text('email', old('email'), ['class' => 'form-control']) !!}
-        {{ $errors->first('email', '<p class="help-block">:message</p>') }}
-  </div>
-
-
-  <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-        {!! Form::label('password', 'Password') !!}
-        {!! Form::text('password', Null, ['class' => 'form-control']) !!}
-        {{ $errors->first('password', '<p class="help-block">:message</p>') }}
-  </div>
-
-
-
-  <div>
-    <button type="submit">Login</button>
-  </div>
-</form>
-
-*/?>
-
-
-    <!-- Button -->
-    <?php /*
-    <div class="form-group col-md-12">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-            <label class="col-md-12 control-label" for="singlebutton"></label>
-            <div class="col-md-12 center-block btn-group-vertical">
-                <a class="btn btn-block btn-social btn-facebook" href="{!! \URL::route('login.facebook') !!}">
-                    <i class="fa fa-facebook"></i> Sign in with Facebook
-                </a>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo-badge">
+                <i class="fa-solid fa-calculator"></i>
             </div>
+            <h2>Welcome Back</h2>
+            <p>Sign in to your accounting workspace</p>
         </div>
-    </div>
-    */ ?>
 
-    <!-- s -->
-    <div class="container">
-
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-
-            <div class="" style="position:relative; height: 100vh;">
-
-                <div class="card o-hidden border-0 shadow-lg p-3 mb-5 rounded"
-                     style="position: absolute;top: 50%;left:50%;transform: translate(-50%,-50%);width: 400px">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            {{--                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>--}}
-                            <div class="col-lg-12">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Sign in</h1>
-                                    </div>
-                                    <form class="user" method="post" action="/sign-in">
-                                        @csrf
-                                        <div class="row mb-3">
-                                            <input type="email" class="form-control form-control-user" name="email"
-                                                   aria-describedby="emailHelp" placeholder="Enter Email Address...">
-                                        </div>
-                                        <div class="row mb-3">
-                                            <input type="password" class="form-control form-control-user"
-                                                   name="password" placeholder="Password">
-                                        </div>
-                                        <div class="row">
-                                            <button class="btn btn-primary btn-user btn-block">Login</button>
-                                        </div>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        @if(session('error') || (isset($errors) && $errors->any()))
+            <div class="alert alert-danger d-flex align-items-center mb-4 py-2 px-3 rounded-3" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+                <div class="small">
+                    @if(session('error'))
+                        {{ session('error') }}
+                    @elseif(isset($errors) && $errors->any())
+                        {{ $errors->first() }}
+                    @endif
                 </div>
+            </div>
+        @endif
 
+        <form method="POST" action="/sign-in" class="mt-2">
+            @csrf
+            <div class="mb-3">
+                <label for="email" class="form-label small fw-semibold text-slate-700">Email Address</label>
+                <div class="input-icon-group">
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           value="{{ old('email') }}"
+                           class="form-control form-control-modern w-100 @if(isset($errors) && $errors->has('email')) is-invalid @endif"
+                           placeholder="name@company.com"
+                           required
+                           autofocus>
+                    <i class="fa-regular fa-envelope"></i>
+                </div>
             </div>
 
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="password" class="form-label small fw-semibold text-slate-700 mb-0">Password</label>
+                </div>
+                <div class="input-icon-group">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control form-control-modern w-100 @if(isset($errors) && $errors->has('password')) is-invalid @endif"
+                           placeholder="••••••••"
+                           required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2 fs-6">
+                <span>Sign In to Dashboard</span>
+                <i class="fa-solid fa-arrow-right ms-1"></i>
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-2 border-top">
+            <span class="small text-muted">&copy; {{ date('Y') }} Auditors.lv &bull; Financial & Accounting System</span>
         </div>
-
     </div>
-    <!-- f -->
-
-
-
-    <!-- Button -->
-    {{--<div class="form-group col-md-12">--}}
-    {{--    <div class="col-md-4"></div>--}}
-    {{--    <div class="col-md-4">--}}
-    {{--        <label class="col-md-12 control-label" for="singlebutton"></label>--}}
-    {{--        <div class="col-md-12 center-block btn-group-vertical">--}}
-    {{--            <a class="btn btn-block btn-social btn-linkedin" href="{!! \URL::route('login.linkedin') !!}">--}}
-    {{--                <i class="fa fa-linkedin"></i> Sign in with LinkedIn--}}
-    {{--            </a>--}}
-    {{--        </div>--}}
-    {{--    </div>--}}
-    {{--</div>--}}
-
-    <!-- Button -->
-    {{--<div class="form-group col-md-12">--}}
-    {{--    <div class="col-md-4"></div>--}}
-    {{--    <div class="col-md-4">--}}
-    {{--        <label class="col-md-12 control-label" for="singlebutton"></label>--}}
-    {{--        <div class="col-md-12 center-block btn-group-vertical">--}}
-    {{--            <a class="btn btn-block btn-social btn-twitter" href="{!! \URL::route('login.twitter') !!}">--}}
-    {{--                <i class="fa fa-twitter"></i> Sign in with Twitter--}}
-    {{--            </a>--}}
-    {{--        </div>--}}
-    {{--    </div>--}}
-    {{--</div>--}}
-
-    <!-- Button -->
-    {{--<div class="form-group col-md-12">--}}
-    {{--    <div class="col-md-4"></div>--}}
-    {{--    <div class="col-md-4">--}}
-    {{--        <label class="col-md-12 control-label" for="singlebutton"></label>--}}
-    {{--        <div class="col-md-12 center-block btn-group-vertical">--}}
-    {{--            <a class="btn btn-block btn-social btn-google-plus" href="{!! \URL::route('login.google') !!}">--}}
-    {{--                <i class="fa fa-google-plus"></i> Sign in with Google--}}
-    {{--            </a>--}}
-    {{--        </div>--}}
-    {{--    </div>--}}
-    {{--</div>--}}
-
-
-@stop
-
-@section('sidebar')
-    @parent
-
-
+</div>
 @stop

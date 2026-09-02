@@ -1,53 +1,119 @@
-<nav class="navbar navbar-inverse navbar-light bg faded">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">
-                <div class="fa fa-adn"></div>
-            </a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="{{ request()->routeIs('admin.home') ? 'active' : '' }}"><a
-                            href="{{ url(route('admin.home')) }}">{{ __('Companies') }}</a></li>
-                <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}"><a
-                            href="{{ url(route('admin.users.index')) }}">{{ __('Users') }}</a></li>
-                <li class="{{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}"><a
-                            href="{{ url(route('admin.invoices.index')) }}">{{ __('Invoices') }}</a></li>
+<nav class="navbar navbar-expand-lg navbar-dark navbar-modern sticky-top">
+    <div class="container-fluid px-3">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url(route('admin.home')) }}">
+            <span class="navbar-brand-badge bg-danger"><i class="fa-solid fa-shield-halved me-1"></i> Admin Panel</span>
+            <span class="text-white-50 small fw-normal d-none d-sm-inline">|</span>
+            <span class="small fw-semibold text-light">Auditors.lv</span>
+        </a>
 
-                <li class="dropdown">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="true">Export <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li class="{{ request()->routeIs('admin.export') ? 'active' : '' }}"><a
-                                    href="{{ url(route('admin.export')) }}">{{ __('Export data') }}</a></li>
-                        <li class="{{ request()->routeIs('admin.npi') ? 'active' : '' }}"><a
-                                    href="{{ url(route('admin.npi')) }}">{{ __('NPI') }}</a></li>
-                        <li class="{{ request()->routeIs('admin.working-hours.*') ? 'active' : '' }}"><a
-                                    href="{{ url(route('admin.working-hours.index')) }}">{{ __('Working hours') }}</a></li>
-                        <li class="{{ request()->routeIs('admin.vacations.*') ? 'active' : '' }}"><a
-                                    href="{{ url(route('admin.vacations.index')) }}">{{ __('Vacations') }}</a></li>
-                        <li class="{{ request()->routeIs('admin.vat.*') ? 'active' : '' }}"><a
-                                    href="{{ url(route('admin.vat.index')) }}">{{ __('Vat return') }}</a></li>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#adminNavbarContent" aria-controls="adminNavbarContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="adminNavbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.home') ? 'active' : '' }}"
+                       href="{{ url(route('admin.home')) }}">
+                        <i class="fa-solid fa-building me-1 opacity-75"></i> {{ __('Companies') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                       href="{{ url(route('admin.users.index')) }}">
+                        <i class="fa-solid fa-users me-1 opacity-75"></i> {{ __('Users') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}"
+                       href="{{ url(route('admin.invoices.index')) }}">
+                        <i class="fa-solid fa-file-invoice-dollar me-1 opacity-75"></i> {{ __('Invoices') }}
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ (request()->routeIs('admin.export') || request()->routeIs('admin.npi') || request()->routeIs('admin.working-hours.*') || request()->routeIs('admin.vacations.*') || request()->routeIs('admin.vat.*')) ? 'active' : '' }}"
+                       href="#"
+                       id="adminExportDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="fa-solid fa-file-export me-1 opacity-75"></i> {{ __('Export & Reports') }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0" aria-labelledby="adminExportDropdown">
+                        <li>
+                            <a class="dropdown-item py-2 {{ request()->routeIs('admin.export') ? 'active' : '' }}"
+                               href="{{ url(route('admin.export')) }}">
+                                <i class="fa-solid fa-download me-2 text-primary-400"></i> {{ __('Export data') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 {{ request()->routeIs('admin.npi') ? 'active' : '' }}"
+                               href="{{ url(route('admin.npi')) }}">
+                                <i class="fa-solid fa-receipt me-2 text-primary-400"></i> {{ __('NPI') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 {{ request()->routeIs('admin.working-hours.*') ? 'active' : '' }}"
+                               href="{{ url(route('admin.working-hours.index')) }}">
+                                <i class="fa-solid fa-business-time me-2 text-primary-400"></i> {{ __('Working hours') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 {{ request()->routeIs('admin.vacations.*') ? 'active' : '' }}"
+                               href="{{ url(route('admin.vacations.index')) }}">
+                                <i class="fa-solid fa-umbrella-beach me-2 text-primary-400"></i> {{ __('Vacations') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 {{ request()->routeIs('admin.vat.*') ? 'active' : '' }}"
+                               href="{{ url(route('admin.vat.index')) }}">
+                                <i class="fa-solid fa-percent me-2 text-primary-400"></i> {{ __('Vat return') }}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
-                <li class="dropdown {{ (request()->routeIs('admin.roles.*') || request()->routeIs('admin.permissions.*')) ? 'active' : '' }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="true">{{ __('Roles') }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li class="{{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"><a
-                                    href="{{ url(route('admin.roles.index')) }}">{{ __('Roles') }}</a></li>
-                        <li class="{{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}"><a
-                                    href="{{ url(route('admin.permissions.index')) }}">{{ __('Permissions') }}</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ (request()->routeIs('admin.roles.*') || request()->routeIs('admin.permissions.*')) ? 'active' : '' }}"
+                       href="#"
+                       id="adminRolesDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="fa-solid fa-user-shield me-1 opacity-75"></i> {{ __('Roles & Permissions') }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0" aria-labelledby="adminRolesDropdown">
+                        <li>
+                            <a class="dropdown-item py-2 {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
+                               href="{{ url(route('admin.roles.index')) }}">
+                                <i class="fa-solid fa-id-badge me-2 text-primary-400"></i> {{ __('Roles') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
+                               href="{{ url(route('admin.permissions.index')) }}">
+                                <i class="fa-solid fa-key me-2 text-primary-400"></i> {{ __('Permissions') }}
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>
 
-            <ul class="nav navbar-nav navbar-right">
-                <li class="{{ request()->routeIs('client.*') ? 'active' : '' }}"><a
-                            href="{{ url(route('client.index')) }}">Clientside</a></li>
-
-                <li><a href="{{ route('logout') }}">Logout</a></li>
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-info text-info px-3 py-1"
+                       href="{{ url(route('client.index')) }}">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Client Portal
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="{{ route('logout') }}" title="Log Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

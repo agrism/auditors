@@ -4,24 +4,31 @@
     </div>
 
     <div class="col-lg-12">
-        <div class="card card-default">
-            <div class="card-header">
-                Partner list
+        <div class="card card-modern shadow-sm border-0">
+            <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-3 bg-primary-50 text-primary-600 p-2 d-inline-flex">
+                        <i class="fa-solid fa-users-line fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">{{ __('Partner List') }}</h5>
+                        <span class="small text-muted">{{ __('Manage company partners, clients and suppliers') }}</span>
+                    </div>
+                </div>
 
-                <span class="" role="button"
+                <button class="btn btn-modern btn-modern-primary btn-sm"
+                        wire:click="openEdit('')"
+                        data-bs-toggle="modal"
+                        data-bs-target="#partnerEditModal_">
+                    <i class="fa-solid fa-plus me-1"></i> {{ __('Add Partner') }}
+                </button>
+            </div>
 
-                      wire:click="openEdit('')"
-                      data-bs-toggle="modal"
-                      data-bs-target="#partnerEditModal_"
-                >
-                        <span class="fa-plus fa"></span>
-                    </span>
-
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                            <tr style="background-color: lightblue;">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern align-middle mb-0">
+                        <thead>
+                        <tr class="bg-slate-50 border-bottom">
                                 <td style="padding: 2px 0;">
                                     <input type="text"
                                            wire:model="filter.name"

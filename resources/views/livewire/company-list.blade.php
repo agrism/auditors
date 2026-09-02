@@ -1,20 +1,54 @@
 <div>
-    <div class="card card-default">
-        <div class="card-header">
+    <div class="card card-modern shadow-sm border-0">
+        <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-3 bg-primary-50 text-primary-600 p-2 d-inline-flex">
+                    <i class="fa-solid fa-building-user fs-5"></i>
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-bold">{{ __('Select Active Company') }}</h5>
+                    <span class="small text-muted">{{ __('Choose the company profile you wish to manage') }}</span>
+                </div>
+            </div>
+            <span class="badge bg-slate-100 text-slate-700 px-3 py-2 rounded-pill fw-semibold">
+                {{ count($companies) }} {{ __('Available Companies') }}
+            </span>
+        </div>
 
-            <div class="table-responsive">
-                <h5>Select company:</h5>
-                <ul>
-                    @foreach($companies as $company)
-                        <li wire:click="setActiveCompanyId({{$company->id}})" role="button">
-                            <div
-                                    @if($company->id == \App\Services\AuthUser::instance()->selectedCompanyId()) style="background-color: limegreen; color: white" @endif
-                            >
-                                {{$company->title}}
+        <div class="card-body p-4">
+            <div class="companies-grid">
+                @foreach($companies as $company)
+                    <?php
+                    $isActive = ($company->id == \App\Services\AuthUser::instance()->selectedCompanyId());
+                    $initials = mb_substr(trim($company->title ?? 'CO'), 0, 2);
+                    ?>
+                    <div wire:click="setActiveCompanyId({{ $company->id }})"
+                         role="button"
+                         class="company-card @if($isActive) active @endif">
+                        <div class="company-avatar">
+                            {{ strtoupper($initials) }}
+                        </div>
+                        <div class="company-info text-truncate">
+                            <h6 class="text-truncate" title="{{ $company->title }}">{{ $company->title }}</h6>
+                            <p>
+                                @if(!empty($company->reg_number))
+                                    <span class="text-muted"><i class="fa-solid fa-hashtag me-1"></i>{{ $company->reg_number }}</span>
+                                @else
+                                    <span class="text-muted">{{ __('Company ID') }}: #{{ $company->id }}</span>
+                                @endif
+                            </p>
+                        </div>
+                        @if($isActive)
+                            <div class="company-card-check" title="Active">
+                                <i class="fa-solid fa-check"></i>
                             </div>
-                        </li>
-                    @endforeach
-                </ul>
+                        @else
+                            <div class="text-muted opacity-25 ms-auto">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>

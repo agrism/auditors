@@ -6,35 +6,44 @@
     <div class="col-lg-12">
 
         @if(!$showInvoiceFom)
-            <div class="card card-default">
-                <div class="card-header">
-                    Invoice list
+            <div class="card card-modern shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-3 bg-primary-50 text-primary-600 p-2 d-inline-flex">
+                            <i class="fa-solid fa-file-invoice-dollar fs-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">{{ __('Invoice List') }}</h5>
+                            <span class="small text-muted">{{ __('Manage, create and filter company invoices') }}</span>
+                        </div>
+                    </div>
 
-                    <span class="" role="button"
-                          wire:click="openNewInvoice">
-                        <span class="fa-plus fa"></span>
-                    </span>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-modern btn-modern-primary btn-sm"
+                                role="button"
+                                wire:click="openNewInvoice">
+                            <i class="fa-solid fa-plus me-1"></i> {{ __('New Invoice') }}
+                        </button>
 
-                    <span class="" role="button" style="float: right"
-                          wire:click="shortcutInvoiceOpen">
-                        Create fast record:
-                        <span class="fa-plus fa"></span>
-                    </span>
+                        <button class="btn btn-modern btn-modern-secondary btn-sm"
+                                role="button"
+                                wire:click="shortcutInvoiceOpen">
+                            <i class="fa-solid fa-bolt me-1 text-warning"></i> {{ __('Fast Record') }}
+                        </button>
 
-                    <span wire:click="export">
-                        <div class="fa fa-file-excel-o"
-                             data-bs-toggle="tooltip" data-bs-placement="left" title="EXPORT temporary not working"
-                             style="position:fixed;right:0px;padding: 11px; border: 1px solid black;cursor: pointer; background-color: #b6e8fa"></div>
-                    </span>
-                    <!-- /.card-heading -->
+                        <button class="btn btn-modern btn-modern-secondary btn-sm"
+                                wire:click="export"
+                                data-bs-toggle="tooltip" data-bs-placement="left" title="Export">
+                            <i class="fa-regular fa-file-excel text-success me-1"></i> {{ __('Export') }}
+                        </button>
+                    </div>
+                </div>
 
-                    {{--                {{$activeInvoiceId}}--}}
-
-                    <div class="panel-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover">
-                                <thead>
-                                <tr style="background-color: lightblue;">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                            <tr class="bg-slate-50 border-bottom">
                                     <td style="padding: 0;">
                                     </td>
                                     <td style="padding: 2px 0;max-width: 150px;min-width: 150px;">
