@@ -1,5 +1,5 @@
 <div>
-    <div wire:loading style="position: absolute">
+    <div wire:loading.delay wire:target="filter, savePartnerConfirm, sortBy" style="position: absolute; z-index: 10;">
         <x-loading loading="true"></x-loading>
     </div>
 
@@ -24,62 +24,77 @@
                 </button>
             </div>
 
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-modern align-middle mb-0">
-                        <thead>
-                        <tr class="bg-slate-50 border-bottom">
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model="filter.name"
-                                       class="form-control form-control-sm"
-                                       placeholder="Filtrēt pēc nosaukuma"
-                                       onchange="this.dispatchEvent(new InputEvent('input'))"
-                                >
-                            </td>
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model="filter.address"
-                                       class="form-control form-control-sm"
-                                       autocomplete="off"
-                                       placeholder="Filtrēt pēc adreses"
-                                       onchange="this.dispatchEvent(new InputEvent('input'))"
-                                >
-                            </td>
-                            <td style="padding: 4px 8px;">
-                                <input type="text"
-                                       wire:model="filter.registration_number"
-                                       class="form-control form-control-sm"
-                                       autocomplete="off"
-                                       placeholder="Filtrēt pēc reģ. nr."
-                                       onchange="this.dispatchEvent(new InputEvent('input'))"
-                                >
-                            </td>
-                            <td style="padding: 4px 8px;" class="text-end">
-                                <button class="btn btn-sm btn-outline-secondary py-0 px-2"
-                                        wire:click="clearFilterForm"
-                                        title="Notīrīt filtru">
-                                    <i class="fa-solid fa-xmark"></i> Notīrīt
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <x-column-title column="name" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection" title="Nosaukums"></x-column-title>
-                            </th>
-                            <th>
-                                <x-column-title column="address" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection" title="Adrese"></x-column-title>
-                            </th>
-                            <th>
-                                <x-column-title column="registration_number" :sortColumn="$sortColumn"
-                                                :sortDirection="$sortDirection"
-                                                title="Reģistrācijas Nr."></x-column-title>
-                            </th>
-                            <th style="width: 50px;"></th>
-                        </tr>
-                        </thead>
+                <!-- Modern Business Filter Bar -->
+                <div class="bg-slate-50 border-bottom px-4 py-3">
+                    <div class="row g-2 align-items-end">
+                        <!-- Partner Name Filter -->
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-building text-primary-500"></i> {{ __('Partnera nosaukums') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.name"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Meklēt pēc nosaukuma...">
+                        </div>
+
+                        <!-- Address Filter -->
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-primary-500"></i> {{ __('Juridiskā adrese') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.address"
+                                   class="form-control form-control-sm bg-white"
+                                   placeholder="Meklēt pēc adreses...">
+                        </div>
+
+                        <!-- Reg No Filter -->
+                        <div class="col-lg-3 col-md-8">
+                            <label class="form-label text-muted small fw-semibold mb-1 d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-id-card text-primary-500"></i> {{ __('Reģistrācijas Nr.') }}
+                            </label>
+                            <input type="text"
+                                   wire:model.debounce.400ms="filter.registration_number"
+                                   class="form-control form-control-sm bg-white font-monospace"
+                                   placeholder="40003000000...">
+                        </div>
+
+                        <!-- Clear Filter Button -->
+                        <div class="col-lg-1 col-md-4">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-1"
+                                    wire:click="clearFilterForm"
+                                    title="Notīrīt filtru"
+                                    style="height: 31px;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>{{ __('Notīrīt') }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <x-column-title column="name" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Nosaukums"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="address" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection" title="Adrese"></x-column-title>
+                                </th>
+                                <th>
+                                    <x-column-title column="registration_number" :sortColumn="$sortColumn"
+                                                    :sortDirection="$sortDirection"
+                                                    title="Reģistrācijas Nr."></x-column-title>
+                                </th>
+                                <th style="width: 50px;"></th>
+                            </tr>
+                            </thead>
                         <tbody>
                         @forelse($partners as $partner)
                             <tr class="line text-truncate {{ (preg_match('/copy/',$partner->id)) ? 'table-warning' : '' }}"
