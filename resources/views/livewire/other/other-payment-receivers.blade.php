@@ -4,239 +4,192 @@
     </div>
 
     <div class="col-lg-12">
-        <div class="card card-default">
-            <div class="card-header">
-                Other payment receivers
-
-                <span class="" role="button"
-
-                      wire:click="openEdit('')"
-                      data-bs-toggle="modal"
-                      data-bs-target="#partnerEditModal_"
-                >
-                        <span class="fa-plus fa"></span>
-                    </span>
-
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                            <tr style="background-color: lightblue;">
-                                <td style="padding: 2px 0;">
-                                    <input type="text"
-                                           wire:model.debounce.500ms="filter.payment_receiver"
-                                           class="form-control form-control-sm"
-                                           {{--                                               autocomplete="off"--}}
-                                           style=""
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-
-                                <td style="padding: 2px 0;">
-                                    <input type="text"
-                                           wire:model.debounce.500ms="filter.bank"
-                                           class="form-control form-control-sm"
-                                           autocomplete="off"
-                                           style=""
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-                                <td style="padding: 2px 0;">
-                                    <input type="text"
-                                           wire:model.debounce.500ms="filter.swift"
-                                           class="form-control form-control-sm"
-                                           autocomplete="off"
-                                           style=""
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-                                <td style="padding: 2px 0;">
-                                    <input type="text"
-                                           wire:model.debounce.500ms="filter.account_number"
-                                           class="form-control form-control-sm"
-                                           autocomplete="off"
-                                           style=""
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-                                <td style="padding: 2px 0;">
-                                    <input type="text"
-                                           wire:model.debounce.500ms="filter.comment"
-                                           class="form-control form-control-sm"
-                                           autocomplete="off"
-                                           style=""
-                                           onchange="this.dispatchEvent(new InputEvent('input'))"
-                                    >
-                                </td>
-
-                                <td style="padding: 2px 0">
-                                        <span class="fa fa-close text-center"
-                                              style="padding: 3px"
-                                              role="button"
-                                              wire:click="clearFilterForm"
-                                        ></span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <th>
-                                    <x-column-title column="receiver_name" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection" title="name"></x-column-title>
-                                </th>
-                                <th>
-                                    <x-column-title column="bank" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection" title="bank"></x-column-title>
-                                </th>
-                                <th>
-                                    <x-column-title column="swift" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection"
-                                                    title="SWIFT"></x-column-title>
-                                </th>
-                                <th>
-                                    <x-column-title column="account_number" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection"
-                                                    title="account number"></x-column-title>
-                                </th>
-                                <th>
-                                    <x-column-title column="comment" :sortColumn="$sortColumn"
-                                                    :sortDirection="$sortDirection"
-                                                    title="comment"></x-column-title>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-
-                            @foreach($paymentReceivers as $partner)
-                                <tr class="line text-truncate {{ (preg_match('/copy/',$partner->id)) ? 'bg-warning' : null }}"
-                                    wire:click="openEdit({{$partner->id}})"
-                                    {{--                                    data-bs-toggle="modal"--}}
-                                    role="button"
-                                        {{--                                    data-bs-target="#partnerEditModal_"--}}
-                                >
-                                    <td class="text-truncate">
-
-                                        {{ $partner->payment_receiver}}
-
-                                    </td>
-                                    <td class="text-truncate">
-                                        {{ $partner->bank}}
-                                    </td>
-                                    <td class="text-truncate">
-                                        {{ $partner->swift}}
-                                    </td>
-                                    <td class="text-truncate">
-                                        {{ $partner->account_number}}
-                                    </td>
-                                    <td class="text-truncate">
-                                        {{ $partner->comment}}
-                                    </td>
-
-                                </tr>
-                                <tr class="@if($partner->id !== 1) d-none @endif actions"
-                                    style="background-color: #c4c4c4">
-                                    <td colspan="100">
-                                        <div class="actionOptionns text-center"
-                                             style="z-index: 2; position:relative;">
-
-                                            {{--                                            <div class="fa fa-calculator" style="cursor: pointer"--}}
-                                            {{--                                                 wire:click="openModal({{$invoice->id}})">--}}
-
-                                            {{--                                            </div>--}}
-
-                                            {{--                                            <div class="text-warning fa fa-file fa-2x showButton1"--}}
-                                            {{--                                                 style="cursor: pointer"--}}
-                                            {{--                                                 data-toggle1="tooltip" title="{{ _("View") }}" data-placement="top"--}}
-                                            {{--                                                 data-bs-toggle="modal"--}}
-                                            {{--                                                 data-bs-target="#myModalShow"--}}
-                                            {{--                                                 action-url="{{ url(route('client.invoices.show', $invoice->id))}}"></div>--}}
-
-                                            <span style="margin: 10px;">
-                                                <a href="{{route('client.invoices.show', [ $partner->id, 'locale'=> 'lv'])}}"><span
-                                                            class="fa fa-file-pdf-o fa-2x">LV</span></a>
-
-                                            </span>
-                                            <span style="margin: 10px;">
-                                                <a href="{{route('client.invoices.show', [ $partner->id, 'locale'=> 'en'])}}"><span
-                                                            class="fa fa-file-pdf-o fa-2x">EN</span></a>
-                                            </span>
-                                            <span style="margin: 10px;">
-                                                    <span
-                                                            class="fa fa-copy fa-2x"
-                                                            role="button"
-                                                            wire:click=""
-                                                    ></span>
-                                            </span>
-
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                        {{ $paymentReceivers->links() }}
-
-
+        <div class="card card-modern shadow-sm border-0">
+            <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-3 bg-primary-50 text-primary-600 p-2 d-inline-flex">
+                        <i class="fa-solid fa-building-columns fs-5"></i>
                     </div>
-                    <!-- /.table-responsive -->
+                    <div>
+                        <h5 class="mb-0 fw-bold">{{ __('Citi maksājumu saņēmēji') }}</h5>
+                        <span class="small text-muted">{{ __('Pārvaldiet papildu maksājumu saņēmēju un pakalpojumu sniedzēju bankas rekvizītus') }}</span>
+                    </div>
                 </div>
 
+                <button class="btn btn-modern btn-modern-primary btn-sm"
+                        wire:click="openEdit('')"
+                        data-bs-toggle="modal"
+                        data-bs-target="#handle_payment_receiver">
+                    <i class="fa-solid fa-plus me-1"></i> {{ __('Pievienot saņēmēju') }}
+                </button>
             </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern align-middle mb-0">
+                        <thead>
+                        <tr class="bg-slate-50 border-bottom">
+                            <td style="padding: 4px 8px;">
+                                <input type="text"
+                                       wire:model.debounce.500ms="filter.payment_receiver"
+                                       class="form-control form-control-sm"
+                                       placeholder="Filtrēt saņēmēju"
+                                       onchange="this.dispatchEvent(new InputEvent('input'))">
+                            </td>
+                            <td style="padding: 4px 8px;">
+                                <input type="text"
+                                       wire:model.debounce.500ms="filter.bank"
+                                       class="form-control form-control-sm"
+                                       placeholder="Filtrēt banku"
+                                       onchange="this.dispatchEvent(new InputEvent('input'))">
+                            </td>
+                            <td style="padding: 4px 8px;">
+                                <input type="text"
+                                       wire:model.debounce.500ms="filter.swift"
+                                       class="form-control form-control-sm"
+                                       placeholder="Filtrēt SWIFT"
+                                       onchange="this.dispatchEvent(new InputEvent('input'))">
+                            </td>
+                            <td style="padding: 4px 8px;">
+                                <input type="text"
+                                       wire:model.debounce.500ms="filter.account_number"
+                                       class="form-control form-control-sm"
+                                       placeholder="Filtrēt kontu"
+                                       onchange="this.dispatchEvent(new InputEvent('input'))">
+                            </td>
+                            <td style="padding: 4px 8px;">
+                                <input type="text"
+                                       wire:model.debounce.500ms="filter.comment"
+                                       class="form-control form-control-sm"
+                                       placeholder="Filtrēt komentāru"
+                                       onchange="this.dispatchEvent(new InputEvent('input'))">
+                            </td>
+                            <td style="padding: 4px 8px;" class="text-end">
+                                <button class="btn btn-sm btn-outline-secondary py-0 px-2"
+                                        wire:click="clearFilterForm"
+                                        title="Notīrīt filtru">
+                                    <i class="fa-solid fa-xmark"></i> Notīrīt
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <x-column-title column="payment_receiver" :sortColumn="$sortColumn"
+                                                :sortDirection="$sortDirection" title="Saņēmējs"></x-column-title>
+                            </th>
+                            <th>
+                                <x-column-title column="bank" :sortColumn="$sortColumn"
+                                                :sortDirection="$sortDirection" title="Banka"></x-column-title>
+                            </th>
+                            <th>
+                                <x-column-title column="swift" :sortColumn="$sortColumn"
+                                                :sortDirection="$sortDirection" title="SWIFT"></x-column-title>
+                            </th>
+                            <th>
+                                <x-column-title column="account_number" :sortColumn="$sortColumn"
+                                                :sortDirection="$sortDirection" title="Bankas konts"></x-column-title>
+                            </th>
+                            <th>
+                                <x-column-title column="comment" :sortColumn="$sortColumn"
+                                                :sortDirection="$sortDirection" title="Komentārs"></x-column-title>
+                            </th>
+                            <th style="width: 50px;"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($paymentReceivers as $receiver)
+                            <tr class="line text-truncate {{ (preg_match('/copy/', $receiver->id)) ? 'table-warning' : '' }}"
+                                wire:click="openEdit({{$receiver->id}})"
+                                role="button"
+                                style="cursor: pointer;">
+                                <td class="text-truncate fw-medium">
+                                    {{ $receiver->payment_receiver }}
+                                </td>
+                                <td class="text-truncate text-muted">
+                                    {{ $receiver->bank }}
+                                </td>
+                                <td class="text-truncate text-muted">
+                                    {{ $receiver->swift }}
+                                </td>
+                                <td class="text-truncate font-monospace small">
+                                    {{ $receiver->account_number }}
+                                </td>
+                                <td class="text-truncate text-muted small">
+                                    {{ $receiver->comment }}
+                                </td>
+                                <td class="text-end">
+                                    <i class="fa-solid fa-chevron-right text-muted opacity-25"></i>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fa-regular fa-folder-open fs-3 d-block mb-2 text-slate-400"></i>
+                                    Nav atrasts neviens maksājumu saņēmējs.
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @if($paymentReceivers->hasPages())
+                <div class="card-footer bg-white border-top py-2 d-flex justify-content-end">
+                    {{ $paymentReceivers->links() }}
+                </div>
+            @endif
         </div>
     </div>
 
-
     <x-modal id="handle_payment_receiver"
-             title="{{ $active['id'] ? 'Edit' : 'Create' }} Partner"
+             title="{{ $active['id'] ? 'Labot' : 'Pievienot' }} maksājumu saņēmēju"
              titleClass="bg-primary text-white"
              confirmAction="savePaymentReceiverConfirm"
              cancelAction="savePaymentReceiverCancel"
              confirmActionClass="btn-primary"
-             cancelActionLabel="Cancel"
-             confirmActionLabel="Save"
-
+             cancelActionLabel="Atcelt"
+             confirmActionLabel="Saglabāt"
     >
-        <div class="modal-body" style1="margin-left: 15px;margin-right: 15px">
-            <div class="mb-1">
-                <label for="" style="font-size: 12px;display: block">Name
-                </label>
-                <input type="text" class="form-control @error('active.name')is-invalid @enderror"
-                       placeholder="name"
-                       aria-describedby="basic-addon1" wire:model.lazy="active.payment_receiver">
-                @error('active.payment_receiver') <small class="text-danger error">{{ $message }}</small>@enderror
+        <div class="modal-body p-3">
+            <div class="mb-3">
+                <label for="" class="form-label small fw-semibold">Saņēmēja nosaukums</label>
+                <input type="text" class="form-control @error('active.payment_receiver') is-invalid @enderror"
+                       placeholder="Piem., Valsts kase"
+                       wire:model.lazy="active.payment_receiver">
+                @error('active.payment_receiver') <small class="text-danger error">{{ $message }}</small> @enderror
             </div>
 
-            <div class="mb-1">
-                <label for="" style="font-size: 12px;display: block">Bank
-                </label>
-                <input type="text" class="form-control @error('active.bank')is-invalid @enderror"
-                       placeholder="bank" aria-describedby="basic-addon1"
-                       wire:model.lazy="active.bank">
-                @error('active.bank') <small class="text-danger error">{{ $message }}</small>@enderror
+            <div class="row g-2 mb-3">
+                <div class="col-md-7">
+                    <label for="" class="form-label small fw-semibold">Banka</label>
+                    <input type="text" class="form-control @error('active.bank') is-invalid @enderror"
+                           placeholder="Bankas nosaukums"
+                           wire:model.lazy="active.bank">
+                    @error('active.bank') <small class="text-danger error">{{ $message }}</small> @enderror
+                </div>
+                <div class="col-md-5">
+                    <label for="" class="form-label small fw-semibold">SWIFT / BIC</label>
+                    <input type="text" class="form-control @error('active.swift') is-invalid @enderror"
+                           placeholder="SWIFT kods"
+                           wire:model.lazy="active.swift">
+                    @error('active.swift') <small class="text-danger error">{{ $message }}</small> @enderror
+                </div>
             </div>
 
-            <div class="mb-1">
-                <label for="" style="font-size: 12px; display: block;">SWIFT
-                </label>
-                <input type="text" class="form-control @error('active.swift')is-invalid @enderror"
-                       placeholder="SWIFT" aria-describedby="basic-addon1"
-                       wire:model.lazy="active.swift">
-                @error('active.swift') <small class="text-danger error">{{ $message }}</small>@enderror
-            </div>
-            <div class="mb-1">
-                <label for="" style="font-size: 12px;">Bank account</label>
-                <input type="text" class="form-control @error('active.account_number')is-invalid @enderror"
-                       placeholder="account number" aria-describedby="basic-addon1"
+            <div class="mb-3">
+                <label for="" class="form-label small fw-semibold">Bankas konts (IBAN)</label>
+                <input type="text" class="form-control @error('active.account_number') is-invalid @enderror"
+                       placeholder="LV00UNLA0000000000000"
                        wire:model.lazy.defer="active.account_number">
-                @error('active.account_number') <small
-                        class="text-danger error">{{ $message }}</small>@enderror
+                @error('active.account_number') <small class="text-danger error">{{ $message }}</small> @enderror
             </div>
-            <div class="mb-1">
-                <label for="" style="font-size: 12px;">Comment</label>
-                <input type="text" class="form-control @error('active.comment')is-invalid @enderror"
-                       placeholder="comment" aria-describedby="basic-addon1"
+
+            <div class="mb-2">
+                <label for="" class="form-label small fw-semibold">Komentārs / Piezīmes</label>
+                <input type="text" class="form-control @error('active.comment') is-invalid @enderror"
+                       placeholder="Piezīmes par maksājuma mērķi..."
                        wire:model.lazy.defer="active.comment">
-                @error('active.comment') <small
-                        class="text-danger error">{{ $message }}</small>@enderror
+                @error('active.comment') <small class="text-danger error">{{ $message }}</small> @enderror
             </div>
         </div>
     </x-modal>
