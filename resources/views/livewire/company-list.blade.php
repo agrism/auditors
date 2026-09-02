@@ -25,25 +25,25 @@
                     <div wire:click="setActiveCompanyId({{ $company->id }})"
                          role="button"
                          class="company-card @if($isActive) active @endif">
-                        <div class="company-avatar">
+                        <div class="company-avatar flex-shrink-0">
                             {{ strtoupper($initials) }}
                         </div>
-                        <div class="company-info text-truncate">
-                            <h6 class="text-truncate" title="{{ $company->title }}">{{ $company->title }}</h6>
-                            <p>
+                        <div class="company-info flex-grow-1 min-w-0" style="min-width: 0;">
+                            <h6 class="text-truncate mb-1 fw-bold text-slate-800" title="{{ $company->title }}">{{ $company->title }}</h6>
+                            <div class="text-muted small text-truncate">
                                 @if(!empty($company->reg_number))
-                                    <span class="text-muted"><i class="fa-solid fa-hashtag me-1"></i>Reģ. Nr.: {{ $company->reg_number }}</span>
+                                    <span class="font-monospace"><i class="fa-solid fa-hashtag text-slate-400 me-0.5"></i>{{ $company->reg_number }}</span>
                                 @else
-                                    <span class="text-muted">ID: #{{ $company->id }}</span>
+                                    <span>ID: #{{ $company->id }}</span>
                                 @endif
-                            </p>
+                            </div>
                         </div>
                         @if($isActive)
-                            <div class="company-card-check" title="Aktīvs">
+                            <div class="company-card-check flex-shrink-0" title="Aktīvs">
                                 <i class="fa-solid fa-check"></i>
                             </div>
                         @else
-                            <div class="text-muted opacity-25 ms-auto">
+                            <div class="text-muted opacity-25 ms-auto flex-shrink-0">
                                 <i class="fa-solid fa-chevron-right"></i>
                             </div>
                         @endif
