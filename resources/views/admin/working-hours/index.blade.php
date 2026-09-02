@@ -1,78 +1,47 @@
 @extends('admin.layout.admin')
 
 @section('content')
-
-    <div class="col-md-12">
-{{--    <pre>--}}
-{{--	{{var_dump($data)}}--}}
-{{--	</pre>--}}
-
-        {{Form::model('data', ['method'=>'post', 'route'=>'admin.working-hours.handle'])}}
-
-
-        <div class="form-group col-ms-12">
-            <div class="col-md-6">
-                <label for="from">Year</label>
-                {!! Form::select('year', $years , $selectedYear, ['class' => 'form-control']) !!}
-            </div>
-            <div class="col-md-6">
-                <label for="to">Month</label>
-                {!! Form::select('month', $months , $selectedMonth, ['class' => 'form-control']) !!}
+    <div class="col-lg-10">
+        <div class="card card-modern shadow-sm border-0 my-3">
+            <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-3 bg-primary-50 text-primary-600 p-2 d-inline-flex">
+                        <i class="fa-solid fa-business-time fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">{{ __('Darba laika uzskaites tabele (Excel)') }}</h5>
+                        <span class="small text-muted">{{ __('Ģenerējiet un lejupielādējiet darba stundu uzskaites tabeli izvēlētajam uzņēmumam') }}</span>
+                    </div>
+                </div>
             </div>
 
+            <div class="card-body p-4">
+                {!! Form::model('data', ['method'=>'post', 'route'=>'admin.working-hours.handle']) !!}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="year" class="form-label small fw-semibold text-muted mb-1">{{ __('Gads') }} *</label>
+                        {!! Form::select('year', $years, $selectedYear, ['class' => 'form-select form-select-sm', 'id' => 'year']) !!}
+                    </div>
 
+                    <div class="col-md-6">
+                        <label for="month" class="form-label small fw-semibold text-muted mb-1">{{ __('Mēnesis') }} *</label>
+                        {!! Form::select('month', $months, $selectedMonth, ['class' => 'form-select form-select-sm', 'id' => 'month']) !!}
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="company_id" class="form-label small fw-semibold text-muted mb-1">{{ __('Uzņēmums') }} *</label>
+                        {!! Form::select('company_id', $companies->pluck('title', 'id'), isset($data['company_id']) ? $data['company_id'] : null, ['class'=>'form-select form-select-sm', 'id'=>'company_id']) !!}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-modern btn-modern-primary btn-sm">
+                        <i class="fa-solid fa-file-excel me-1"></i> {{ __('Lejupielādēt Excel tabeli') }}
+                    </button>
+                </div>
+                {!! Form::close() !!}
+            </div>
         </div>
-
-
-        <div class="form-group col-md-12">
-            <label for="company_id">Company</label>
-            {{Form::select('company_id', $companies->pluck('title', 'id'), isset($data['company_id']) ? $data['company_id'] : null, ['class'=>'form-control'] )}}
-        </div>
-
-        <div class="form-group col-md-3">
-            <label for="company_id"></label>
-            {{Form::submit(_('Create export file'), ['class'=>'form-control btn btn-info'])}}
-        </div>
-
-        {{Form::close()}}
-
-        <pre>
-        file location: <a href="{{url('test.xml')}}" target="_blank">{{url('test.xml')}}</a>
-    </pre>
     </div>
-
-
-@stop
-
-@section('js')
-    <script type="text/javascript">
-        $(document).ready(function () {
-            console.log('11111');
-            $('#dp1').datepicker({
-                format: 'dd.mm.yyyy',
-                weekStart: 1,
-                todayBtn: "linked",
-                todayHighlight: true,
-                autoclose: true,
-                //                calendarWeeks: true,
-                daysOfWeekDisabled: [],
-                daysOfWeekHighlighted: [0, 6]
-
-            });
-
-            $('#dp2').datepicker({
-                format: 'dd.mm.yyyy',
-                weekStart: 1,
-                todayBtn: "linked",
-                todayHighlight: true,
-                autoclose: true,
-                //                calendarWeeks: true,
-                daysOfWeekDisabled: [],
-                daysOfWeekHighlighted: [0, 6]
-
-            });
-        });
-
-    </script>
 @stop
 

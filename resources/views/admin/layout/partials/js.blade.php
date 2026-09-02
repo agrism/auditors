@@ -1,21 +1,5 @@
-<!-- jQuery -->
-<script src="{{ URL::asset('build/admin-assets/sb-admin-2/bower_components/jquery/dist/jquery.min.js') }}"></script>
+<!-- Bootstrap 5 Bundle JavaScript (Includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="{{ URL::asset('build/admin-assets/sb-admin-2/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-
-
-<!-- Metis Menu Plugin JavaScript -->
-<script src="{{ URL::asset('build/admin-assets/sb-admin-2/bower_components/metisMenu/dist/metisMenu.min.js') }}"></script>
-
-<!-- Morris Charts JavaScript -->
-<script src="{{ URL::asset('build/admin-assets/sb-admin-2/bower_components/raphael/raphael-min.js') }}"></script>
-{{--<script src="{{ URL::asset('build/admin-assets/sb-admin-2/bower_components/morrisjs/morris.min.js') }}"></script>--}}
-{{--<script src="{{ URL::asset('build/admin-assets/sb-admin-2/js/morris-data.js') }}"></script>--}}
-
-
-<!-- bootstrap-datepicker JavaScript -->
-<script src="{{ URL::asset('build/admin-assets/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="{{ URL::asset('build/admin-assets/sb-admin-2/dist/js/sb-admin-2.js') }}"></script>
+<!-- Bootstrap Datepicker JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous"></script>

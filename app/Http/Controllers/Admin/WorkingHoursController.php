@@ -25,35 +25,31 @@ class WorkingHoursController extends Controller
 		$data = [];
 		$companies = Company::orderBy('title', 'asc')->get();
 
-		$period = CarbonPeriod::create(Carbon::now()->startOfMonth()->subDay()->startOfYear()->format('Y-m-d'),
-			'1 month',
-			Carbon::now()->endOfMonth()->endOfYear()->format('Y-m-d'));
+		$latvianMonths = [
+			'01' => 'Janvāris',
+			'02' => 'Februāris',
+			'03' => 'Marts',
+			'04' => 'Aprīlis',
+			'05' => 'Maijs',
+			'06' => 'Jūnijs',
+			'07' => 'Jūlijs',
+			'08' => 'Augusts',
+			'09' => 'Septembris',
+			'10' => 'Oktobris',
+			'11' => 'Novembris',
+			'12' => 'Decembris',
+		];
 
-		$monthsData = [];
-		$yearsData = [];
-
-		foreach ($period as $date) {
-			$monthsData[$date->format('m')] = [
-				'key' => $date->format('m'),
-				'value' => $date->format('F'),
-				'selected' => Carbon::now()->subMonth()->format('m') === $date->format('m'),
-			];
-			$yearsData[$date->format('Y')] = [
-				'key' => $date->format('Y'),
-				'value' => $date->format('Y'),
-				'selected' => Carbon::now()->subMonth()->format('Y') === $date->format('Y'),
-			];
+		$currentYear = (int) Carbon::now()->format('Y');
+		$years = [];
+		for ($y = $currentYear - 3; $y <= $currentYear + 1; $y++) {
+			$years[(string)$y] = (string)$y;
 		}
 
-		$months = collect($monthsData)->pluck('value', 'key');
-		$years = collect($yearsData)->pluck('value', 'key');
-		$selectedMonth = collect($monthsData)->filter(function ($month) {
-				return $month['selected'] === true;
-			})->first()['key'] ?? false;
+		$selectedMonth = Carbon::now()->subMonth()->format('m');
+		$selectedYear = Carbon::now()->subMonth()->format('Y');
 
-		$selectedYear = collect($yearsData)->filter(function ($year) {
-				return $year['selected'] === true;
-			})->first()['key'] ?? false;
+		$months = collect($latvianMonths);
 
 		return view('admin.working-hours.index',
 			compact('data', 'companies', 'months', 'years', 'selectedMonth', 'selectedYear'));

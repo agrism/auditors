@@ -58,56 +58,97 @@ class ExportController extends Controller
 		$tjResponse->appendChild($xmlAttribute);
 
 
-		$from = isset($data['from']) ? $data['from'] : '2015-01-01';
-		$to = isset($data['to']) ? $data['to'] : '2020-01-01';
-		$company_id = isset($data['company_id']) ? $data['company_id'] : 'xx';
+		$fromDate = null;
+		$toDate = null;
+		if (!empty($data['from'])) {
+			try {
+				$fromDate = \Carbon\Carbon::createFromFormat('d.m.Y', $data['from'])->startOfDay();
+			} catch (\Exception $e) {
+				try {
+					$fromDate = \Carbon\Carbon::parse($data['from'])->startOfDay();
+				} catch (\Exception $e) {}
+			}
+		}
+		if (!empty($data['to'])) {
+			try {
+				$toDate = \Carbon\Carbon::createFromFormat('d.m.Y', $data['to'])->endOfDay();
+			} catch (\Exception $e) {
+				try {
+					$toDate = \Carbon\Carbon::parse($data['to'])->endOfDay();
+				} catch (\Exception $e) {}
+			}
+		}
 
-//        dd($company_id);
-		$from = \Carbon\Carbon::parse($from);
-		$to = \Carbon\Carbon::parse($to);
+		if (!$fromDate) {
+			$fromDate = \Carbon\Carbon::now()->subMonth()->startOfMonth();
+		}
+		if (!$toDate) {
+			$toDate = \Carbon\Carbon::now()->subMonth()->endOfMonth();
+		}
 
+		$company_id = !empty($data['company_id']) ? $data['company_id'] : null;
 
-		$invoices = \DB::select(
-			"
-SELECT i.*, il.quantity, il.vat_id, SUM(ROUND(quantity * price,2)) AS sum, vats.rate AS rate, vats.name AS vats_name,
-partners.name AS p_name, partners.registration_number AS p_regnumber, partners.vat_number AS p_vatnumber,
-companies.title AS c_name, companies.registration_number AS c_regnumber,
-currencies.name AS currency_name,
-invoice_types.title AS type_name,
-structuralunits.title AS structuralunit
-
-
-FROM invoices AS i
-LEFT JOIN invoice_lines AS il
-ON (i.id = il.invoice_id)
-
-LEFT JOIN vats
-ON (il.vat_id = vats.id)
-
-LEFT JOIN partners
-ON (i.partner_id =  partners.id)
-
-LEFT JOIN companies
-ON (i.company_id =  companies.id)
-
-LEFT JOIN currencies
-ON (i.currency_id =  currencies.id)
-
-LEFT JOIN invoice_types
-ON (i.invoicetype_id =  invoice_types.id)
-
-LEFT JOIN structuralunits
-ON (i.structuralunit_id =  structuralunits.id)
-
-where i.company_id = '".$company_id."'
-
-
-AND i.date >= '".$from."'
-
-AND i.date <= '".$to."'
-GROUP BY il.invoice_id, il.vat_id
-        "
-		);
+		$invoices = [];
+		if ($company_id) {
+			$invoices = \DB::select(
+				"
+	SELECT 
+		i.id,
+		i.number,
+		i.date,
+		i.payment_date,
+		i.amount_total,
+		i.details_self,
+		il.vat_id,
+		SUM(ROUND(il.quantity * il.price, 2)) AS sum,
+		vats.rate AS rate,
+		vats.name AS vats_name,
+		partners.name AS p_name,
+		partners.registration_number AS p_regnumber,
+		partners.vat_number AS p_vatnumber,
+		companies.title AS c_name,
+		companies.registration_number AS c_regnumber,
+		currencies.name AS currency_name,
+		invoice_types.title AS type_name,
+		structuralunits.title AS structuralunit
+	FROM invoices AS i
+	LEFT JOIN invoice_lines AS il ON (i.id = il.invoice_id)
+	LEFT JOIN vats ON (il.vat_id = vats.id)
+	LEFT JOIN partners ON (i.partner_id = partners.id)
+	LEFT JOIN companies ON (i.company_id = companies.id)
+	LEFT JOIN currencies ON (i.currency_id = currencies.id)
+	LEFT JOIN invoice_types ON (i.invoicetype_id = invoice_types.id)
+	LEFT JOIN structuralunits ON (i.structuralunit_id = structuralunits.id)
+	WHERE i.company_id = ?
+	AND i.date >= ?
+	AND i.date <= ?
+	GROUP BY 
+		i.id,
+		i.number,
+		i.date,
+		i.payment_date,
+		i.amount_total,
+		i.details_self,
+		il.vat_id,
+		vats.rate,
+		vats.name,
+		partners.name,
+		partners.registration_number,
+		partners.vat_number,
+		companies.title,
+		companies.registration_number,
+		currencies.name,
+		invoice_types.title,
+		structuralunits.title
+	ORDER BY i.date ASC, i.id ASC
+			",
+				[
+					$company_id,
+					$fromDate->format('Y-m-d'),
+					$toDate->format('Y-m-d')
+				]
+			);
+		}
 
 		$lastId = '';
 		foreach ($invoices as $invoice) {
