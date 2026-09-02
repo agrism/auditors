@@ -1,6 +1,6 @@
 @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <ul>
+    <div class="alert alert-danger rounded-3 mb-4">
+        <ul class="mb-0">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
@@ -8,24 +8,24 @@
     </div>
 @endif
 
-<div class="form-group">
-    {!! Form::label('title', 'Title', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('title', isset($company) ? $company['title'] : null , ['class'=>'form-control', 'placeholder'=>'Input title'] ) !!}
+<div class="row g-3">
+    <div class="col-md-6">
+        <label for="title" class="form-label small fw-semibold text-muted mb-1">{{ __('Nosaukums') }} *</label>
+        {!! Form::text('title', isset($company) ? $company['title'] : null, ['class'=>'form-control form-control-sm', 'placeholder'=>'Piem., Mans Uzņēmums SIA', 'id'=>'title'] ) !!}
     </div>
-</div>
 
-<div class="form-group">
-    {!! Form::label('registration_number', 'Reg.No', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('registration_number', isset($company) ? $company['registration_number'] : null , ['class'=>'form-control', 'placeholder'=>'Input Reg.no'] ) !!}
+    <div class="col-md-6">
+        <label for="registration_number" class="form-label small fw-semibold text-muted mb-1">{{ __('Reģistrācijas Nr.') }}</label>
+        {!! Form::text('registration_number', isset($company) ? $company['registration_number'] : null, ['class'=>'form-control form-control-sm font-monospace', 'placeholder'=>'40000000000', 'id'=>'registration_number'] ) !!}
     </div>
-</div>
 
-<div class="form-group">
-    {!! Form::label('closed_data_date', 'Closed data date', ['class'=>'col-sm-2 control-label']) !!}
-    <div class="col-sm-10">
-        {!! Form::text('closed_data_date', isset($company) ? $company['closed_data_date'] : null , ['class'=>'form-control', 'placeholder'=>'Input date', 'id'=>'dp', 'readonly'] ) !!}
+    <div class="col-md-6">
+        <label for="dp" class="form-label small fw-semibold text-muted mb-1">{{ __('Slēgto datu datums') }}</label>
+        <div class="input-group input-group-sm">
+            <span class="input-group-text bg-white text-muted"><i class="fa-regular fa-calendar"></i></span>
+            {!! Form::text('closed_data_date', isset($company) ? $company['closed_data_date'] : null, ['class'=>'form-control form-control-sm', 'placeholder'=>'DD.MM.YYYY', 'id'=>'dp', 'readonly'] ) !!}
+        </div>
+        <div class="form-text small text-muted">{{ __('Rēķini pirms šī datuma būs slēgti rediģēšanai.') }}</div>
     </div>
 </div>
 
@@ -38,12 +38,9 @@
                 todayBtn: "linked",
                 todayHighlight: true,
                 autoclose: true,
-//                calendarWeeks: true,
                 daysOfWeekDisabled: [],
                 daysOfWeekHighlighted: [0, 6],
-
             });
         });
-
     </script>
 @endsection
