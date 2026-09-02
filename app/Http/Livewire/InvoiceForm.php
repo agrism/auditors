@@ -69,28 +69,24 @@ class InvoiceForm extends Component
         $this->dispatchBrowserEvent('contentChanged');
     }
 
-    public function saveInvoice($formData): void
+    public function saveInvoice($formData, $returnToList = null): void
     {
-        if($this->goToListWithoutSave){
+        if ($this->goToListWithoutSave) {
             $this->closeInvoiceForm();
             return;
         }
 
-
         $this->save($formData);
 
-        if ($this->goToListAfterSave) {
-            $this->emit('closeInvoice');
-            $this->dispatchBrowserEvent('contentChanged');
+        $shouldReturn = $returnToList !== null ? (bool)$returnToList : $this->goToListAfterSave;
+
+        if ($shouldReturn) {
+            $this->closeInvoiceForm();
             return;
         }
 
-        $this->goToListAfterSave = true;
-
         $this->refreshData();
-
         $this->render();
-
         $this->dispatchBrowserEvent('contentChanged');
     }
 

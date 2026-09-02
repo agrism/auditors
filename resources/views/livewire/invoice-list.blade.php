@@ -1,5 +1,5 @@
 <div>
-    <div wire:loading style="position: absolute">
+    <div wire:loading.delay wire:target="filter, deleteInvoice, shortcutInvoiceConfirm">
         <x-loading loading="true"></x-loading>
     </div>
 
