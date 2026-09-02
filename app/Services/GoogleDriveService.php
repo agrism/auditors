@@ -24,14 +24,7 @@ class GoogleDriveService
             return $this->accessToken;
         }
 
-        // Method 1: Service Account JSON
-        $serviceAccountJson = config('services.google_drive.service_account_json');
-        if ($serviceAccountJson) {
-            $this->accessToken = $this->getAccessTokenFromServiceAccount($serviceAccountJson);
-            return $this->accessToken;
-        }
-
-        // Method 2: OAuth2 Refresh Token
+        // Method 1: OAuth2 Refresh Token (Personal / Workspace Google Drive)
         $clientId = config('services.google_drive.client_id');
         $clientSecret = config('services.google_drive.client_secret');
         $refreshToken = config('services.google_drive.refresh_token');
@@ -41,7 +34,14 @@ class GoogleDriveService
             return $this->accessToken;
         }
 
-        throw new \RuntimeException('Google Drive authentication credentials are not configured. Please set GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON or (GOOGLE_DRIVE_CLIENT_ID, GOOGLE_DRIVE_CLIENT_SECRET, GOOGLE_DRIVE_REFRESH_TOKEN) in your .env.');
+        // Method 2: Service Account JSON (Shared Drives)
+        $serviceAccountJson = config('services.google_drive.service_account_json');
+        if ($serviceAccountJson) {
+            $this->accessToken = $this->getAccessTokenFromServiceAccount($serviceAccountJson);
+            return $this->accessToken;
+        }
+
+        throw new \RuntimeException('Google Drive authentication credentials are not configured. Please set (GOOGLE_DRIVE_CLIENT_ID, GOOGLE_DRIVE_CLIENT_SECRET, GOOGLE_DRIVE_REFRESH_TOKEN) in your .env.');
     }
 
     /**
