@@ -5,17 +5,13 @@ use App\Services\InvoiceService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get(
-    '/', [
-        'middleware' => 'auth', function () {
-            if (Auth::check()) {
-                return redirect()->route('client.index');
-            }
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('client.index');
+    }
 
-            return redirect()->route('login');
-        },
-    ]
-);
+    return redirect()->route('login');
+})->middleware('auth');
 
 
 Route::get('test', function (InvoiceService $invoiceService) {
