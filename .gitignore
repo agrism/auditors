@@ -19,3 +19,6 @@ yarn-error.log
 /.vscode
 *.sql
 *.sql.gz
+/storage/app/*.json
+/storage/app/google-service-account.json
+/storage/app/backups/*
