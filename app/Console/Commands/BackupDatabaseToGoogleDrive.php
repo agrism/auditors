@@ -47,6 +47,10 @@ class BackupDatabaseToGoogleDrive extends Command
 
             $this->info("Database dumped: <comment>{$fileName}</comment> ({$fileSize} MB)");
 
+            $fileId = null;
+            $deleted = 0;
+            $retentionDays = $this->option('keep') ? (int) $this->option('keep') : config('services.google_drive.retention_days', 30);
+
             // 2. Upload to Google Drive
             if (!$this->option('local-only')) {
                 $this->info('Uploading backup to Google Drive...');
@@ -56,7 +60,6 @@ class BackupDatabaseToGoogleDrive extends Command
                 $this->info("<info>✓</info> Successfully uploaded to Google Drive! (File ID: <comment>{$fileId}</comment>)");
 
                 // 3. Clean up expired remote backups
-                $retentionDays = $this->option('keep') ? (int) $this->option('keep') : config('services.google_drive.retention_days', 30);
                 if ($retentionDays > 0) {
                     $this->info("Cleaning up Google Drive backups older than {$retentionDays} days...");
                     $deleted = $driveService->cleanupOldBackups(null, $retentionDays);
@@ -71,10 +74,49 @@ class BackupDatabaseToGoogleDrive extends Command
             $duration = round(microtime(true) - $startTime, 2);
             $this->info("<info>✓ Database backup finished successfully in {$duration}s.</info>");
 
+            // 4. Send notification email
+            $this->sendNotificationEmail([
+                'success' => true,
+                'file_name' => $fileName,
+                'file_size_mb' => $fileSize,
+                'duration_seconds' => $duration,
+                'file_id' => $fileId,
+                'folder_id' => config('services.google_drive.folder_id'),
+                'deleted_count' => $deleted,
+                'retention_days' => $retentionDays,
+                'server_host' => gethostname(),
+                'server_ip' => '65.21.182.7',
+            ]);
+
             return Command::SUCCESS;
         } catch (\Throwable $e) {
             $this->error("Backup failed: " . $e->getMessage());
+
+            $duration = round(microtime(true) - $startTime, 2);
+            $this->sendNotificationEmail([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'duration_seconds' => $duration,
+                'server_host' => gethostname(),
+                'server_ip' => '65.21.182.7',
+            ]);
+
             return Command::FAILURE;
+        }
+    }
+
+    private function sendNotificationEmail(array $details): void
+    {
+        $recipient = config('services.google_drive.notification_email', '7924@inbox.lv');
+        if (!$recipient) {
+            return;
+        }
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($recipient)->send(new \App\Mail\BackupCompletedMail($details));
+            $this->info("Notification email sent to <comment>{$recipient}</comment>.");
+        } catch (\Throwable $mailException) {
+            $this->warn("Failed to send notification email: " . $mailException->getMessage());
         }
     }
 }

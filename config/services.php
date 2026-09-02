@@ -38,6 +38,7 @@ return [
         'client_secret' => env('GOOGLE_DRIVE_CLIENT_SECRET'),
         'refresh_token' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
         'retention_days' => (int) env('GOOGLE_DRIVE_BACKUP_RETENTION_DAYS', 30),
+        'notification_email' => env('BACKUP_NOTIFICATION_EMAIL', '7924@inbox.lv'),
     ],
 
 ];
