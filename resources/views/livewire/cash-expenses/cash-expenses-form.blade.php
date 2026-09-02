@@ -184,52 +184,54 @@
         </script>
 
         <x-modal id="expense_line_delete"
-                 title="Delete expense"
+                 title="Dzēst izdevumu"
                  titleClass="bg-danger text-white"
                  confirmAction="expenseLineDeleteConfirm"
                  cancelAction="expenseLineDeleteCancel"
                  confirmActionClass="btn-danger"
-                 confirmActionLabel="Delete"
+                 confirmActionLabel="Dzēst"
+                 cancelActionLabel="Atcelt"
         >
-            Confirm to delete?
+            Vai tiešām vēlaties dzēst šo izdevumu rindu?
         </x-modal>
 
         <x-modal id="expense_line"
-                 title="{{ $expenseLine['id'] ? 'Edit' : 'Create' }} expense"
+                 title="{{ $expenseLine['id'] ? 'Labot' : 'Pievienot' }} izdevumu"
                  titleClass="bg-primary text-white"
                  confirmAction="expenseLineConfirm"
                  cancelAction="expenseLineCancel"
                  confirmActionClass="btn-primary"
-                 confirmActionLabel="{{ $expenseLine['id'] ? 'Update' : 'Insert' }} "
+                 confirmActionLabel="{{ $expenseLine['id'] ? 'Saglabāt' : 'Pievienot' }}"
+                 cancelActionLabel="Atcelt"
         >
-            <div class="mb-1 row">
+            <div class="mb-2 row">
                 <div class="col">
-                    <label for="" style="font-size: 12px;">Order No.</label>
+                    <label for="" class="form-label small fw-semibold">Kārtas Nr.</label>
                     <input type="text" class="form-control @error('expenseLine.no')is-invalid @enderror"
-                           placeholder="Order no."
-                           aria-describedby="basic-addon1" wire:model.defer="expenseLine.no">
+                           placeholder="Kārtas nr."
+                           wire:model.defer="expenseLine.no">
                     @error('expenseLine.no') <small class="text-danger error">{{ $message }}</small>@enderror
                 </div>
                 <div class="col">
-                    <label for="" style="font-size: 12px;">Date</label>
+                    <label for="" class="form-label small fw-semibold">Datums</label>
                     <input type="text" class="date form-control @error('expenseLine.date')is-invalid @enderror"
                            readonly
-                           placeholder="Date"
+                           placeholder="Datums"
                            onchange="this.dispatchEvent(new InputEvent('input'))"
-                           aria-describedby="basic-addon1" wire:model="expenseLine.date">
+                           wire:model="expenseLine.date">
                     @error('expenseLine.date') <small class="text-danger error">{{ $message }}</small>@enderror
                 </div>
                 <div class="col">
-                    <label for="" style="font-size: 12px;">Document No.</label>
+                    <label for="" class="form-label small fw-semibold">Dokumenta Nr.</label>
                     <input type="text" class="form-control @error('expenseLine.document_no')is-invalid @enderror"
-                           placeholder="Doc. No"
-                           aria-describedby="basic-addon1" wire:model.defer="expenseLine.document_no">
+                           placeholder="Dok. Nr."
+                           wire:model.defer="expenseLine.document_no">
                     @error('expenseLine.document_no') <small class="text-danger error">{{ $message }}</small>@enderror
                 </div>
             </div>
 
-            <div class="mb-1">
-                <label for="" style="font-size: 12px;">Partner</label>
+            <div class="mb-2">
+                <label for="" class="form-label small fw-semibold">Partneris</label>
                 <livewire:partner-select
                         key="{{ now() }}"
                         :selectedPartnerId="$expenseLine['partner_id']"
@@ -237,47 +239,47 @@
                 @error('expenseLine.partner_id') <small class="text-danger error">{{ $message }}</small>@enderror
             </div>
 
-            <div class="mb-1">
-                <label for="" style="font-size: 12px;">Description</label>
+            <div class="mb-2">
+                <label for="" class="form-label small fw-semibold">Apraksts</label>
                 <div class="input-group input-group-sm">
                     <input type="text" class="form-control @error('expenseLine.description')is-invalid @enderror"
-                           placeholder="Description"
+                           placeholder="Izdevuma apraksts"
                            onchange="this.dispatchEvent(new InputEvent('input'))"
-                           aria-describedby="basic-addon1" wire:model.defer="expenseLine.description">
+                           wire:model.defer="expenseLine.description">
                     @error('expenseLine.description') <small
                             class="text-danger error">{{ $message }}</small>@enderror
                 </div>
             </div>
 
-            <div class="mb-1 row px-2">
+            <div class="mb-2 row px-2">
                 <div class="col px-1 mt-1">
-                    <label for="" style="font-size: 12px;">Amount with VAT</label>
+                    <label for="" class="form-label small fw-semibold">Summa ar PVN</label>
                     <div class="input-group input-group-sm">
-                        <input type="text"
+                        <input type="number" step="0.01"
                                class="form-control @error('expenseLine.amount_with_vat')is-invalid @enderror"
                                placeholder="0.00"
                                onchange="this.dispatchEvent(new InputEvent('input'))"
-                               aria-describedby="basic-addon1" wire:model.lazy="expenseLine.amount_with_vat">
+                               wire:model.lazy="expenseLine.amount_with_vat">
                         @error('expenseLine.amount_with_vat') <small
                                 class="text-danger error">{{ $message }}</small>@enderror
                     </div>
                 </div>
                 <div class="col p-1">
-                    <label for="" style="font-size: 12px;">Budget</label>
+                    <label for="" class="form-label small fw-semibold">Budžets</label>
                     <livewire:budget-select
                             key="{{ now() }}"
                             :selectedBudgetId="$expenseLine['budget_id']"
                     ></livewire:budget-select>
                 </div>
                 <div class="col p-1">
-                    <label for="" style="font-size: 12px;">Account</label>
+                    <label for="" class="form-label small fw-semibold">Konts</label>
                     <livewire:account-select
                             key="{{ now() }}"
                             :selectedAccountId="$expenseLine['account_id']"
                     ></livewire:account-select>
                 </div>
                 <div class="col p-0 mt-1">
-                    <label for="" style="font-size: 12px;">VAT formula</label>
+                    <label for="" class="form-label small fw-semibold">PVN formula</label>
                     <div class="input-group input-group-sm">
                         <select class="form-control" key="{{ now() }}" wire:model="expenseLine.vat_calculator_name">
                             @foreach(\App\Services\VatCalculator::factory(100)->getCalculator() as $calcKey => $calcVal)
@@ -288,16 +290,16 @@
                 </div>
             </div>
             <div class="mb-1 row">
-                <div class="col-6"><strong class="pull-right">without VAT:</strong></div>
+                <div class="col-6"><strong class="pull-right">bez PVN:</strong></div>
                 <div class="col-3"><span class="pull-right">{{number_format(floatval($expenseLine['amount_without_vat']), 2)}}</span></div>
 
             </div>
             <div class="mb-1 row">
-                <div class="col-6"><strong class="pull-right">VAT:</strong></div>
+                <div class="col-6"><strong class="pull-right">PVN:</strong></div>
                 <div class="col-3"><span class="pull-right">{{number_format(floatval($expenseLine['amount_vat']), 2)}}</span></div>
             </div>
             <div class="mb-1 row">
-                <div class="col-6"><strong class="pull-right">with VAT:</strong></div>
+                <div class="col-6"><strong class="pull-right">ar PVN:</strong></div>
                 <div class="col-3"><span class="pull-right">{{number_format(floatval($expenseLine['amount_with_vat']), 2)}}</span></div>
             </div>
 

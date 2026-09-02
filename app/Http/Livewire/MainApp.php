@@ -14,7 +14,7 @@ class MainApp extends Component
     protected $listeners = ['changeActiveCompany' => 'setActiveCompanyId'];
     private $nav = [
         'companies' => [
-            'title' => 'My companies',
+            'title' => 'Uzņēmumi',
             'active' => true,
             'available' => true,
             'shouldAuth' => true,
@@ -22,28 +22,28 @@ class MainApp extends Component
 
         ],
         'partners' => [
-            'title' => 'Partners',
+            'title' => 'Partneri',
             'active' => false,
             'available' => true,
             'shouldAuth' => true,
             'shouldHaveSelectedCompany' => true,
         ],
         'invoices' => [
-            'title' => 'Invoices',
+            'title' => 'Rēķini',
             'active' => false,
             'available' => true,
             'shouldAuth' => true,
             'shouldHaveSelectedCompany' => true,
         ],
         'cash-expenses' => [
-            'title' => 'Cash expenses',
+            'title' => 'Avansu norēķini',
             'active' => false,
             'available' => true,
             'shouldAuth' => true,
             'shouldHaveSelectedCompany' => true,
         ],
         'personal-income' => [
-            'title' => 'Personal Income',
+            'title' => 'IIN / Algas',
             'active' => false,
             'available' => false,
             'shouldAuth' => true,
@@ -52,28 +52,28 @@ class MainApp extends Component
         'other' => [
             'items' => [
                 'company-data' => [
-                    'title' => 'Company data',
+                    'title' => 'Uzņēmuma dati',
                     'active' => false,
                     'available' => true,
                     'shouldAuth' => true,
                     'shouldHaveSelectedCompany' => true,
                 ],
                 'other-payment-receivers' => [
-                    'title' => 'Other payment receivers',
+                    'title' => 'Citi maksājumu saņēmēji',
                     'active' => false,
                     'available' => true,
                     'shouldAuth' => true,
                     'shouldHaveSelectedCompany' => true,
                 ],
                 'settings' => [
-                    'title' => 'Settings',
+                    'title' => 'Iestatījumi',
                     'active' => false,
                     'available' => false,
                     'shouldAuth' => true,
                     'shouldHaveSelectedCompany' => true,
                 ],
                 'vacations' => [
-                    'title' => 'Vacation',
+                    'title' => 'Atvaļinājumi',
                     'active' => false,
                     'available' => true,
                     'shouldAuth' => true,

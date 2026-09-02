@@ -22,19 +22,19 @@
                         <button class="btn btn-modern btn-modern-primary btn-sm"
                                 role="button"
                                 wire:click="openNewInvoice">
-                            <i class="fa-solid fa-plus me-1"></i> {{ __('New Invoice') }}
+                            <i class="fa-solid fa-plus me-1"></i> {{ __('Jauns rēķins') }}
                         </button>
 
                         <button class="btn btn-modern btn-modern-secondary btn-sm"
                                 role="button"
                                 wire:click="shortcutInvoiceOpen">
-                            <i class="fa-solid fa-bolt me-1 text-warning"></i> {{ __('Fast Record') }}
+                            <i class="fa-solid fa-bolt me-1 text-warning"></i> {{ __('Ātrais ieraksts') }}
                         </button>
 
                         <button class="btn btn-modern btn-modern-secondary btn-sm"
                                 wire:click="export"
-                                data-bs-toggle="tooltip" data-bs-placement="left" title="Export">
-                            <i class="fa-regular fa-file-excel text-success me-1"></i> {{ __('Export') }}
+                                data-bs-toggle="tooltip" data-bs-placement="left" title="Eksportēt">
+                            <i class="fa-regular fa-file-excel text-success me-1"></i> {{ __('Eksportēt') }}
                         </button>
                     </div>
                 </div>
@@ -53,6 +53,7 @@
                                                readonly
                                                id="dp3"
                                                autocomplete="off"
+                                               placeholder="No"
                                                style="font-size: 11px;padding: 0 8px; width: 50%; float: left"
                                                onchange="this.dispatchEvent(new InputEvent('input'))"
                                         >
@@ -62,6 +63,7 @@
                                                readonly
                                                id="dp4"
                                                autocomplete="off"
+                                               placeholder="Līdz"
                                                style="font-size: 11px;padding: 0 8px; width: 50%;"
                                                onchange="this.dispatchEvent(new InputEvent('input'))"
                                         >
@@ -69,9 +71,8 @@
                                     <td style="padding: 2px 0">
                                         <select wire:model="filter.typeId"
                                                 class="form-control form-control-sm"
-                                                style="font-size: 11px;padding: 0 8px"
-                                                placeholder="Select type">
-                                            <option value="">-</option>
+                                                style="font-size: 11px;padding: 0 8px">
+                                            <option value="">- Veids -</option>
                                             @foreach($invoicetypes as $type)
                                                 <option value="{{$type->id}}"
                                                         @if($type->id === $filter['typeId']) selected @endif>{{$type->title}}</option>
@@ -81,9 +82,8 @@
                                     <td style="padding: 2px 0;">
                                         <select wire:model="filter.structId"
                                                 class="form-control form-control-sm"
-                                                style="font-size: 11px;padding: 0 8px"
-                                                placeholder="Select type">
-                                            <option value="">-</option>
+                                                style="font-size: 11px;padding: 0 8px">
+                                            <option value="">- Struktūrv. -</option>
                                             @foreach($structuralunits as $type)
                                                 <option value="{{$type->id}}"
                                                         @if($type->id === $filter['structId']) selected @endif>{{$type->title}}</option>
@@ -93,9 +93,8 @@
                                     <td style="padding: 2px 0">
                                         <select wire:model="filter.partnerId"
                                                 class="form-control form-control-sm "
-                                                style="font-size: 11px;padding: 0 8px"
-                                                placeholder="Select partner">
-                                            <option value="">-</option>
+                                                style="font-size: 11px;padding: 0 8px">
+                                            <option value="">- Partneris -</option>
                                             @foreach($partners as $partner)
                                                 <option value="{{$partner->id}}"
                                                         @if($partner->id === $filter['partnerId']) selected @endif>{{$partner->name}}</option>
@@ -106,6 +105,7 @@
                                         <input type="text"
                                                wire:model.debounce.500ms="filter.details"
                                                class="form-control form-control-sm"
+                                               placeholder="Meklēt aprakstā"
                                                style="font-size: 11px;padding: 0 8px;"
                                         >
                                     </td>
@@ -114,50 +114,50 @@
                                     </td>
                                     <td></td>
                                     <td style="padding: 3px">
-                                        <span class="fa fa-close text-center"
-                                              style="padding: 3px"
+                                        <span class="fa-solid fa-xmark text-center text-danger"
+                                              style="padding: 3px; cursor: pointer;"
                                               role="button"
+                                              title="Notīrīt filtru"
                                               wire:click="clearFilterForm"
                                         ></span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    {{--                            <th><x-column-title column="id" :sortColumn="$sortColumn" :sortDirection="$sortDirection" title="ID"></x-column-title></th>--}}
                                     <th>
                                         <x-column-title column="number" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Number"></x-column-title>
+                                                        :sortDirection="$sortDirection" title="Numurs"></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="date" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Date"></x-column-title>
+                                                        :sortDirection="$sortDirection" title="Datums"></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="invoicetypename" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Type"></x-column-title>
+                                                        :sortDirection="$sortDirection" title="Veids"></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="structuralunitname" :sortColumn="$sortColumn"
                                                         :sortDirection="$sortDirection"
-                                                        title="Struct"></x-column-title>
+                                                        title="Struktūrv."></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="partnername" :sortColumn="$sortColumn"
                                                         :sortDirection="$sortDirection"
-                                                        title="Partner"></x-column-title>
+                                                        title="Partneris"></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="details_self" :sortColumn="$sortColumn"
                                                         :sortDirection="$sortDirection"
-                                                        title="Details"></x-column-title>
+                                                        title="Apraksts"></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="currency_name" :sortColumn="$sortColumn"
                                                         :sortDirection="$sortDirection"
-                                                        title="Currency"></x-column-title>
+                                                        title="Valūta"></x-column-title>
                                     </th>
                                     <th>
                                         <x-column-title column="amount_total" :sortColumn="$sortColumn"
-                                                        :sortDirection="$sortDirection" title="Amount"></x-column-title>
+                                                        :sortDirection="$sortDirection" title="Summa"></x-column-title>
                                     </th>
                                 </tr>
                                 </thead>
@@ -310,31 +310,32 @@
     </script>
 
     <x-modal id="shortcut_invoice"
-             title="Create invoice"
+             title="Izveidot rēķinu"
              titleClass="bg-primary text-white"
              confirmAction="shortcutInvoiceConfirm"
              cancelAction="shortcutInvoiceCancel"
              confirmActionClass="btn-primary"
-             confirmActionLabel="Create"
+             confirmActionLabel="Izveidot"
+             cancelActionLabel="Atcelt"
     >
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">Date</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Datums</label>
             <input type="text" class="date form-control @error('shortcutInvoice.date')is-invalid @enderror"
                    readonly
-                   placeholder="Date"
+                   placeholder="Datums"
                    onchange="this.dispatchEvent(new InputEvent('input'))"
-                   aria-describedby="basic-addon1" wire:model.defer="shortcutInvoice.date">
+                   wire:model.defer="shortcutInvoice.date">
             @error('shortcutInvoice.date') <small class="text-danger error">{{ $message }}</small>@enderror
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">No</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Numurs</label>
             <input type="text" class="form-control @error('shortcutInvoice.number')is-invalid @enderror"
-                   placeholder="No"
-                   aria-describedby="basic-addon1" wire:model.defer="shortcutInvoice.number">
+                   placeholder="Rēķina numurs"
+                   wire:model.defer="shortcutInvoice.number">
             @error('shortcutInvoice.number') <small class="text-danger error">{{ $message }}</small>@enderror
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">Struct</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Struktūrvienība</label>
             <select
                     wire:model="shortcutInvoice.structId"
                     class="form-control text-end @error('shortcutInvoice.structId')is-invalid @enderror"
@@ -344,8 +345,8 @@
                 @endforeach
             </select>
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">Type</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Veids</label>
             <select
                     wire:model="shortcutInvoice.typeId"
                     class="form-control text-end @error('shortcutInvoice.typeId')is-invalid @enderror"
@@ -355,26 +356,26 @@
                 @endforeach
             </select>
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">Partner</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Partneris</label>
             <livewire:partner-select :selectedPartnerId="$shortcutInvoice['partnerId']"></livewire:partner-select>
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">Details</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Apraksts</label>
             <input type="text" class="form-control @error('shortcutInvoice.details')is-invalid @enderror"
-                   placeholder="Details"
-                   aria-describedby="basic-addon1" wire:model.defer="shortcutInvoice.details">
+                   placeholder="Rēķina apraksts"
+                   wire:model.defer="shortcutInvoice.details">
             @error('shortcutInvoice.details') <small class="text-danger error">{{ $message }}</small>@enderror
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">Amount without VAT</label>
-            <input type="number" class="form-control @error('shortcutInvoice.amountWithoutVat')is-invalid @enderror"
-                   placeholder="Amount"
-                   aria-describedby="basic-addon1" wire:model="shortcutInvoice.amountWithoutVat">
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Summa bez PVN</label>
+            <input type="number" step="0.01" class="form-control @error('shortcutInvoice.amountWithoutVat')is-invalid @enderror"
+                   placeholder="0.00"
+                   wire:model="shortcutInvoice.amountWithoutVat">
             @error('shortcutInvoice.amountWithoutVat') <small class="text-danger error">{{ $message }}</small>@enderror
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">VAT rate</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">PVN likme</label>
             <select
                     wire:model="shortcutInvoice.vatId"
                     class="form-control text-end @error('shortcutInvoice.vatId')is-invalid @enderror"
@@ -384,42 +385,46 @@
                 @endforeach
             </select>
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">VAT</label>
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">PVN summa</label>
             <input type="text" class="form-control @error('shortcutInvoice.amountVat')is-invalid @enderror"
                    readonly
-                   placeholder="VAT"
-                   aria-describedby="basic-addon1" wire:model="shortcutInvoice.amountVat">
+                   placeholder="0.00"
+                   wire:model="shortcutInvoice.amountVat">
             @error('shortcutInvoice.amountVat') <small class="text-danger error">{{ $message }}</small>@enderror
         </div>
-        <div class="mb-1">
-            <label for="" style="font-size: 12px;">Amount with VAT</label>
-            <input type="number" class="form-control @error('shortcutInvoice.amountWithVat')is-invalid @enderror"
-                   placeholder="Amount with VAT"
-                   aria-describedby="basic-addon1" wire:model="shortcutInvoice.amountWithVat">
+        <div class="mb-2">
+            <label for="" class="form-label small fw-semibold">Summa ar PVN</label>
+            <input type="number" step="0.01" class="form-control @error('shortcutInvoice.amountWithVat')is-invalid @enderror"
+                   placeholder="0.00"
+                   wire:model="shortcutInvoice.amountWithVat">
             @error('shortcutInvoice.amountWithVat') <small class="text-danger error">{{ $message }}</small>@enderror
         </div>
     </x-modal>
 
 
     <x-modal id="delete_invoice"
-             title="Warning"
+             title="Brīdinājums"
              titleClass="bg-danger text-white"
              confirmAction="deleteInvoiceConfirm"
              cancelAction="deleteInvoiceCancel"
              confirmActionClass="btn-danger"
+             confirmActionLabel="Dzēst"
+             cancelActionLabel="Atcelt"
     >
-        Confirm to delete invoice No: <strong>{{$activeInvoiceNo}}</strong>?
+        Vai tiešām vēlaties dzēst rēķinu Nr.: <strong>{{$activeInvoiceNo}}</strong>?
     </x-modal>
 
     <x-modal id="copy_invoice"
-             title="Warning"
+             title="Kopēt rēķinu"
              titleClass="bg-primary text-white"
              confirmAction="copyInvoiceConfirm"
              cancelAction="copyInvoiceCancel"
              confirmActionClass="btn-primary"
+             confirmActionLabel="Kopēt"
+             cancelActionLabel="Atcelt"
     >
-        Create copy of invoice No: <strong>{{$activeInvoiceNo}}</strong>?
+        Vai vēlaties izveidot kopiju rēķinam Nr.: <strong>{{$activeInvoiceNo}}</strong>?
     </x-modal>
 
 </div>

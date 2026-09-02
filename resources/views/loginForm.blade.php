@@ -10,8 +10,8 @@
             <div class="auth-logo-badge">
                 <i class="fa-solid fa-calculator"></i>
             </div>
-            <h2>Welcome Back</h2>
-            <p>Sign in to your accounting workspace</p>
+            <h2>Esiet sveicināti</h2>
+            <p>Pieslēdzieties savai grāmatvedības sistēmai</p>
         </div>
 
         @if(session('error') || (isset($errors) && $errors->any()))
@@ -30,14 +30,14 @@
         <form method="POST" action="/sign-in" class="mt-2">
             @csrf
             <div class="mb-3">
-                <label for="email" class="form-label small fw-semibold text-slate-700">Email Address</label>
+                <label for="email" class="form-label small fw-semibold text-slate-700">E-pasta adrese</label>
                 <div class="input-icon-group">
                     <input type="email"
                            id="email"
                            name="email"
                            value="{{ old('email') }}"
                            class="form-control form-control-modern w-100 @if(isset($errors) && $errors->has('email')) is-invalid @endif"
-                           placeholder="name@company.com"
+                           placeholder="vards@uznemums.lv"
                            required
                            autofocus>
                     <i class="fa-regular fa-envelope"></i>
@@ -46,7 +46,7 @@
 
             <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label for="password" class="form-label small fw-semibold text-slate-700 mb-0">Password</label>
+                    <label for="password" class="form-label small fw-semibold text-slate-700 mb-0">Parole</label>
                 </div>
                 <div class="input-icon-group">
                     <input type="password"
@@ -60,13 +60,13 @@
             </div>
 
             <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2 fs-6">
-                <span>Sign In to Dashboard</span>
+                <span>Pieslēgties sistēmai</span>
                 <i class="fa-solid fa-arrow-right ms-1"></i>
             </button>
         </form>
 
         <div class="text-center mt-4 pt-2 border-top">
-            <span class="small text-muted">&copy; {{ date('Y') }} Auditors.lv &bull; Financial & Accounting System</span>
+            <span class="small text-muted">&copy; {{ date('Y') }} Auditors.lv &bull; Grāmatvedības sistēma</span>
         </div>
     </div>
 </div>

@@ -6,12 +6,12 @@
                     <i class="fa-solid fa-building-user fs-5"></i>
                 </div>
                 <div>
-                    <h5 class="mb-0 fw-bold">{{ __('Select Active Company') }}</h5>
-                    <span class="small text-muted">{{ __('Choose the company profile you wish to manage') }}</span>
+                    <h5 class="mb-0 fw-bold">{{ __('Izvēlieties aktīvo uzņēmumu') }}</h5>
+                    <span class="small text-muted">{{ __('Izvēlieties uzņēmumu, lai pārvaldītu rēķinus un atskaites') }}</span>
                 </div>
             </div>
             <span class="badge bg-slate-100 text-slate-700 px-3 py-2 rounded-pill fw-semibold">
-                {{ count($companies) }} {{ __('Available Companies') }}
+                {{ count($companies) }} {{ __('Uzņēmumi') }}
             </span>
         </div>
 
@@ -32,14 +32,14 @@
                             <h6 class="text-truncate" title="{{ $company->title }}">{{ $company->title }}</h6>
                             <p>
                                 @if(!empty($company->reg_number))
-                                    <span class="text-muted"><i class="fa-solid fa-hashtag me-1"></i>{{ $company->reg_number }}</span>
+                                    <span class="text-muted"><i class="fa-solid fa-hashtag me-1"></i>Reģ. Nr.: {{ $company->reg_number }}</span>
                                 @else
-                                    <span class="text-muted">{{ __('Company ID') }}: #{{ $company->id }}</span>
+                                    <span class="text-muted">ID: #{{ $company->id }}</span>
                                 @endif
                             </p>
                         </div>
                         @if($isActive)
-                            <div class="company-card-check" title="Active">
+                            <div class="company-card-check" title="Aktīvs">
                                 <i class="fa-solid fa-check"></i>
                             </div>
                         @else

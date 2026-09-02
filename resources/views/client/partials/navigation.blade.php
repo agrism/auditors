@@ -96,16 +96,16 @@
                 <ul class="navbar-nav ms-auto align-items-xl-center gap-2 pt-2 pt-xl-0">
                     @if(\Auth::check() && \Auth::user()->isAdmin())
                         <li class="nav-item">
-                            <a class="nav-link nav-admin-badge" href="{{ url(route('admin.home')) }}" title="Switch to Admin Panel">
+                            <a class="nav-link nav-admin-badge" href="{{ url(route('admin.home')) }}" title="Pāriet uz Admin paneli">
                                 <i class="fa-solid fa-shield-halved"></i>
-                                <span>Admin Panel</span>
+                                <span>{{ __('Admin Panel') }}</span>
                             </a>
                         </li>
                     @endif
 
                     <li class="nav-item dropdown">
                         <?php
-                        $user = explode(' ', \Illuminate\Support\Facades\Auth::user()->name ?? '')[0] ?? 'Account';
+                        $user = explode(' ', \Illuminate\Support\Facades\Auth::user()->name ?? '')[0] ?? 'Lietotājs';
                         ?>
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 py-1 px-2 text-decoration-none"
                            data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
@@ -118,19 +118,19 @@
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="min-width: 220px;">
                             <li>
                                 <div class="px-3 py-2 border-bottom border-secondary mb-1">
-                                    <div class="fw-bold text-light small">{{ \Illuminate\Support\Facades\Auth::user()->name ?? 'User' }}</div>
+                                    <div class="fw-bold text-light small">{{ \Illuminate\Support\Facades\Auth::user()->name ?? 'Lietotājs' }}</div>
                                     <div class="text-white-50" style="font-size: 0.75rem;">{{ \Illuminate\Support\Facades\Auth::user()->email ?? '' }}</div>
                                 </div>
                             </li>
                             <li>
                                 <a class="dropdown-item py-2" href="{{ route('client.user.edit') }}">
-                                    <i class="fa-solid fa-user-gear me-2 text-primary-400"></i> Profile Settings
+                                    <i class="fa-solid fa-user-gear me-2 text-primary-400"></i> {{ __('Profile Settings') }}
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider my-1 border-secondary"></li>
                             <li>
                                 <a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}">
-                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Log Out
+                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> {{ __('Log Out') }}
                                 </a>
                             </li>
                         </ul>

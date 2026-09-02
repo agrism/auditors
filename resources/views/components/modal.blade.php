@@ -1,11 +1,11 @@
 @props([
-    'title' => 'Alert',
+    'title' => 'Paziņojums',
     'titleClass' => '',
     'id' => uniqid(),
     'confirmAction' => 'submit',
     'cancelAction' => 'cancel',
-    'cancelActionLabel' => 'Cancel',
-    'confirmActionLabel' => 'Continue',
+    'cancelActionLabel' => 'Atcelt',
+    'confirmActionLabel' => 'Apstiprināt',
     'confirmActionClass' => 'btn-primary'
 ])
 
