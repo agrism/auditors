@@ -174,42 +174,69 @@
                                     <x-column-title column="amount_total" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Summa"></x-column-title>
                                 </th>
+                                <th class="text-end" style="min-width: 170px;">{{ __('Darbības') }}</th>
                             </tr>
                             </thead>
-                                <tbody>
-
-
+                            <tbody>
                                 @foreach($invoices as $invoice)
                                     <tr class="line text-truncate {{ (preg_match('/copy/',$invoice->number)) ? 'bg-warning' : null }}"
                                         wire:click="setActiveInvoiceId({{$invoice->id}})"
                                         style="cursor: pointer">
-                                        {{--                                <td>{{ $invoice->id}}</td>--}}
-                                        <td id="td{{$invoice->id}}">{{ $invoice->number}}</td>
-                                        <td class="text-truncate">
-
-                                            {{ $invoice->date}}
-
-                                            {{--                                    @if(isset($invoice) && $invoice->isClosedForEdit)--}}
-                                            {{--                                        --}}{{--                                    @if(isset($invoice) )--}}
-                                            {{--                                        <i class="fa fa-lock"></i>--}}
-                                            {{--                                    @endif--}}
-
+                                        <td id="td{{$invoice->id}}">
+                                            <span class="font-monospace fw-bold text-slate-800">{{ $invoice->number }}</span>
                                         </td>
-                                        {{--<td>{{ $invoice->payment_date}}</td>--}}
-                                        <td>{{ $invoice->invoicetypename}}</td>
-                                        <td>{{ $invoice->structuralunitname}}</td>
+                                        <td class="text-truncate text-muted">
+                                            {{ $invoice->date }}
+                                        </td>
+                                        <td class="text-truncate">
+                                            <span class="badge bg-slate-100 text-slate-700 fw-normal">{{ $invoice->invoicetypename }}</span>
+                                        </td>
+                                        <td class="text-truncate text-muted">{{ $invoice->structuralunitname }}</td>
                                         <?php
                                         $partnername = str_replace(
                                             'Sabiedrība ar ierobežotu atbildību', 'SIA', $invoice->partnername
                                         );
                                         $partnername = str_replace('Akciju sabiedrība', 'A/S', $partnername);
                                         ?>
-
-                                        <td class="text-truncate" style="max-width: 100px;">{{ $partnername }}</td>
-                                        <td class="text-truncate"
-                                            style="max-width: 150px;">{{ $invoice->details_self}}</td>
-                                        <td class="text-center text-truncate">{{ $invoice->currency_name}}</td>
-                                        <td class="text-end text-truncate">{{ number_format($invoice->amount_total, 2)}}</td>
+                                        <td class="text-truncate" style="max-width: 180px;">
+                                            <span class="fw-medium text-slate-800">{{ $partnername }}</span>
+                                        </td>
+                                        <td class="text-truncate text-muted small" style="max-width: 150px;">{{ $invoice->details_self }}</td>
+                                        <td class="text-center text-truncate text-muted small">{{ $invoice->currency_name }}</td>
+                                        <td class="text-end text-truncate">
+                                            <span class="font-monospace fw-bold text-slate-900">{{ number_format($invoice->amount_total, 2) }}</span>
+                                        </td>
+                                        <td class="text-end" onclick="event.stopPropagation();">
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <a href="{{ route('client.invoices.show', [$invoice->id, 'locale' => 'lv']) }}"
+                                                   target="_blank"
+                                                   class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-2 py-0.5 rounded-pill bg-white shadow-xs fw-medium text-decoration-none"
+                                                   title="PDF LV">
+                                                    <i class="fa-solid fa-file-pdf text-danger"></i> LV
+                                                </a>
+                                                <a href="{{ route('client.invoices.show', [$invoice->id, 'locale' => 'en']) }}"
+                                                   target="_blank"
+                                                   class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-2 py-0.5 rounded-pill bg-white shadow-xs fw-medium text-decoration-none"
+                                                   title="PDF EN">
+                                                    <i class="fa-solid fa-file-pdf text-danger"></i> EN
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
+                                                        wire:click="setActiveInvoiceId({{$invoice->id}}); $set('showInvoiceFom', true)"
+                                                        style="width: 28px; height: 28px;"
+                                                        title="Labot rēķinu">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center justify-content-center p-1 rounded-circle bg-white shadow-xs"
+                                                        wire:click="setActiveInvoiceId({{$invoice->id}})"
+                                                        style="width: 28px; height: 28px;"
+                                                        title="Papildu darbības">
+                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
 
                                                              <tr class="@if($invoice->id !== $activeInvoiceId) d-none @endif actions bg-primary-50 bg-opacity-25 border-bottom border-primary-100">
                                         <td colspan="100" class="p-3">

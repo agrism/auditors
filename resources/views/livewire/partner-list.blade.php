@@ -91,13 +91,15 @@
                                     <x-column-title column="address" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Adrese"></x-column-title>
                                 </th>
-                                <th style="width: 40px;"></th>
+                                <th class="text-end" style="width: 70px;">{{ __('Darbības') }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             @forelse($partners as $partner)
                                 <tr class="line text-truncate {{ (preg_match('/copy/',$partner->id)) ? 'table-warning' : '' }}"
                                     wire:click="openEdit({{$partner->id}})"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#handle_partner"
                                     role="button"
                                     style="cursor: pointer;">
                                     <td class="text-truncate">
@@ -113,8 +115,15 @@
                                     <td class="text-truncate text-muted">
                                         {{ $partner->address ?: '-' }}
                                     </td>
-                                    <td class="text-end text-muted">
-                                        <i class="fa-solid fa-chevron-right opacity-25"></i>
+                                    <td class="text-end" onclick="event.stopPropagation();">
+                                        <button class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
+                                                wire:click="openEdit({{$partner->id}})"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#handle_partner"
+                                                style="width: 28px; height: 28px;"
+                                                title="Labot partneri">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
