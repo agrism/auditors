@@ -114,7 +114,6 @@ Route::group(
 	});
 
 	Route::resource('invoices', 'InvoiceController');
-	Route::resource('invoices', 'InvoiceController');
 
 	Route::get('export', ['as' => 'export', 'uses' => 'ExportController@export']);
 	Route::get('npi', ['as' => 'npi', 'uses' => 'NpiController@create']);

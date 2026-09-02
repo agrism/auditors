@@ -12,17 +12,17 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {{ \Request::route()->getName() == 'client.partners.index' ? 'active' : null }} "
-                           aria-current="page" href="{{ url(route('client.partners.index')) }}">{{_('Partners')}}</a>
+                        <a class="nav-link {{ request()->routeIs('client.partners.*') ? 'active' : '' }} "
+                           aria-current="page" href="{{ url(route('client.partners.index')) }}">{{ __('Partners') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ \Request::route()->getName() == 'client.invoices.index' ? 'active' : null }}"
-                           href="{{ url(route('client.invoices.index')) }}">{{_('Invoices')}}</a>
+                        <a class="nav-link {{ request()->routeIs('client.invoices.*') ? 'active' : '' }}"
+                           href="{{ url(route('client.invoices.index')) }}">{{ __('Invoices') }}</a>
                     </li>
                     @if(config('app.debug-available'))
                         <li class="nav-item">
-                            <a class="nav-link {{ \Request::route()->getName() == 'client.personal-incomes.index' ? 'active' : null }}"
-                               href="{{ url(route('client.personal-incomes.index')) }}">{{_('Personal incomes')}}</a>
+                            <a class="nav-link {{ request()->routeIs('client.personal-incomes.*') ? 'active' : '' }}"
+                               href="{{ url(route('client.personal-incomes.index')) }}">{{ __('Personal incomes') }}</a>
                         </li>
                     @endif
 
@@ -31,37 +31,32 @@
                     ?>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle @if(in_array(\Request::route()->getName() , ['client.companies.edit', 'client.companies.bank.index', 'client.companies.settings.index'])) active @endif"
+                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('client.companies.edit') || request()->routeIs('client.companies.bank.*') || request()->routeIs('client.companies.settings.*')) ? 'active' : '' }}"
                            href="#"
                            id="navbarDropdown"
                            role="button"
                            data-bs-toggle="dropdown"
                            aria-expanded="false">
-                            {{_('Self data')}} <span class="caret"></span>
+                            {{ __('Self data') }} <span class="caret"></span>
                         </a>
 
                         @if($companyId)
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item"
-                                   href="{{ url(route('client.companies.edit', $companyId)) }}">{{_('Requisites')}}</a>
+                                   href="{{ url(route('client.companies.edit', $companyId)) }}">{{ __('Requisites') }}</a>
                                 <a class="dropdown-item"
-                                   href="{{ url(route('client.companies.bank.index')) }}">{{_('Other payment receivers')}}</a>
+                                   href="{{ url(route('client.companies.bank.index')) }}">{{ __('Other payment receivers') }}</a>
                                 <a class="dropdown-item"
-                                   href="{{ url(route('client.companies.settings.index')) }}">{{_('Settings')}}</a>
+                                   href="{{ url(route('client.companies.settings.index')) }}">{{ __('Settings') }}</a>
                             </ul>
                         @endif
                     </li>
                 </ul>
 
-                {{--            </div>--}}
-
-
-                {{--            <div>--}}
-
                 <ul class="nav nav-pills">
 
                     @if(\Auth::check() && \Auth::user()->isAdmin())
-                        <li class="{{ \Request::route()->getName() == 'admin.home' ? 'active' : null }} nav-link"><a
+                        <li class="{{ request()->routeIs('admin.*') ? 'active' : '' }} nav-link"><a
                                     href="{{ url(route('admin.home')) }}">Admin</a></li>
                     @endif
                     <li class="nav-item dropdown">

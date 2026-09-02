@@ -21,15 +21,36 @@ class InvoiceAdvancePayment extends Model
 
     public function setDateAttribute($value)
     {
-        $this->attributes['date'] = \Carbon\Carbon::createFromFormat(
-            'd.m.Y', $value
-        )->format('Y-m-d');
+        if (empty($value)) {
+            $this->attributes['date'] = null;
+            return;
+        }
+
+        try {
+            $this->attributes['date'] = \Carbon\Carbon::createFromFormat(
+                'd.m.Y', $value
+            )->format('Y-m-d');
+        } catch (\Exception $e) {
+            $this->attributes['date'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
+        }
     }
 
-    public function getDateAttribute($value): string
+    public function getDateAttribute($value): ?string
     {
-        return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
-            'd.m.Y'
-        );
+        if (empty($value)) {
+            return null;
+        }
+
+        try {
+            return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
+                'd.m.Y'
+            );
+        } catch (\Exception $e) {
+            try {
+                return \Carbon\Carbon::parse($value)->format('d.m.Y');
+            } catch (\Exception $e) {
+                return $value;
+            }
+        }
     }
 }

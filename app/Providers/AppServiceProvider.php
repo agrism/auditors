@@ -25,9 +25,11 @@ class AppServiceProvider extends ServiceProvider
         app()->singleton(
             'Company',
             function ($app) {
-                if ($companyId = \Session::has('companyId')) {
-
-                    return \Auth::user()->companies()->where('id', $companyId)->first();
+                if ($companyId = \Session::get('companyId')) {
+                    if (\Auth::check() && \Auth::user()) {
+                        return \Auth::user()->companies()->where('id', $companyId)->first();
+                    }
+                    return \App\Company::find($companyId);
                 }
                 return null;
             }
@@ -51,6 +53,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-
+        \Illuminate\Pagination\Paginator::useBootstrap();
     }
 }

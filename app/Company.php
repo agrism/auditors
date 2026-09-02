@@ -41,23 +41,34 @@ class Company extends Model
 	public function setClosedDataDateAttribute($value)
 	{
 		if (isset($value) && $value) {
-			$this->attributes['closed_data_date']
-				= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format(
-				'Y-m-d'
-			);
+			try {
+				$this->attributes['closed_data_date']
+					= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format('Y-m-d');
+			} catch (\Exception $e) {
+				try {
+					$this->attributes['closed_data_date']
+						= \Carbon\Carbon::parse($value)->format('Y-m-d');
+				} catch (\Exception $e) {
+					$this->attributes['closed_data_date'] = null;
+				}
+			}
 		} else {
-			$this->attributes['closed_data_date']
-				= \Carbon\Carbon::createFromFormat('d.m.Y', '01.01.1970')
-				->format('Y-m-d');
+			$this->attributes['closed_data_date'] = '1970-01-01';
 		}
 	}
 
 	public function getClosedDataDateAttribute($value)
 	{
 		if ($value) {
-			return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
-				'd.m.Y'
-			);
+			try {
+				return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d.m.Y');
+			} catch (\Exception $e) {
+				try {
+					return \Carbon\Carbon::parse($value)->format('d.m.Y');
+				} catch (\Exception $e) {
+					return $value;
+				}
+			}
 		}
 
 		return null;

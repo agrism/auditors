@@ -20,13 +20,7 @@ class Controller extends BaseController
 
 	public function __construct()
 	{
-		$this->company = app()->Company;
-
 		$this->initCompany();
-
-		if (!isset($this->company->id)) {
-			return route('client.companies.index');
-		}
 	}
 
 	private function initCompany()

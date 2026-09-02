@@ -94,47 +94,88 @@ class Invoice extends Model
 
 	public function setDateAttribute($value)
 	{
-		$this->attributes['date'] = \Carbon\Carbon::createFromFormat(
-			'd.m.Y', $value
-		)->format('Y-m-d');
+		if (empty($value)) {
+			$this->attributes['date'] = null;
+			return;
+		}
+
+		try {
+			$this->attributes['date'] = \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format('Y-m-d');
+		} catch (\Exception $e) {
+			$this->attributes['date'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
+		}
 	}
 
 	public function setPaymentDateAttribute($value)
 	{
-		$this->attributes['payment_date'] = \Carbon\Carbon::createFromFormat(
-			'd.m.Y', $value
-		)->format('Y-m-d');
+		if (empty($value)) {
+			$this->attributes['payment_date'] = null;
+			return;
+		}
+
+		try {
+			$this->attributes['payment_date'] = \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format('Y-m-d');
+		} catch (\Exception $e) {
+			$this->attributes['payment_date'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
+		}
 	}
 
 	public function getDateAttribute($value)
 	{
-		return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
-			'd.m.Y'
-		);
+		if (empty($value)) {
+			return null;
+		}
+
+		try {
+			return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d.m.Y');
+		} catch (\Exception $e) {
+			try {
+				return \Carbon\Carbon::parse($value)->format('d.m.Y');
+			} catch (\Exception $e) {
+				return $value;
+			}
+		}
 	}
 
 	public function getPaymentDateAttribute($value)
 	{
-		return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
-			'd.m.Y'
-		);
+		if (empty($value)) {
+			return null;
+		}
+
+		try {
+			return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d.m.Y');
+		} catch (\Exception $e) {
+			try {
+				return \Carbon\Carbon::parse($value)->format('d.m.Y');
+			} catch (\Exception $e) {
+				return $value;
+			}
+		}
 	}
 
 
 	function getIsClosedForEditAttribute()
 	{
-
 		if (!(SelectedCompanyService::getCompany()->closed_data_date ?? null)) {
 			return false;
 		}
 
-		$systemClosedDate = \Carbon\Carbon::createFromFormat(
-			'd.m.Y',
-			(SelectedCompanyService::getCompany()->closed_data_date ?? null)
-		);
-		$invoiceDate = \Carbon\Carbon::createFromFormat('d.m.Y', $this->date);
-		if ($systemClosedDate->gte($invoiceDate)) {
-			return true;
+		if (empty($this->date)) {
+			return false;
+		}
+
+		try {
+			$systemClosedDate = \Carbon\Carbon::createFromFormat(
+				'd.m.Y',
+				(SelectedCompanyService::getCompany()->closed_data_date ?? null)
+			);
+			$invoiceDate = \Carbon\Carbon::createFromFormat('d.m.Y', $this->date);
+			if ($systemClosedDate->gte($invoiceDate)) {
+				return true;
+			}
+		} catch (\Exception $e) {
+			return false;
 		}
 
 		return false;

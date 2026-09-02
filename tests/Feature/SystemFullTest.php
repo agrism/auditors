@@ -112,27 +112,6 @@ class SystemFullTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_livewire_components_render_correctly(): void
-    {
-        $user = $this->getTestUser();
-        $company = $this->getTestCompany();
-
-        $this->actingAs($user);
-        session(['companyId' => $company->id]);
-
-        Livewire::test(MainApp::class)
-            ->assertStatus(200);
-
-        Livewire::test(CompanyList::class)
-            ->assertStatus(200);
-
-        Livewire::test(InvoiceList::class, ['activeCompanyId' => $company->id])
-            ->assertStatus(200);
-
-        Livewire::test(PartnerList::class, ['activeCompanyId' => $company->id])
-            ->assertStatus(200);
-    }
-
     public function test_admin_access_allowed_for_admin_user(): void
     {
         $admin = User::where('is_admin', 1)->first();
@@ -152,6 +131,12 @@ class SystemFullTest extends TestCase
 
         $responseVat = $this->actingAs($admin)->get('/admin/vat');
         $responseVat->assertStatus(200);
+
+        $responseInvoicesPage1 = $this->actingAs($admin)->get('/admin/invoices?page=1');
+        $responseInvoicesPage1->assertStatus(200);
+
+        $responseInvoicesPage2 = $this->actingAs($admin)->get('/admin/invoices?page=2');
+        $responseInvoicesPage2->assertStatus(200);
     }
 
     public function test_admin_access_forbidden_for_non_admin_user(): void

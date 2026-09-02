@@ -34,49 +34,103 @@ class PersonalIncome extends Model
 
 	public function setIncomePeriodDateFromAttribute($value)
 	{
-		$this->attributes['income_period_date_from']
-			= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format(
-			'Y-m-d'
-		);
+		if (empty($value)) {
+			$this->attributes['income_period_date_from'] = null;
+			return;
+		}
+
+		try {
+			$this->attributes['income_period_date_from']
+				= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format('Y-m-d');
+		} catch (\Exception $e) {
+			$this->attributes['income_period_date_from']
+				= \Carbon\Carbon::parse($value)->format('Y-m-d');
+		}
 	}
 
 	public function getIncomePeriodDateFromAttribute($value)
 	{
-		return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
-			'd.m.Y'
-		);
+		if (empty($value)) {
+			return null;
+		}
+
+		try {
+			return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d.m.Y');
+		} catch (\Exception $e) {
+			try {
+				return \Carbon\Carbon::parse($value)->format('d.m.Y');
+			} catch (\Exception $e) {
+				return $value;
+			}
+		}
 	}
 
 //--------------------
 	public function setIncomePeriodDateTillAttribute($value)
 	{
-		$this->attributes['income_period_date_till']
-			= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format(
-			'Y-m-d'
-		);
+		if (empty($value)) {
+			$this->attributes['income_period_date_till'] = null;
+			return;
+		}
+
+		try {
+			$this->attributes['income_period_date_till']
+				= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format('Y-m-d');
+		} catch (\Exception $e) {
+			$this->attributes['income_period_date_till']
+				= \Carbon\Carbon::parse($value)->format('Y-m-d');
+		}
 	}
 
 	public function getIncomePeriodDateTillAttribute($value)
 	{
-		return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
-			'd.m.Y'
-		);
+		if (empty($value)) {
+			return null;
+		}
+
+		try {
+			return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d.m.Y');
+		} catch (\Exception $e) {
+			try {
+				return \Carbon\Carbon::parse($value)->format('d.m.Y');
+			} catch (\Exception $e) {
+				return $value;
+			}
+		}
 	}
 
 //--------------------
 	public function setIncomePaidDateAttribute($value)
 	{
-		$this->attributes['income_paid_date']
-			= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format(
-			'Y-m-d'
-		);
+		if (empty($value)) {
+			$this->attributes['income_paid_date'] = null;
+			return;
+		}
+
+		try {
+			$this->attributes['income_paid_date']
+				= \Carbon\Carbon::createFromFormat('d.m.Y', $value)->format('Y-m-d');
+		} catch (\Exception $e) {
+			$this->attributes['income_paid_date']
+				= \Carbon\Carbon::parse($value)->format('Y-m-d');
+		}
 	}
 
 	public function getIncomePaidDateAttribute($value)
 	{
-		return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format(
-			'd.m.Y'
-		);
+		if (empty($value)) {
+			return null;
+		}
+
+		try {
+			return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d.m.Y');
+		} catch (\Exception $e) {
+			try {
+				return \Carbon\Carbon::parse($value)->format('d.m.Y');
+			} catch (\Exception $e) {
+				return $value;
+			}
+		}
 	}
 }
 

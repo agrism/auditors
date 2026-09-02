@@ -63,23 +63,23 @@
 
                     @if(\App\Services\AuthUser::instance()->userId() === 9)
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle @if(in_array(\Request::route()->getName() , ['client.companies.edit', 'client.companies.bank.index', 'client.companies.settings.index'])) active @endif"
+                            <a class="nav-link dropdown-toggle @if(request()->routeIs('client.companies.edit') || request()->routeIs('client.companies.bank.*') || request()->routeIs('client.companies.settings.*')) active @endif"
                                href="#"
                                id="navbarDropdown"
                                role="button"
                                data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                {{_('Self data')}} <span class="caret"></span>
+                                {{ __('Self data') }} <span class="caret"></span>
                             </a>
 
                             @if($companyId)
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item"
-                                       href="{{ url(route('client.companies.edit', $companyId)) }}">{{_('Requisites')}}</a>
+                                       href="{{ url(route('client.companies.edit', $companyId)) }}">{{ __('Requisites') }}</a>
                                     <a class="dropdown-item"
-                                       href="{{ url(route('client.companies.bank.index')) }}">{{_('Other payment receivers')}}</a>
+                                       href="{{ url(route('client.companies.bank.index')) }}">{{ __('Other payment receivers') }}</a>
                                     <a class="dropdown-item"
-                                       href="{{ url(route('client.companies.settings.index')) }}">{{_('Settings')}}</a>
+                                       href="{{ url(route('client.companies.settings.index')) }}">{{ __('Settings') }}</a>
                                 </ul>
                             @endif
                         </li>
@@ -89,7 +89,7 @@
                 <ul class="nav nav-pills">
 
                     @if(\Auth::check() && \Auth::user()->isAdmin())
-                        <li class="{{ \Request::route()->getName() == 'admin.home' ? 'active' : null }} nav-link"><a
+                        <li class="{{ request()->routeIs('admin.*') ? 'active' : '' }} nav-link"><a
                                     href="{{ url(route('admin.home')) }}">Admin</a></li>
                     @endif
                     <li class="nav-item dropdown">
