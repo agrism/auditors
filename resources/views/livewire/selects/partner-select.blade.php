@@ -18,101 +18,115 @@
 
 
     <!-- Modal -->
-    <div wire:ignore.self class="modal fade" id="partnerEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: #b9d4e2;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header info">
-                    <h4 class="modal-title">{{ $selectedPartnerId > 0 ? 'Edit' : 'Create' }} Partner</h4>
-                    <button type="button" class="btn-close" aria-label="Close" wire:click="cancel()"></button>
+    <div wire:ignore.self class="modal fade" id="partnerEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-primary text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fa-solid fa-handshake me-2"></i> {{ $selectedPartnerId > 0 ? __('Labot partnera datus') : __('Pievienot partneri') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" aria-label="Close" wire:click="cancel()"></button>
                 </div>
-                <div class="modal-body" style1="margin-left: 15px;margin-right: 15px">
-                    <div class="mb-1">
-                        <label for="" style="font-size: 12px;display: block;">Name @if($selectedPartnerName)
-                                <a style="display: block; float: right" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$selectedPartnerName}}&search%5Bwhere%5D=name" target="_blank">Pārbaudīt firmas.lv</a>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <label class="form-label small fw-semibold text-muted mb-0">{{ __('Nosaukums / Vārds Uzvārds') }} *</label>
+                            @if($selectedPartnerName)
+                                <a class="small text-primary text-decoration-none" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$selectedPartnerName}}&search%5Bwhere%5D=name" target="_blank">
+                                    <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> {{ __('firmas.lv') }}
+                                </a>
                             @endif
-                            <br><span style="color: green">VALID: Zeme, SIA or Bērziņš Dainis</span><br><span style="color:red;text-decoration: line-through;">NOT VALID: SIA Zeme or Dainis Bērziņš</span>
-
-                        </label>
-                        <input type="text" class="form-control @error('selectedPartnerName')is-invalid @enderror"
-                               placeholder="Partner name"
-                               aria-describedby="basic-addon1" wire:model="selectedPartnerName">
+                        </div>
+                        <input type="text" class="form-control form-control-sm @error('selectedPartnerName') is-invalid @enderror"
+                               placeholder="Piem., Zeme, SIA vai Bērziņš Dainis"
+                               wire:model="selectedPartnerName">
+                        <div class="form-text small text-muted" style="font-size: 0.75rem;">
+                            <span class="text-success fw-semibold">PAREIZI:</span> Zeme, SIA vai Bērziņš Dainis | 
+                            <span class="text-danger fw-semibold">NEPAREIZI:</span> SIA Zeme vai Dainis Bērziņš
+                        </div>
                         @error('selectedPartnerName') <small class="text-danger error">{{ $message }}</small>@enderror
                     </div>
 
-                    <div class="mb-1">
-                        <label for="" style="font-size: 12px; display: block">Reg.No
-                            @if($selectedPartnerRegNo)
-                                <a style="display: block; float: right" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$selectedPartnerRegNo}}&search%5Bwhere%5D=code" target="_blank">Pārbaudīt firmas.lv</a>
-                            @endif
-                        </label>
-                        <input type="text" class="form-control @error('selectedPartnerRegNo')is-invalid @enderror"
-                               placeholder="Reg. No" aria-describedby="basic-addon1"
-                               wire:model="selectedPartnerRegNo">
-                        @error('selectedPartnerRegNo') <small class="text-danger error">{{ $message }}</small>@enderror
-                    </div>
-                    <div class="mb-1">
-                        <label for="" style="font-size: 12px; display: block">VAT No
-                            @if($selectedPartnerVatNo)
-                                <?php
-                                $countryCode = preg_replace('/[^A-Z]/', '', substr(trim($selectedPartnerVatNo), 0, 2));
-                                if(strlen($countryCode) === 2){
-                                    $number = substr(trim($selectedPartnerVatNo), 2);
-                                    if($number){
-                                        ?>
-                                        <a style="display: block; float: right" href="https://ec.europa.eu/taxation_customs/vies/viesquer.do?ms={{$countryCode}}&iso={{$countryCode}}&vat={{$number}}" target="_blank">Pārbaudīt ec.europa.eu</a>
-                                        <?php
-                                    }
-                                }
-                                ?>
-{{--                            <a style="display: block; float: right" href="https://www.firmas.lv/results?srch={{$selectedPartnerVatNo}}&exact=" target="_blank">Pārbaudīt firmas.lv</a>--}}
-                            @endif
-                        </label>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <label class="form-label small fw-semibold text-muted mb-0">{{ __('Reģistrācijas Nr.') }}</label>
+                                @if($selectedPartnerRegNo)
+                                    <a class="small text-primary text-decoration-none" href="https://www.firmas.lv/lv/uznemumi/meklet?q={{$selectedPartnerRegNo}}&search%5Bwhere%5D=code" target="_blank">
+                                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> {{ __('firmas.lv') }}
+                                    </a>
+                                @endif
+                            </div>
+                            <input type="text" class="form-control form-control-sm font-monospace @error('selectedPartnerRegNo') is-invalid @enderror"
+                                   placeholder="40000000000"
+                                   wire:model="selectedPartnerRegNo">
+                            @error('selectedPartnerRegNo') <small class="text-danger error">{{ $message }}</small>@enderror
+                        </div>
 
-                        <input type="text" class="form-control @error('selectedPartnerVatNo')is-invalid @enderror"
-                               placeholder="VAT No." aria-describedby="basic-addon1"
-                               wire:model="selectedPartnerVatNo">
-                        @error('selectedPartnerVatNo') <small class="text-danger error">{{ $message }}</small>@enderror
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <label class="form-label small fw-semibold text-muted mb-0">{{ __('PVN Nr.') }}</label>
+                                @if($selectedPartnerVatNo)
+                                    @php
+                                        $countryCode = preg_replace('/[^A-Z]/', '', substr(trim($selectedPartnerVatNo), 0, 2));
+                                        $number = strlen($countryCode) === 2 ? substr(trim($selectedPartnerVatNo), 2) : '';
+                                    @endphp
+                                    @if($number)
+                                        <a class="small text-primary text-decoration-none" href="https://ec.europa.eu/taxation_customs/vies/viesquer.do?ms={{$countryCode}}&iso={{$countryCode}}&vat={{$number}}" target="_blank">
+                                            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> {{ __('VIES') }}
+                                        </a>
+                                    @endif
+                                @endif
+                            </div>
+                            <input type="text" class="form-control form-control-sm font-monospace @error('selectedPartnerVatNo') is-invalid @enderror"
+                                   placeholder="LV40000000000"
+                                   wire:model="selectedPartnerVatNo">
+                            @error('selectedPartnerVatNo') <small class="text-danger error">{{ $message }}</small>@enderror
+                        </div>
                     </div>
-                    <div class="mb-1">
-                        <label for="" style="font-size: 12px;">Address</label>
-                        <input type="text" class="form-control @error('selectedPartnerAddress')is-invalid @enderror"
-                               placeholder="Address" aria-describedby="basic-addon1"
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted mb-1">{{ __('Adrese') }}</label>
+                        <input type="text" class="form-control form-control-sm @error('selectedPartnerAddress') is-invalid @enderror"
+                               placeholder="Piem., Brīvības iela 1, Rīga"
                                wire:model.defer="selectedPartnerAddress">
-                        @error('selectedPartnerAddress') <small
-                                class="text-danger error">{{ $message }}</small>@enderror
+                        @error('selectedPartnerAddress') <small class="text-danger error">{{ $message }}</small>@enderror
                     </div>
-                    <hr style="color: white">
-                    <div class="mb-1">
-                        <label for="" style="font-size: 12px;">Bank name</label>
-                        <input type="text" class="form-control @error('selectedPartnerBank')is-invalid @enderror"
-                               placeholder="Bank" aria-describedby="basic-addon1"
-                               wire:model.defer="selectedPartnerBank">
-                        @error('selectedPartnerBank') <small
-                                class="text-danger error">{{ $message }}</small>@enderror
-                    </div>
-                    <div class="mb-1">
-                        <label for="" style="font-size: 12px;">SWIFT</label>
-                        <input type="text" class="form-control @error('selectedPartnerSwift')is-invalid @enderror"
-                               placeholder="SWIFT" aria-describedby="basic-addon1"
-                               wire:model.defer="selectedPartnerSwift">
-                        @error('selectedPartnerSwift') <small
-                                class="text-danger error">{{ $message }}</small>@enderror
-                    </div>
-                    <div class="mb-1">
-                        <label for="" style="font-size: 12px;">Bank Account number</label>
-                        <input type="text" class="form-control @error('selectedPartnerAccountNumber')is-invalid @enderror"
-                               placeholder="Account number" aria-describedby="basic-addon1"
-                               wire:model.defer="selectedPartnerAccountNumber">
-                        @error('selectedPartnerAccountNumber') <small
-                                class="text-danger error">{{ $message }}</small>@enderror
+
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label small fw-semibold text-muted mb-1">{{ __('Banka') }}</label>
+                            <input type="text" class="form-control form-control-sm @error('selectedPartnerBank') is-invalid @enderror"
+                                   placeholder="Piem., Swedbank AS"
+                                   wire:model.defer="selectedPartnerBank">
+                            @error('selectedPartnerBank') <small class="text-danger error">{{ $message }}</small>@enderror
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label small fw-semibold text-muted mb-1">{{ __('SWIFT / BIC') }}</label>
+                            <input type="text" class="form-control form-control-sm font-monospace @error('selectedPartnerSwift') is-invalid @enderror"
+                                   placeholder="HABALV22"
+                                   wire:model.defer="selectedPartnerSwift">
+                            @error('selectedPartnerSwift') <small class="text-danger error">{{ $message }}</small>@enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold text-muted mb-1">{{ __('Bankas konts (IBAN)') }}</label>
+                            <input type="text" class="form-control form-control-sm font-monospace @error('selectedPartnerAccountNumber') is-invalid @enderror"
+                                   placeholder="LV00UNLA0000000000000"
+                                   wire:model.defer="selectedPartnerAccountNumber">
+                            @error('selectedPartnerAccountNumber') <small class="text-danger error">{{ $message }}</small>@enderror
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" wire:click="cancel()">Close</button>
-                    <button type="button" class="btn btn-primary" wire:click.prevent="save()">Save changes</button>
+                <div class="modal-footer bg-light border-top py-2 px-4 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-modern btn-modern-secondary btn-sm" wire:click="cancel()">{{ __('Aizvērt') }}</button>
+                    <button type="button" class="btn btn-modern btn-modern-primary btn-sm" wire:click.prevent="save()">
+                        <i class="fa-solid fa-check me-1"></i> {{ __('Saglabāt') }}
+                    </button>
                 </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
