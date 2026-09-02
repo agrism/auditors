@@ -91,340 +91,328 @@
     </style>
 @stop
 
-    <div class="row">
-        <div class="col col-sm-6">
-            <label for="date" class="custom text-danger">Date</label>
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="date" class="form-label small fw-semibold text-danger">Datums *</label>
             <input type="text" name="date"
                    value="{{isset($invoice) ? $invoice['date'] : \Carbon\Carbon::now()->format('d.m.Y') }}"
-                   class="form-control form-control-sm" placeholder="Input date" id="dp1" readonly>
+                   class="form-control form-control-sm" placeholder="Datums" id="dp1" readonly>
         </div>
 
-        <div class="col col-sm-6">
-            <label for="invoicetype_id" class="custom">Invoice type</label>
+        <div class="col-md-6">
+            <label for="invoicetype_id" class="form-label small fw-semibold">Rēķina veids</label>
             {!! Form::select('invoicetype_id', isset($invoicetypes) ? $invoicetypes->pluck('title', 'id') : [] , isset($invoice) ? $invoice['invoicetype_id'] : null , ['class'=>'form-control form-control-sm', 'id'=>'invoicetype_id'] ) !!}
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-sm-6">
-            <label for="payment_date" class="custom  text-danger">Payment date</label>
-            {!! Form::text('payment_date', isset($invoice) ? $invoice['payment_date'] : \Carbon\Carbon::now()->format('d.m.Y')  , ['class'=>'form-control form-control-sm', 'placeholder'=>'Input payment date', 'id'=>'dp2', 'readonly'] ) !!}
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="payment_date" class="form-label small fw-semibold text-danger">Apmaksas termiņš *</label>
+            {!! Form::text('payment_date', isset($invoice) ? $invoice['payment_date'] : \Carbon\Carbon::now()->format('d.m.Y')  , ['class'=>'form-control form-control-sm', 'placeholder'=>'Apmaksas datums', 'id'=>'dp2', 'readonly'] ) !!}
         </div>
 
-        <div class="col-sm-6">
-            <label for="structuralunit_id" class="custom">Structural unit</label>
+        <div class="col-md-6">
+            <label for="structuralunit_id" class="form-label small fw-semibold">Struktūrvienība</label>
             {!! Form::select('structuralunit_id', isset($structuralunits) ? $structuralunits->pluck('title', 'id') : [] , isset($invoice) ? $invoice['structuralunit_id'] : null , ['class'=>'form-control form-control-sm'] ) !!}
         </div>
     </div>
 
 
-    <div class="row">
-        <div class="col-sm-6">
-            <label for="number" class="custom border-label-flt  text-danger">Invoice No</label>
-            {!! Form::text('number', isset($invoice) ? $invoice['number'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Input No.'] ) !!}
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="number" class="form-label small fw-semibold text-danger">Rēķina Nr. *</label>
+            {!! Form::text('number', isset($invoice) ? $invoice['number'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Rēķina numurs'] ) !!}
         </div>
 
-        <div class="col-sm-6">
-            <label for="details_self" class="custom">Internal comment</label>
-            {!! Form::text('details_self', isset($invoice) ? $invoice['details_self'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Input details only for self.'] ) !!}
+        <div class="col-md-6">
+            <label for="details_self" class="form-label small fw-semibold">Iekšējais komentārs</label>
+            {!! Form::text('details_self', isset($invoice) ? $invoice['details_self'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Piezīmes tikai sev...'] ) !!}
         </div>
     </div>
 
 
-    <div class="row">
-        <div class="col col-sm-6">
-            <label for="vat_number" class="custom  text-danger">Vat No</label>
-            {!! Form::select('vat_number',isset($companyVatNumbers) ? $companyVatNumbers->pluck('vat_number', 'vat_number') : [] ,isset($invoice) ? $invoice['vat_number'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Select optional VAT no'] ) !!}
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="vat_number" class="form-label small fw-semibold text-danger">PVN numurs</label>
+            {!! Form::select('vat_number',isset($companyVatNumbers) ? $companyVatNumbers->pluck('vat_number', 'vat_number') : [] ,isset($invoice) ? $invoice['vat_number'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'- Izvēlēties PVN nr. -'] ) !!}
         </div>
-        <div class="col col-sm-6">
-            <div class="row">
-                <div class="col-sm-6" style="">
-                    <label for="currency_id" class="custom">Currency</label>
+        <div class="col-md-6">
+            <div class="row g-2">
+                <div class="col-sm-6">
+                    <label for="currency_id" class="form-label small fw-semibold">Valūta</label>
                     {!! Form::select('currency_id', $currencies ,isset($invoice) ? $invoice['currency_id'] : null , ['class'=>'form-control form-control-sm', 'id'=>'currency_id'] ) !!}
                 </div>
 
-                <div class="col-sm-6" style="">
-                    <label for="currency_rate" class="custom">Rate (currency units per one EUR)</label>
-                    {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control form-control-sm', 'placeholder'=>'GBP/EUR ~ 0.86 GBP', 'id'=>'currency_rate'] ) !!}
+                <div class="col-sm-6">
+                    <label for="currency_rate" class="form-label small fw-semibold">Kurss (pret 1 EUR)</label>
+                    {!! Form::text('currency_rate', isset($invoice) ? $invoice['currency_rate'] : 1 , ['class'=>'form-control form-control-sm', 'placeholder'=>'1.000', 'id'=>'currency_rate'] ) !!}
                 </div>
             </div>
         </div>
     </div>
 
-<div class="form-group">
-    <div class="row">
-        <div class="col col-sm-6">
-            <label for="partner_id" class="custom  text-danger">Partner</label>
-            <livewire:partner-select name="partner_id" :selectedPartnerId="$invoice['partner_id']??null"/>
-            {{--            {!! Form::select('partner_id', $partners ,isset($invoice) ? $invoice['partner_id'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Select partner '] ) !!}--}}
-        </div>
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label for="partner_id" class="form-label small fw-semibold text-danger">Partneris *</label>
+        <livewire:partner-select name="partner_id" :selectedPartnerId="$invoice['partner_id']??null"/>
+    </div>
 
-        <div class="col col-sm-6">
-            <label for="bank_id" class="custom">Optional Payment receiver</label>
-            {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Select optional payment receiver'] ) !!}
-        </div>
+    <div class="col-md-6">
+        <label for="bank_id" class="form-label small fw-semibold">Papildu maksājumu saņēmējs</label>
+        {!! Form::select('bank_id', $bank ,isset($selectedBank) ? $selectedBank['id'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'- Izvēlēties saņēmēju -'] ) !!}
     </div>
 </div>
-
-{{--//--}}
 
 <div id="ppr_fields" class="@if(($invoice['invoicetype_id'] ?? 'x')  != 3) d-none @endif">
-    <hr>
-    <div style="padding-bottom: 2px; border: solid #82e982 3px;margin: 5px 0">
-        <div class="row">
+    <div class="p-3 mb-3 rounded-3 bg-success-50 border border-success-subtle">
+        <div class="row g-2">
             <div class="col-sm-4">
-                <label for="goods_address_from" class="custom">Goods delivery From</label>
-                {!! Form::text('goods_address_from', isset($invoice) ? $invoice['goods_address_from'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Goods delivered from'] ) !!}
+                <label for="goods_address_from" class="form-label small fw-semibold text-success-emphasis">Preču izsniegšanas vieta</label>
+                {!! Form::text('goods_address_from', isset($invoice) ? $invoice['goods_address_from'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Izsniegts no'] ) !!}
             </div>
             <div class="col-sm-4">
-                <label for="goods_address_to" class="custom">Goods delivery To</label>
-                {!! Form::text('goods_address_to', isset($invoice) ? $invoice['goods_address_to'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Goods delivered to'] ) !!}
+                <label for="goods_address_to" class="form-label small fw-semibold text-success-emphasis">Preču saņemšanas vieta</label>
+                {!! Form::text('goods_address_to', isset($invoice) ? $invoice['goods_address_to'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Piegādāts uz'] ) !!}
             </div>
             <div class="col-sm-4">
-                <label for="goods_deliverer" class="custom">Carrier</label>
-                {!! Form::text('goods_deliverer', isset($invoice) ? $invoice['goods_deliverer'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Organizācija, Auto Nr, šoferis'] ) !!}
+                <label for="goods_deliverer" class="form-label small fw-semibold text-success-emphasis">Pārvadātājs</label>
+                {!! Form::text('goods_deliverer', isset($invoice) ? $invoice['goods_deliverer'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Organizācija, Auto Nr., šoferis'] ) !!}
             </div>
         </div>
     </div>
 </div>
 
 
-<hr>
-<div class="form-group">
-    <div class="row">
-        {{--    {!! Form::label('details', 'Details', ['class'=>'col-sm-2 control-label']) !!}--}}
-        <div class="col-sm-6">
-            <label for="details" class="custom">Details</label>
-            {!! Form::text('details', isset($invoice) ? $invoice['details'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Details.'] ) !!}
-        </div>
-        <div class="col-sm-6">
-            <label for="details1" class="custom">Details other</label>
-            {!! Form::text('details1', isset($invoice) ? $invoice['details1'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Details.'] ) !!}
-        </div>
+<div class="row g-3 mb-4">
+    <div class="col-sm-6">
+        <label for="details" class="form-label small fw-semibold">Apraksts</label>
+        {!! Form::text('details', isset($invoice) ? $invoice['details'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Rēķina apraksts...'] ) !!}
+    </div>
+    <div class="col-sm-6">
+        <label for="details1" class="form-label small fw-semibold">Papildu apraksts</label>
+        {!! Form::text('details1', isset($invoice) ? $invoice['details1'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Papildu piezīmes...'] ) !!}
     </div>
 </div>
-<div class="form-group">
 
-</div>
+<div class="table-responsive mb-2">
+    <table class="table table-modern align-middle mb-0">
+        <thead>
+        <tr class="bg-slate-50">
+            <th style="width: 100px;">Kods</th>
+            <th>Prece / Pakalpojums</th>
+            <th style="width: 110px;">Mērv.</th>
+            <th style="width: 110px;">Daudzums</th>
+            <th style="width: 120px;">Cena</th>
+            <th style="width: 120px;" class="currencyData">
+                <div id="invoice_curency_name"></div>
+            </th>
+            <th style="width: 120px;">Kopā EUR</th>
+            <th style="width: 100px;">PVN</th>
+            <th style="width: 40px;"></th>
+        </tr>
+        </thead>
+        <tbody>
 
-<hr>
+        @if( isset($invoice) )
+            @foreach($invoice->invoiceLines as $line)
+                <tr>
+                    <td>
+                        {!! Form::text('code[]', isset($line) ? $line['code'] : null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm input-sm line_code line-1 text-end', 'placeholder'=>'Kods'] ) !!}
+                    </td>
+                    <td>
+                        {!! Form::hidden('line_id[]', $line->id) !!}
+                        {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'height: 32px; min-width:200px','class'=>'form-control form-control-sm input-sm line_title line-1', 'placeholder'=>'Nosaukums'] ) !!}
+                    </td>
+                    <td>
+                        {!! Form::select('unit_id[]', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_unit line-1 text-end'] ) !!}
+                    </td>
 
-<table class="table table-hover table-condensed ">
-    <thead>
-    <th width="">Code</th>
-    <th width="">Service/good</th>
-    <th width="120px">Unit</th>
-    <th width="120">Quantity</th>
-    <th width="120">Price</th>
-    <th width="120" class="currencyData">
-        <div id="invoice_curency_name"></div>
-    </th> {{-- total in currency --}}
-    <th width="120">Total EUR</th>
-    <th width="90">VAT</th>
-    </thead>
-    <tbody>
+                    <td>
+                        {!! Form::text('quantity[]', isset($line) ? $line['quantity'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_quantity line-1 text-end', 'placeholder'=>'0'] ) !!}
+                    </td>
+                    <td>
+                        {!! Form::text('price[]', isset($line) ? $line['price'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_price line-1 text-end', 'placeholder'=>'0.00'] ) !!}
+                    </td>
+                    <td class="currencyData">
+                        {!! Form::text('total[]',  isset($line) ? ROUND($line['price'] * $line['quantity'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm input-sm line_total line-1 text-end ', 'placeholder'=>'0.00', 'readonly'] ) !!}
+                    </td>
+                    <td>
+                        {!! Form::text('total_base_currency[]',  isset($line) ? ROUND($line['price'] * $line['quantity'] * $line['currency_rate'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm input-sm line_total_base_currency line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
+                    </td>
+                    <td>
+                        {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,isset($line) ? $line['vat_id'] : null , ['style'=>'min-width:70px', 'class'=>'form-control form-control-sm input-sm line_vat_id line-1'] ) !!}
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 remove-line" title="Dzēst rindu">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            @endforeach
+        @endif
 
-    @if( isset($invoice) )
-        {{-- foreach line dtaa from db --}}
-        @foreach($invoice->invoiceLines as $line)
+        {{-- empty line starts --}}
+        <tr id="line-empty-div" class="d-none">
+            <td>
+                {!! Form::text('code[]', null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm input-sm line_code line-1 text-end', 'placeholder'=>'Kods'] ) !!}
+            </td>
+            <td>
+                {!! Form::hidden('line_id[]', null) !!}
+                {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'height: 32px', 'class'=>'form-control form-control-sm input-sm line_title line-1', 'placeholder'=>'Nosaukums'] ) !!}
+            </td>
+            <td>
+                {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id , ['class'=>'form-control form-control-sm input-sm line_unit line-1 text-end'] ) !!}
+            </td>
+            <td>
+                {!! Form::text('quantity[]', null , ['class'=>'form-control form-control-sm input-sm line_quantity line-1 text-end', 'placeholder'=>'0'] ) !!}
+            </td>
+            <td>
+                {!! Form::text('price[]', null , ['class'=>'form-control form-control-sm input-sm line_price line-1 text-end', 'placeholder'=>'0.00'] ) !!}
+            </td>
+            <td class="currencyData">
+                {!! Form::text('total[]', null , ['class'=>'form-control form-control-sm input-sm line_total line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
+            </td>
+            <td>
+                {!! Form::text('total_base_currency[]', null , ['class'=>'form-control form-control-sm input-sm line_total_base_currency line-1 text-end', 'placeholder'=>'0.00', 'readonly'] ) !!}
+            </td>
+            <td>
+                {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,$vats[0]->id , ['class'=>'form-control form-control-sm input-sm line_vat_id line-1'] ) !!}
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 remove-line" title="Dzēst rindu">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </td>
+        </tr>
 
-            <tr>
-                <td>
-                    {!! Form::text('code[]', isset($line) ? $line['code'] : null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm input-sm line_code line-1 text-end', 'placeholder'=>'code'] ) !!}
-                </td>
-                <td>
-                    {!! Form::hidden('line_id[]', $line->id) !!}
-                    {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'height: 30px; min-width:200px','class'=>'form-control form-control-sm input-sm line_title line-1', 'placeholder'=>'title'] ) !!}
-                </td>
-                <td>
-                    {!! Form::select('unit_id[]', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_unit line-1 text-end'] ) !!}
-                </td>
+        <tr id="placeNewRow"></tr>
 
-                <td>
-                    {!! Form::text('quantity[]', isset($line) ? $line['quantity'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_quantity line-1 text-end', 'placeholder'=>'quantity'] ) !!}
-                </td>
-                <td>
-                    {!! Form::text('price[]', isset($line) ? $line['price'] : null , ['style'=>'min-width:80px','class'=>'form-control form-control-sm input-sm line_price line-1 text-end', 'placeholder'=>'price'] ) !!}
+        {{-- Tax totals by rate --}}
+        @foreach($vats as $vat)
+            <tr class="d-none">
+                <td colspan="5" class="text-end fw-semibold">
+                    {{ 'Kopā bez PVN ('.$vat->name.'):' }}
                 </td>
                 <td class="currencyData">
-                    {!! Form::text('total[]',  isset($line) ? ROUND($line['price'] * $line['quantity'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm input-sm line_total line-1 text-end ', 'placeholder'=>'total', 'readonly'] ) !!}
+                    {!! Form::text('invoiceBeforeTaxTotal_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceBeforeTaxTotal_'.$vat->id, 'readonly'] ) !!}
                 </td>
                 <td>
-                    {!! Form::text('total_base_currency[]',  isset($line) ? ROUND($line['price'] * $line['quantity'] * $line['currency_rate'], 2)  : null , ['style'=>'min-width:80px', 'class'=>'form-control form-control-sm input-sm line_total_base_currency line-1 text-end', 'placeholder'=>'total_base_currency', 'readonly'] ) !!}
+                    {!! Form::text('invoiceBeforeTaxTotal_base_currency_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceBeforeTaxTotal_base_currency_'.$vat->id, 'readonly'] ) !!}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="5" class="text-end text-muted small">
+                    {{ 'PVN ('.$vat->name.'):' }}
+                </td>
+                <td class="currencyData">
+                    {!! Form::text('invoiceVat_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceVat_'.$vat->id, 'readonly'] ) !!}
                 </td>
                 <td>
-                    {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,isset($line) ? $line['vat_id'] : null , ['style'=>'min-width:70px', 'class'=>'form-control form-control-sm input-sm line_vat_id line-1'] ) !!}
+                    {!! Form::text('invoiceVat_base_currency_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceVat_base_currency_'.$vat->id, 'readonly'] ) !!}
                 </td>
-                <td>
-                    <div class="btn btn-xs btn-danger fa fa-remove remove-line"></div>
-                </td>
+                <td></td>
             </tr>
 
+            <tr>
+                <td colspan="5" class="text-end text-muted small">
+                    {{ 'Kopā ar PVN ('.$vat->name.'):' }}
+                </td>
+                <td class="currencyData">
+                    {!! Form::text('invoiceTotal_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceTotal_'.$vat->id, 'readonly'] ) !!}
+                </td>
+                <td>
+                    {!! Form::text('invoiceTotal_base_currency_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceTotal_base_currency_'.$vat->id, 'readonly'] ) !!}
+                </td>
+                <td></td>
+            </tr>
         @endforeach
-    @endif
-    {{-- end foreach line data from db  --}}
 
-
-    {{--  empty line starts --}}
-    <tr id="line-empty-div" class="d-none">
-        <td>
-            {!! Form::text('code[]', null , ['style'=>'min-width:50px','class'=>'form-control form-control-sm input-sm line_code line-1 text-end', 'placeholder'=>'code'] ) !!}
-        </td>
-        <td>
-            {!! Form::hidden('line_id[]', null) !!}
-            {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'height: 30px', 'class'=>'form-control form-control-sm input-sm line_title line-1', 'placeholder'=>'title'] ) !!}
-        </td>
-        <td>
-            {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id , ['class'=>'form-control form-control-sm input-sm line_unit line-1 text-end'] ) !!}
-        </td>
-        <td>
-            {!! Form::text('quantity[]', null , ['class'=>'form-control form-control-sm input-sm line_quantity line-1 text-end', 'placeholder'=>'quantity'] ) !!}
-        </td>
-        <td>
-            {!! Form::text('price[]', null , ['class'=>'form-control form-control-sm input-sm line_price line-1 text-end', 'placeholder'=>'price'] ) !!}
-        </td>
-        <td class="currencyData">
-            {!! Form::text('total[]', null , ['class'=>'form-control form-control-sm input-sm line_total line-1 text-end', 'placeholder'=>'total', 'readonly'] ) !!}
-        </td>
-        <td>
-            {!! Form::text('total_base_currency[]', null , ['class'=>'form-control form-control-sm input-sm line_total_base_currency line-1 text-end', 'placeholder'=>'total', 'readonly'] ) !!}
-        </td>
-        <td>
-        {!! Form::select('vat_id[]', $vats->pluck('name', 'id') ,$vats[0]->id , ['class'=>'form-control form-control-sm input-sm line_vat_id line-1'] ) !!}
-        <td>
-            <div class="btn btn-xs btn-danger fa fa-remove remove-line"></div>
-        </td>
-    </tr>
-
-    <tr id="placeNewRow"></tr>
-    {{--  empty line ends --}}
-
-
-
-    {{-- here starts subTotals, tax, total- by tax rates! --}}
-    {{-- rate 21% --}}
-    @foreach($vats as $vat)
-        <tr class="d-none">
-            <td colspan="5" class="text-end">
-                {{ 'Total before tax ('.$vat->name.'):' }}
+        <tr class="table-light">
+            <td colspan="5" class="text-end fw-bold">
+                {{ 'Kopā:' }}
             </td>
             <td class="currencyData">
-                {!! Form::text('invoiceBeforeTaxTotal_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceBeforeTaxTotal_'.$vat->id, 'readonly'] ) !!}
+                {!! Form::text('invoiceTotal', null , ['class'=>'form-control form-control-sm text-end fw-bold', 'placeholder'=>'', 'id'=>'invoiceTotal', 'readonly'] ) !!}
             </td>
             <td>
-                {!! Form::text('invoiceBeforeTaxTotal_base_currency_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceBeforeTaxTotal_base_currency_'.$vat->id, 'readonly'] ) !!}
+                {!! Form::text('invoiceTotal_base_currency', null , ['class'=>'form-control form-control-sm text-end fw-bold', 'placeholder'=>'', 'id'=>'invoiceTotal_base_currency', 'readonly'] ) !!}
             </td>
-        </tr>
-        <tr>
-            <td colspan="5" class="text-end">
-                {{ 'VAT ('.$vat->name.'):' }}
-            </td>
-            <td class="currencyData">
-                {!! Form::text('invoiceVat_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceVat_'.$vat->id, 'readonly'] ) !!}
-            </td>
-            <td>
-                {!! Form::text('invoiceVat_base_currency_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceVat_base_currency_'.$vat->id, 'readonly'] ) !!}
-            </td>
-        </tr>
-
-        <tr>
-            <td colspan="5" class="text-end">
-                {{ 'Total with tax ('.$vat->name.'):' }}
-            </td>
-            <td class="currencyData">
-                {!! Form::text('invoiceTotal_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceTotal_'.$vat->id, 'readonly'] ) !!}
-            </td>
-            <td>
-                {!! Form::text('invoiceTotal_base_currency_'.$vat->id, null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceTotal_base_currency_'.$vat->id, 'readonly'] ) !!}
-            </td>
-        </tr>
-        <tr class="space d-none">
-            <td colspan="5">
-                {{-- <hr> --}}
-            </td>
-            <td class="currencyData"></td>
             <td></td>
         </tr>
-    @endforeach
 
-    <tr>
-        <td colspan="5" class="text-end">
-            {{ 'Total:' }}
-        </td>
-        <td class="currencyData">
-            {!! Form::text('invoiceTotal', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceTotal', 'readonly'] ) !!}
-        </td>
-        <td>
-            {!! Form::text('invoiceTotal_base_currency', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceTotal_base_currency', 'readonly'] ) !!}
-        </td>
-    </tr>
+        {{-- advance payment --}}
+        <tr>
+            <td colspan="5" class="text-end text-muted small">
+                {{ 'Saņemtais avanss:' }}
+            </td>
+            <td class="currencyData">
+                {!! Form::text('invoiceAdvancePayment', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceAdvancePayment', 'readonly'] ) !!}
+            </td>
+            <td>
+                {!! Form::text('invoiceAdvancePayment_base_currency', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceAdvancePayment_base_currency', 'readonly'] ) !!}
+            </td>
+            <td></td>
+        </tr>
 
+        {{-- payable --}}
+        <tr class="table-primary">
+            <td colspan="5" class="text-end fw-bold text-primary-700">
+                {{ 'Apmaksai:' }}
+            </td>
+            <td class="currencyData">
+                {!! Form::text('invoicePayable', null , ['class'=>'form-control form-control-sm text-end fw-bold font-monospace', 'placeholder'=>'', 'id'=>'invoicePayable', 'readonly'] ) !!}
+            </td>
+            <td>
+                {!! Form::text('invoicePayable_base_currency', null , ['class'=>'form-control form-control-sm text-end fw-bold font-monospace', 'placeholder'=>'', 'id'=>'invoicePayable_base_currency', 'readonly'] ) !!}
+            </td>
+            <td></td>
+        </tr>
 
-    {{-- advance payment--}}
-    <tr>
-        <td colspan="5" class="text-end">
-            {{ 'Advance payment:' }}
-        </td>
-        <td class="currencyData">
-            {!! Form::text('invoiceAdvancePayment', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceAdvancePayment', 'readonly'] ) !!}
-        </td>
-        <td>
-            {!! Form::text('invoiceAdvancePayment_base_currency', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoiceAdvancePayment_base_currency', 'readonly'] ) !!}
-        </td>
-    </tr>
-    {{-- payable --}}
-    <tr>
-        <td colspan="5" class="text-end">
-            {{ 'Payable:' }}
-        </td>
-        <td class="currencyData">
-            {!! Form::text('invoicePayable', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoicePayable', 'readonly'] ) !!}
-        </td>
-        <td>
-            {!! Form::text('invoicePayable_base_currency', null , ['class'=>'form-control form-control-sm text-end', 'placeholder'=>'', 'id'=>'invoicePayable_base_currency', 'readonly'] ) !!}
-        </td>
-    </tr>
+        </tbody>
+    </table>
+</div>
 
-    </tbody>
-</table>
+<button type="button" class="btn btn-modern btn-modern-primary btn-sm my-2" id="addLine">
+    <i class="fa-solid fa-plus me-1"></i> Pievienot rindu
+</button>
 
-<div class="btn btn-info fa-plus fa" id="addLine"></div>
-
-
-<hr>
+<hr class="my-4">
 
 <div id="place_for_prepayments"></div>
-<div class="btn btn-info btn-xs mt-3" id="addRepaymentLine">Add received pre-payment</div>
-<hr>
+<button type="button" class="btn btn-modern btn-modern-secondary btn-sm mt-2" id="addRepaymentLine">
+    <i class="fa-solid fa-plus me-1"></i> Pievienot saņemto avansu
+</button>
 
-<div class="row">
-    <div class="col-sm-12">
-        <label for="details_bottom1" class="custom">Details1</label>
-        {!! Form::text('details_bottom1', isset($invoice) ? $invoice['details_bottom1'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Details 1'] ) !!}
+<hr class="my-4">
+
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label for="details_bottom1" class="form-label small fw-semibold">Papildu piezīmes 1 (lapas apakšā)</label>
+        {!! Form::text('details_bottom1', isset($invoice) ? $invoice['details_bottom1'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Piezīmes 1'] ) !!}
     </div>
-    <div class="col-sm-12">
-        <label for="details_bottom2" class="custom">Details2</label>
-        {!! Form::text('details_bottom2', isset($invoice) ? $invoice['details_bottom2'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Details 2'] ) !!}
+    <div class="col-md-6">
+        <label for="details_bottom2" class="form-label small fw-semibold">Papildu piezīmes 2 (lapas apakšā)</label>
+        {!! Form::text('details_bottom2', isset($invoice) ? $invoice['details_bottom2'] : null , ['class'=>'form-control form-control-sm', 'placeholder'=>'Piezīmes 2'] ) !!}
     </div>
 </div>
 
-    <div class="row">
-        <div class="col-sm-6">
-            <label for="document_signer" class="custom  text-danger">Document signer</label>
-            {!! Form::text('document_signer', isset($invoice) ? $invoice['document_signer'] : null , ['class'=>'form-control form-control-sm text-left', 'placeholder'=>'Signer, our name'] ) !!}
-        </div>
-
-        <div class="col-sm-6">
-            <label for="document_partner_signer" class="custom">Partner signer</label>
-            {!! Form::text('document_partner_signer', isset($invoice) ? $invoice['document_partner_signer'] : null , ['class'=>'form-control form-control-sm text-left', 'placeholder'=>'Partner signer name'] ) !!}
-        </div>
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label for="document_signer" class="form-label small fw-semibold text-danger">Dokumentu sagatavoja / parakstītājs *</label>
+        {!! Form::text('document_signer', isset($invoice) ? $invoice['document_signer'] : null , ['class'=>'form-control form-control-sm text-left', 'placeholder'=>'Vārds, Uzvārds, Amats'] ) !!}
     </div>
 
+    <div class="col-md-6">
+        <label for="document_partner_signer" class="form-label small fw-semibold">Partnera parakstītājs</label>
+        {!! Form::text('document_partner_signer', isset($invoice) ? $invoice['document_partner_signer'] : null , ['class'=>'form-control form-control-sm text-left', 'placeholder'=>'Partnera pārstāvis'] ) !!}
+    </div>
+</div>
 
-<div class="row">
-    <div class="col-sm-12">
-        <label for="details_bottom3" class="custom">Details3</label>
-        {!! Form::text('details_bottom3', isset($invoice) ? $invoice['details_bottom3'] : null , ['class'=>'form-control form-control-sm text-center', 'placeholder'=>'Details 3'] ) !!}
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <label for="details_bottom3" class="form-label small fw-semibold">Papildu piezīmes 3 (centrētas apakšā)</label>
+        {!! Form::text('details_bottom3', isset($invoice) ? $invoice['details_bottom3'] : null , ['class'=>'form-control form-control-sm text-center', 'placeholder'=>'Piezīmes 3'] ) !!}
     </div>
 </div>
 
