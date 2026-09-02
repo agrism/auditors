@@ -4,16 +4,38 @@
     </div>
 
     <div class="col-lg-12">
-        <div class="card card-default">
-            <div class="card-header">
-                Cash Expense No: <strong>{{$this->get()->no ?? ''}}</strong>
-                <div style="float: right">
+        <div class="card card-modern shadow-sm border-0">
+            <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-3 bg-primary-50 text-primary-600 p-2 d-inline-flex">
+                        <i class="fa-solid fa-file-invoice-dollar fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">
+                            {{ __('Cash Expense') }} @if($this->get()->no ?? null) <span class="badge bg-light text-dark border ms-1">#{{ $this->get()->no }}</span> @endif
+                        </h5>
+                        <span class="small text-muted">{{ __('View and edit cash advance expense details') }}</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
                     @if($this->get()->id ?? null)
-                    <span style="margin: 10px;">
-                                                <a href="{{route('client.cash-expenses.show', [ $this->get()->id ?? null, 'locale'=> 'lv'])}}" target="_blank"><span
-                                                            class="fa fa-file-pdf-o fa-2x"></span></a>
-                                            </span>
-                        @endif
+                        <a href="{{ route('client.cash-expenses.show', [$this->get()->id, 'locale' => 'lv']) }}" 
+                           target="_blank" 
+                           class="btn btn-modern btn-modern-secondary btn-sm"
+                           title="Print PDF (Latvian)">
+                            <i class="fa-solid fa-file-pdf text-danger me-1"></i> {{ __('Print PDF (LV)') }}
+                        </a>
+                        <a href="{{ route('client.cash-expenses.show', [$this->get()->id, 'locale' => 'en']) }}" 
+                           target="_blank" 
+                           class="btn btn-modern btn-modern-secondary btn-sm"
+                           title="Print PDF (English)">
+                            <i class="fa-solid fa-file-pdf text-danger me-1"></i> {{ __('Print PDF (EN)') }}
+                        </a>
+                    @endif
+                    <button class="btn btn-modern btn-modern-secondary btn-sm" wire:click="close">
+                        <i class="fa-solid fa-arrow-left me-1"></i> {{ __('Back to List') }}
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -108,48 +130,44 @@
                                     style="text-align:right; padding-right: 20px;">{{$line->amount_vat}}</td>
                                 <td class="pt-1 pb-0"
                                     style="text-align:right; padding-right: 20px;">{{$line->amount_with_vat}}</td>
-                                <td class="pt-1 pb-0">
-                                    <span
+                                <td class="pt-1 pb-0 text-end">
+                                    <button class="btn btn-sm btn-outline-primary py-0 px-2 me-1"
                                             wire:click="openEdit({{$line->id}})"
-                                            role="button"
-                                    >
-                                        <i class="fa fa-edit"></i>
-                                    </span>
-                                    <span
+                                            title="Edit Line">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger py-0 px-2"
                                             wire:click="openDelete({{$line->id}})"
-                                            role="button"
-                                    >
-                                        <i class="fa fa-close" style="color: red"></i>
-                                    </span>
+                                            title="Delete Line">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
                         <thead>
-                        <tr>
-                            <th colspan="6"></th>
+                        <tr class="bg-slate-50 border-top">
+                            <th colspan="6" class="text-end fw-bold">Total:</th>
                             <th style="text-align:right; padding-right: 20px;">{{number_format($totalWithoutVat, 2)}}</th>
                             <th style="text-align:right; padding-right: 20px;">{{number_format($totalVat, 2)}}</th>
                             <th style="text-align:right; padding-right: 20px;">{{number_format($total, 2)}}</th>
-                            <th></th>
                             <th></th>
                         </tr>
                         </thead>
                     </table>
 
-                    <?php //echo '<pre>'; print_r($cashExpense); echo '</pre>' ?>
-                    {{--<?php echo '<pre>'; print_r($expenseLine); echo '</pre>' ?>--}}
-
-                    <div class="btn btn-success btn-sm"
-                         wire:click="expenseLineOpen">
-                        Add expense:
-                        <span class="fa-plus fa"></span>
+                    <div class="mt-3">
+                        <button class="btn btn-modern btn-modern-primary btn-sm"
+                                wire:click="expenseLineOpen">
+                            <i class="fa-solid fa-plus me-1"></i> Add Expense Line
+                        </button>
                     </div>
 
-
                 </div>
-                <div class="card-footer">
-                    <div class="btn btn-success" role="button" wire:click="close">Close</div>
+                <div class="card-footer bg-white border-top py-2 text-end">
+                    <button class="btn btn-modern btn-modern-secondary btn-sm" wire:click="close">
+                        <i class="fa-solid fa-xmark me-1"></i> Close
+                    </button>
                 </div>
 
             </div>

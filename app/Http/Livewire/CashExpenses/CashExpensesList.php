@@ -168,6 +168,13 @@ class CashExpensesList extends Component
         $this->editMode = false;
     }
 
+    public function openEdit($id)
+    {
+        $this->activeId = $id;
+        $this->editMode = true;
+        $this->ignoreActiveId = false;
+    }
+
     public function new()
     {
         $this->activeId = null;
