@@ -53,6 +53,27 @@ class Invoice extends Model
 
 	public $timestamps = true;
 
+	protected static function booted()
+	{
+		static::deleting(function ($invoice) {
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_2')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines_2')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_copy')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines_copy')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_1')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines_1')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_advance_payments')) {
+				\Illuminate\Support\Facades\DB::table('invoice_advance_payments')->where('invoice_id', $invoice->id)->delete();
+			}
+		});
+	}
+
 	public function company()
 	{
 		return $this->belongsTo(Company::class);

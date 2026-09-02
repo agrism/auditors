@@ -266,4 +266,19 @@ class MainApp extends Component
     {
         $this->dispatchBrowserEvent('open_event');
     }
+
+    public function deleteInvoiceCancel()
+    {
+        $this->dispatchBrowserEvent('closeModal_delete_invoice');
+    }
+
+    public function copyInvoiceCancel()
+    {
+        $this->dispatchBrowserEvent('closeModal_copy_invoice');
+    }
+
+    public function shortcutInvoiceCancel()
+    {
+        $this->dispatchBrowserEvent('closeModal_shortcut_invoice');
+    }
 }

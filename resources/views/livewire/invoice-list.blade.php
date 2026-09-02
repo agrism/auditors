@@ -297,7 +297,6 @@
                     </div>
                     <!-- /.panel-body -->
                 </div>
-            </div>
         @else
             <div>
                 <livewire:invoice-form :invoiceId="$activeInvoiceId"></livewire:invoice-form>

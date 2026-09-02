@@ -263,12 +263,30 @@ class InvoiceService
 	}
 
 	public function deleteInvoice(Company $company, $invoiceId){
-		$invoice = Invoice::with('invoiceLines')->where(
-			'company_id', $company->id
-		)->find($invoiceId);
+		$invoice = Invoice::where('company_id', $company->id)->find($invoiceId);
 
-		$invoice->invoiceLines()->delete();
-		$invoice->delete();
+		if (!$invoice) {
+			return;
+		}
+
+		\Illuminate\Support\Facades\DB::transaction(function() use ($invoice) {
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_2')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines_2')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_copy')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines_copy')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_1')) {
+				\Illuminate\Support\Facades\DB::table('invoice_lines_1')->where('invoice_id', $invoice->id)->delete();
+			}
+			if (\Illuminate\Support\Facades\Schema::hasTable('invoice_advance_payments')) {
+				\Illuminate\Support\Facades\DB::table('invoice_advance_payments')->where('invoice_id', $invoice->id)->delete();
+			}
+			$invoice->delete();
+		});
 	}
 
 	public function fillInvoiceData(){

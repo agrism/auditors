@@ -147,4 +147,58 @@ class SystemFullTest extends TestCase
             $response->assertRedirect('/client');
         }
     }
+
+    public function test_invoice_deletion_cleans_foreign_keys(): void
+    {
+        $company = $this->getTestCompany();
+        $partner = \App\Partner::first();
+        $currency = \App\Currency::first();
+        $type = \App\InvoiceType::first();
+
+        // Create a test invoice
+        $invoice = \App\Invoice::create([
+            'company_id' => $company->id,
+            'partner_id' => $partner ? $partner->id : 1,
+            'currency_id' => $currency ? $currency->id : 1,
+            'invoicetype_id' => $type ? $type->id : 1,
+            'number' => 'TEST-DEL-001',
+            'date' => '01.01.2025',
+            'amount_total' => 121.00,
+        ]);
+
+        // Insert into invoice_lines
+        \Illuminate\Support\Facades\DB::table('invoice_lines')->insert([
+            'invoice_id' => $invoice->id,
+            'title' => 'Test Line',
+            'price' => 100,
+            'quantity' => 1,
+            'vat_id' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Insert into invoice_lines_2 if table exists
+        if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_2')) {
+            \Illuminate\Support\Facades\DB::table('invoice_lines_2')->insert([
+                'invoice_id' => $invoice->id,
+                'title' => 'Test Line 2',
+                'price' => 100,
+                'quantity' => 1,
+                'vat_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Delete using InvoiceService
+        $service = app(\App\Services\InvoiceService::class);
+        $service->deleteInvoice($company, $invoice->id);
+
+        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+        $this->assertDatabaseMissing('invoice_lines', ['invoice_id' => $invoice->id]);
+        if (\Illuminate\Support\Facades\Schema::hasTable('invoice_lines_2')) {
+            $this->assertDatabaseMissing('invoice_lines_2', ['invoice_id' => $invoice->id]);
+        }
+    }
 }
+
