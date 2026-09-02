@@ -1,79 +1,78 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Login</div>
-                    <div class="panel-body">
-                        <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
-                            {!! csrf_field() !!}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo-badge">
+                <i class="fa-solid fa-calculator"></i>
+            </div>
+            <h2>Esiet sveicināti</h2>
+            <p>Pieslēdzieties savai grāmatvedības sistēmai</p>
+        </div>
 
-                            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                <label class="col-md-4 control-label">E-Mail Address</label>
-
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control" name="email" value="{{ old('email') }}">
-
-                                    @if ($errors->has('email'))
-                                        <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                <label class="col-md-4 control-label">Password</label>
-
-                                <div class="col-md-6">
-                                    <input type="password" class="form-control" name="password">
-
-                                    @if ($errors->has('password'))
-                                        <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="remember"> Remember Me
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-btn fa-sign-in"></i>Login
-                                    </button>
-
-                                    <a class="btn btn-link" href="{{ url('/password/reset') }}">Forgot Your
-                                        Password?</a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+        @if(session('error') || (isset($errors) && $errors->any()))
+            <div class="alert alert-danger d-flex align-items-center mb-4 py-2 px-3 rounded-3" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+                <div class="small">
+                    @if(session('error'))
+                        {{ session('error') }}
+                    @elseif(isset($errors) && $errors->any())
+                        {{ $errors->first() }}
+                    @endif
                 </div>
             </div>
+        @endif
+
+        <form method="POST" action="{{ url('/login') }}" class="mt-2">
+            @csrf
+            <div class="mb-3">
+                <label for="email" class="form-label small fw-semibold text-slate-700">E-pasta adrese</label>
+                <div class="input-icon-group">
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           value="{{ old('email') }}"
+                           class="form-control form-control-modern w-100 @if(isset($errors) && $errors->has('email')) is-invalid @endif"
+                           placeholder="vards@uznemums.lv"
+                           required
+                           autofocus>
+                    <i class="fa-regular fa-envelope"></i>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="password" class="form-label small fw-semibold text-slate-700 mb-0">Parole</label>
+                    <a href="{{ url('/password/reset') }}" class="small text-primary text-decoration-none fw-medium">Aizmirsāt paroli?</a>
+                </div>
+                <div class="input-icon-group">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control form-control-modern w-100 @if(isset($errors) && $errors->has('password')) is-invalid @endif"
+                           placeholder="••••••••"
+                           required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                <label class="form-check-label small text-slate-600" for="remember">
+                    Atcerēties mani
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-modern btn-modern-primary w-100 py-2 fs-6">
+                <span>Pieslēgties sistēmai</span>
+                <i class="fa-solid fa-arrow-right ms-1"></i>
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-2 border-top">
+            <span class="small text-muted">&copy; {{ date('Y') }} Auditors.lv &bull; Grāmatvedības sistēma</span>
         </div>
     </div>
-
-    <!-- Button -->
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="singlebutton"></label>
-        <div class="col-md-4 center-block btn-group-vertical">
-            <a class="btn btn-block btn-social btn-facebook" href="{!! \URL::route('login.facebook') !!}">
-                <i class="fa fa-facebook"></i> Sign in with Facebook
-            </a>
-        </div>
-    </div>
-
-
+</div>
 @endsection

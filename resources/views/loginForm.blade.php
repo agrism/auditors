@@ -1,7 +1,4 @@
-@extends('client.layout.master')
-
-@section('navigation')
-@stop
+@extends('layouts.auth')
 
 @section('content')
 <div class="auth-wrapper">
