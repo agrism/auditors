@@ -1,28 +1,45 @@
 <div>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-modern sticky-top">
-        <div class="container-fluid px-3">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="#" wire:click.prevent="activateComponent('companies')">
-                <span class="navbar-brand-badge"><i class="fa-solid fa-calculator me-1"></i> Auditors</span>
-                <span class="text-white-50 small fw-normal d-none d-sm-inline">|</span>
-                <span class="text-truncate small fw-semibold" style="max-width: 240px;" title="Switch Company">
-                    <i class="fa-regular fa-building me-1 text-primary-300"></i>
-                    {{ \App\Services\AuthUser::instance()->selectedCompany()->title ?? 'Select Company' }}
-                    <i class="fa-solid fa-chevron-down text-white-50 ms-1" style="font-size: 0.7rem;"></i>
-                </span>
-            </a>
+    <nav class="navbar navbar-expand-xl navbar-dark navbar-modern sticky-top">
+        <div class="container-fluid px-lg-4 px-3">
+            <!-- Left: Brand & Company Switcher -->
+            <div class="d-flex align-items-center gap-2 me-3">
+                <a class="navbar-brand text-decoration-none m-0" href="#" wire:click.prevent="activateComponent('companies')">
+                    <span class="navbar-brand-badge">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Auditors</span>
+                    </span>
+                </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                <a href="#" wire:click.prevent="activateComponent('companies')"
+                   class="company-switcher-pill"
+                   title="{{ __('Switch active company') }}">
+                    <i class="fa-solid fa-building text-primary-400"></i>
+                    <span class="text-truncate" style="max-width: 190px;">
+                        {{ \App\Services\AuthUser::instance()->selectedCompany()->title ?? __('Select Company') }}
+                    </span>
+                    <i class="fa-solid fa-chevron-down text-white-50 ms-1" style="font-size: 0.65rem;"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Toggle -->
+            <button class="navbar-toggler border-0 p-2" type="button" data-bs-toggle="collapse"
                     data-bs-target="#mainAppNavbar" aria-controls="mainAppNavbar"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            <!-- Navigation Links -->
             <div class="collapse navbar-collapse" id="mainAppNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
+                <ul class="navbar-nav me-auto mb-2 mb-xl-0 gap-1 pt-2 pt-xl-0">
                     <?php
                     $companyId = \App\Services\AuthUser::instance()->selectedCompanyId();
                     ?>
                     @foreach($this->getNav() as $sysName => $item)
+                        {{-- Skip 'companies' in the center menu since it is already on the left brand area --}}
+                        @if($sysName === 'companies')
+                            @continue
+                        @endif
+
                         @if(isset($item['items']))
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle"
@@ -31,7 +48,8 @@
                                    role="button"
                                    data-bs-toggle="dropdown"
                                    aria-expanded="false">
-                                    <i class="fa-solid fa-layer-group me-1 opacity-75"></i> {{ __('Other') }}
+                                    <i class="fa-solid fa-layer-group opacity-75"></i>
+                                    <span>{{ __('More') }}</span>
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0" aria-labelledby="otherDropdown">
@@ -44,6 +62,15 @@
                                                wire:click.prevent="activateComponent('{{$sysName.'.'.$subSysName}}')"
                                                href="#"
                                                role="button">
+                                                @if($subSysName === 'company-data')
+                                                    <i class="fa-solid fa-id-card me-2 text-primary-400"></i>
+                                                @elseif($subSysName === 'other-payment-receivers')
+                                                    <i class="fa-solid fa-building-columns me-2 text-primary-400"></i>
+                                                @elseif($subSysName === 'settings')
+                                                    <i class="fa-solid fa-sliders me-2 text-primary-400"></i>
+                                                @elseif($subSysName === 'vacations')
+                                                    <i class="fa-solid fa-umbrella-beach me-2 text-primary-400"></i>
+                                                @endif
                                                 {{ $subItem['title'] ?? '---' }}
                                             </a>
                                         </li>
@@ -62,62 +89,28 @@
                                href="#"
                                role="button"
                                wire:click.prevent="activateComponent('{{$sysName}}')">
-                               @if($sysName === 'companies')
-                                   <i class="fa-solid fa-building me-1 opacity-75"></i>
-                               @elseif($sysName === 'invoices')
-                                   <i class="fa-solid fa-file-invoice-dollar me-1 opacity-75"></i>
+                               @if($sysName === 'invoices')
+                                   <i class="fa-solid fa-file-invoice-dollar opacity-75"></i>
                                @elseif($sysName === 'partners')
-                                   <i class="fa-solid fa-users-line me-1 opacity-75"></i>
+                                   <i class="fa-solid fa-users-line opacity-75"></i>
                                @elseif($sysName === 'cash-expenses')
-                                   <i class="fa-solid fa-money-bill-transfer me-1 opacity-75"></i>
+                                   <i class="fa-solid fa-money-bill-transfer opacity-75"></i>
                                @elseif($sysName === 'personal-income')
-                                   <i class="fa-solid fa-hand-holding-dollar me-1 opacity-75"></i>
+                                   <i class="fa-solid fa-hand-holding-dollar opacity-75"></i>
                                @endif
-                               {{ $item['title'] }}
+                               <span>{{ $item['title'] }}</span>
                             </a>
                         </li>
                     @endforeach
-
-                    @if(\App\Services\AuthUser::instance()->userId() === 9)
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle @if(request()->routeIs('client.companies.edit') || request()->routeIs('client.companies.bank.*') || request()->routeIs('client.companies.settings.*')) active @endif"
-                               href="#"
-                               id="selfDataDropdown"
-                               role="button"
-                               data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                <i class="fa-solid fa-gear me-1 opacity-75"></i> {{ __('Self data') }}
-                            </a>
-
-                            @if($companyId)
-                                <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0" aria-labelledby="selfDataDropdown">
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ url(route('client.companies.edit', $companyId)) }}">
-                                            <i class="fa-solid fa-id-card me-2 text-primary-400"></i> {{ __('Requisites') }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ url(route('client.companies.bank.index')) }}">
-                                            <i class="fa-solid fa-building-columns me-2 text-primary-400"></i> {{ __('Other payment receivers') }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ url(route('client.companies.settings.index')) }}">
-                                            <i class="fa-solid fa-sliders me-2 text-primary-400"></i> {{ __('Settings') }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            @endif
-                        </li>
-                    @endif
                 </ul>
 
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+                <!-- Right Utilities Toolbar -->
+                <ul class="navbar-nav ms-auto align-items-xl-center gap-2 pt-2 pt-xl-0">
                     @if(\Auth::check() && \Auth::user()->isAdmin())
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }} btn btn-sm btn-outline-light px-3 py-1"
-                               href="{{ url(route('admin.home')) }}">
-                                <i class="fa-solid fa-shield-halved me-1 text-warning"></i> Admin Panel
+                            <a class="nav-link nav-admin-badge" href="{{ url(route('admin.home')) }}" title="Switch to Admin Panel">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>Admin Panel</span>
                             </a>
                         </li>
                     @endif
@@ -126,19 +119,27 @@
                         <?php
                         $user = explode(' ', \Illuminate\Support\Facades\Auth::user()->name ?? '')[0] ?? 'Account';
                         ?>
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                            <span class="rounded-circle bg-primary-600 text-white d-inline-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 py-1 px-2 text-decoration-none"
+                           data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                            <div class="nav-user-avatar">
                                 {{ strtoupper(substr($user, 0, 1)) }}
-                            </span>
-                            <span class="fw-medium text-light">{{ $user }}</span>
+                            </div>
+                            <span class="fw-medium text-light" style="font-size: 0.85rem;">{{ $user }}</span>
+                            <i class="fa-solid fa-chevron-down text-white-50 ms-1" style="font-size: 0.65rem;"></i>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="min-width: 220px;">
+                            <li>
+                                <div class="px-3 py-2 border-bottom border-secondary mb-1">
+                                    <div class="fw-bold text-light small">{{ \Illuminate\Support\Facades\Auth::user()->name ?? 'User' }}</div>
+                                    <div class="text-white-50" style="font-size: 0.75rem;">{{ \Illuminate\Support\Facades\Auth::user()->email ?? '' }}</div>
+                                </div>
+                            </li>
                             <li>
                                 <a class="dropdown-item py-2" href="{{ route('client.user.edit') }}">
-                                    <i class="fa-solid fa-user-pen me-2 text-primary-600"></i> Profile Settings
+                                    <i class="fa-solid fa-user-gear me-2 text-primary-400"></i> Profile Settings
                                 </a>
                             </li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider my-1 border-secondary"></li>
                             <li>
                                 <a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}">
                                     <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Log Out
@@ -152,13 +153,13 @@
     </nav>
 
     <div class="py-4">
-        <div wire:loading style="position: fixed; top: 1rem; right: 1rem; z-index: 9999;">
+        <div wire:loading style="position: fixed; top: 1.25rem; right: 1.25rem; z-index: 9999;">
             <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
 
-        <div class="container-fluid px-lg-4">
+        <div class="container-fluid px-lg-4 px-3">
             @if(isset($companyId) && !$companyId)
                 <livewire:company-list/>
             @elseif($this->activeComponent() === 'companies')
