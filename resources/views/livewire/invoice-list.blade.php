@@ -196,94 +196,83 @@
                                         <td class="text-center text-truncate">{{ $invoice->currency_name}}</td>
                                         <td class="text-end text-truncate">{{ number_format($invoice->amount_total, 2)}}</td>
 
-                                    </tr>
-                                    <tr class="@if($invoice->id !== $activeInvoiceId) d-none @endif actions"
-                                        style="background-color: #c4c4c4">
-                                        <td colspan="100">
-                                            <div class="actionOptionns text-center"
-                                                 style="z-index: 2; position:relative;">
+                                                             <tr class="@if($invoice->id !== $activeInvoiceId) d-none @endif actions bg-primary-50 bg-opacity-25 border-bottom border-primary-100">
+                                        <td colspan="100" class="p-3">
+                                            <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 py-1">
+                                                {{-- PDF LV Button --}}
+                                                <a href="{{ route('client.invoices.show', [$invoice->id, 'locale' => 'lv']) }}"
+                                                   target="_blank"
+                                                   class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium text-decoration-none">
+                                                    <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                    <span>PDF LV</span>
+                                                </a>
 
-                                                {{--                                            <div class="fa fa-calculator" style="cursor: pointer"--}}
-                                                {{--                                                 wire:click="openModal({{$invoice->id}})">--}}
+                                                {{-- PDF EN Button --}}
+                                                <a href="{{ route('client.invoices.show', [$invoice->id, 'locale' => 'en']) }}"
+                                                   target="_blank"
+                                                   class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium text-decoration-none">
+                                                    <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                    <span>PDF EN</span>
+                                                </a>
 
-                                                {{--                                            </div>--}}
-
-                                                {{--                                            <div class="text-warning fa fa-file fa-2x showButton1"--}}
-                                                {{--                                                 style="cursor: pointer"--}}
-                                                {{--                                                 data-toggle1="tooltip" title="{{ _("View") }}" data-placement="top"--}}
-                                                {{--                                                 data-bs-toggle="modal"--}}
-                                                {{--                                                 data-bs-target="#myModalShow"--}}
-                                                {{--                                                 action-url="{{ url(route('client.invoices.show', $invoice->id))}}"></div>--}}
-
-                                                <span style="margin: 10px;">
-                                                <a href="{{route('client.invoices.show', [ $invoice->id, 'locale'=> 'lv'])}}"><span
-                                                            class="fa fa-file-pdf-o fa-2x">LV</span></a>
-
-                                            </span>
-                                                <span style="margin: 10px;">
-                                                <a href="{{route('client.invoices.show', [ $invoice->id, 'locale'=> 'en'])}}"><span
-                                                            class="fa fa-file-pdf-o fa-2x">EN</span></a>
-                                            </span>
-                                                <span style="margin: 10px;">
-                                                    <span
-                                                            class="fa fa-copy fa-2x"
-                                                            role="button"
-                                                            wire:click="copyInvoice"
-                                                    ></span>
-                                            </span>
+                                                {{-- Copy Invoice --}}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium"
+                                                        wire:click="copyInvoice"
+                                                        title="Kopēt rēķinu">
+                                                    <i class="fa-regular fa-copy text-primary"></i>
+                                                    <span>{{ __('Kopēt') }}</span>
+                                                </button>
 
                                                 @if($invoice->is_locked)
-
                                                     @if(\Auth::user()->isAdmin())
-                                                        <div class="text-info fa fa-lock fa-2x unlockButton1"
-                                                             style="cursor: pointer"
-                                                             data-toggle1="tooltip" title="{{ _("UnLock") }}"
-                                                             data-placement="top"
-                                                             data-toggle="modal"
-                                                             data-target="#myModalUnLock"
-                                                             invoice-id="{{ $invoice->id }}"
-                                                             current-invoice-href="{{route('client.invoices.getCurrentInvoice', $invoice->id ) }}"
-                                                             edit-invoice-number-href="{{route('client.invoices.updateInvoiceNumber', $invoice->id ) }}"
-                                                             action-url="{{ url(route('client.invoices.unlock', $invoice->id))}}"></div>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-warning d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium unlockButton1"
+                                                                data-toggle="modal"
+                                                                data-target="#myModalUnLock"
+                                                                invoice-id="{{ $invoice->id }}"
+                                                                current-invoice-href="{{ route('client.invoices.getCurrentInvoice', $invoice->id) }}"
+                                                                edit-invoice-number-href="{{ route('client.invoices.updateInvoiceNumber', $invoice->id) }}"
+                                                                action-url="{{ url(route('client.invoices.unlock', $invoice->id)) }}">
+                                                            <i class="fa-solid fa-unlock"></i>
+                                                            <span>{{ __('Atslēgt') }}</span>
+                                                        </button>
                                                     @else
-                                                        <div class="text-info fa fa-2x  fa-lock"></div>
+                                                        <span class="badge bg-secondary-subtle text-secondary-emphasis border px-3 py-2 rounded-pill">
+                                                            <i class="fa-solid fa-lock me-1"></i> {{ __('Slēgts') }}
+                                                        </span>
                                                     @endif
                                                 @else
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium lockButton1"
+                                                            data-toggle="modal"
+                                                            data-target="#myModalLock"
+                                                            invoice-id="{{ $invoice->id }}"
+                                                            current-invoice-href="{{ route('client.invoices.getCurrentInvoice', $invoice->id) }}"
+                                                            edit-invoice-number-href="{{ route('client.invoices.updateInvoiceNumber', $invoice->id) }}"
+                                                            action-url="{{ url(route('client.invoices.lock', $invoice->id)) }}">
+                                                        <i class="fa-solid fa-lock"></i>
+                                                        <span>{{ __('Slēgt') }}</span>
+                                                    </button>
 
-                                                    <div class="text-info fa-md fa fa-unlock fa-2x lockButton1"
-                                                         style="cursor: pointer"
-                                                         data-toggle1="tooltip" title="{{ _("Lock") }}"
-                                                         data-placement="top"
-                                                         data-toggle="modal"
-                                                         data-target="#myModalLock"
-                                                         invoice-id="{{ $invoice->id }}"
-                                                         current-invoice-href="{{route('client.invoices.getCurrentInvoice', $invoice->id ) }}"
-                                                         edit-invoice-number-href="{{route('client.invoices.updateInvoiceNumber', $invoice->id ) }}"
-                                                         action-url="{{ url(route('client.invoices.lock', $invoice->id))}}"></div>
+                                                    {{-- Edit Invoice --}}
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill shadow-xs fw-semibold"
+                                                            wire:click="$set('showInvoiceFom', true)">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                        <span>{{ __('Labot') }}</span>
+                                                    </button>
 
-                                                    {{-- 	<a href="{{ url(route('client.invoices.lock', $invoice->id))}}"><div class="btn btn-info btn-xs fa   fa-unlock"></div></a> --}}
-
-                                                    {{--                                                    <a href="{{ url(route('client.invoices.edit',  $invoice->id))}}">--}}
-                                                    <div class="text-success fa-md fa-edit fa fa-2x"
-                                                         data-toggle1="tooltip" title="{{_("Edit")}}"
-                                                         data-placement="top"
-                                                         wire:click="$set('showInvoiceFom', {{!$showInvoiceFom}})"
-                                                         style="cursor: pointer"
-                                                    ></div>
-                                                    {{--                                                    </a>--}}
-
-                                                    <div type="button"
-                                                         style="cursor: pointer"
-                                                         class="text-danger fa-remove fa fa-2x deleteButton1"
-                                                         data-toggle1="tooltip" title="{{_("Delete")}}"
-                                                         data-placement="top"
-                                                         action-url="{{ url(route('client.invoices.destroy',  [$invoice->id,'method'=>'delete']))}}"
-                                                         wire:click="deleteInvoice"
-                                                    ></div>
-                                                    {{-- <a href="{{ url(route('client.invoices.destroy',  [$invoice->id,'method'=>'delete']))}}"><div class="btn btn-danger btn-xs fa-remove fa"></div></a> --}}
+                                                    {{-- Delete Invoice --}}
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium deleteButton1"
+                                                            action-url="{{ url(route('client.invoices.destroy', [$invoice->id, 'method' => 'delete'])) }}"
+                                                            wire:click="deleteInvoice">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                        <span>{{ __('Dzēst') }}</span>
+                                                    </button>
                                                 @endif
                                             </div>
-
                                         </td>
                                     </tr>
                                 @endforeach
