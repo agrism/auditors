@@ -25,7 +25,7 @@
             <div>
                 <button type="button"
                         class="btn btn-modern btn-modern-secondary btn-sm"
-                        wire:click="$set('goToListWithoutSave', true)">
+                        wire:click="closeInvoiceForm">
                     <i class="fa-solid fa-arrow-left me-1"></i> {{ __('Atpakaļ uz sarakstu') }}
                 </button>
             </div>
@@ -425,13 +425,13 @@
                     </button>
                     <button type="button"
                             class="btn btn-modern btn-modern-secondary px-3"
-                            wire:click="$set('goToListWithoutSave', true)">
+                            wire:click="closeInvoiceForm">
                         <i class="fa-solid fa-xmark me-1"></i> {{ __('Iziet nesaglabājot') }}
                     </button>
                 </div>
             </form>
         </div>
-    </div>v>
+    </div>
 
 
     {{--    @push('scripts')--}}

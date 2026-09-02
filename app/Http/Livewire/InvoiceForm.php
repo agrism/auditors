@@ -62,12 +62,17 @@ class InvoiceForm extends Component
         return view('livewire.invoice-form');
     }
 
+    public function closeInvoiceForm(): void
+    {
+        $this->goToListWithoutSave = false;
+        $this->emit('closeInvoice');
+        $this->dispatchBrowserEvent('contentChanged');
+    }
+
     public function saveInvoice($formData): void
     {
         if($this->goToListWithoutSave){
-            $this->goToListWithoutSave = false;
-            $this->emit('closeInvoice');
-            $this->dispatchBrowserEvent('contentChanged');
+            $this->closeInvoiceForm();
             return;
         }
 
