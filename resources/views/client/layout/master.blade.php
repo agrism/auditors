@@ -28,6 +28,18 @@
 
 @include('client.partials.js')
 @livewireScripts
+<script>
+    document.addEventListener('livewire:load', function () {
+        if (window.Livewire) {
+            Livewire.onError(function (statusCode) {
+                if (statusCode === 419) {
+                    window.location.href = "{{ route('login') }}";
+                    return false;
+                }
+            });
+        }
+    });
+</script>
 @yield('js')
 </body>
 </html>
