@@ -194,25 +194,51 @@
                                     </button>
 
                                     <!-- Data Details Modal -->
-                                    <div class="modal fade text-start" id="logModal{{ $log->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal fade text-start" id="logModal{{ $log->id }}" tabindex="-1" aria-labelledby="logModalLabel{{ $log->id }}" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-centered">
-                                            <div class="modal-content border-0 shadow-lg rounded-3">
-                                                <div class="modal-header bg-dark text-white">
-                                                    <h5 class="modal-title fs-6">
-                                                        <i class="fa-solid fa-file-code me-2 text-primary-400"></i>Ieraksta #{{ $log->id }} parametri
-                                                    </h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
+                                                <div class="modal-header bg-white border-bottom py-3 px-4">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="badge {{ $methodClass }} font-monospace fw-bold">{{ $log->method }}</span>
+                                                        <h5 class="modal-title fs-6 fw-bold text-dark mb-0" id="logModalLabel{{ $log->id }}">
+                                                            Ieraksta #{{ $log->id }} dati un parametri
+                                                        </h5>
+                                                    </div>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Aizvērt"></button>
                                                 </div>
                                                 <div class="modal-body p-4 bg-light">
-                                                    <div class="mb-2 small text-muted">
-                                                        <strong>URL:</strong> <span class="font-monospace">{{ $log->method }} {{ $log->url }}</span>
+                                                    <div class="card border border-slate-200 shadow-none mb-3 bg-white">
+                                                        <div class="card-body p-3">
+                                                            <div class="row g-2 small">
+                                                                <div class="col-sm-6">
+                                                                    <span class="text-muted">Lietotājs:</span>
+                                                                    <strong class="text-dark">{{ $log->user ? $log->user->name . ' (' . $log->user->email . ')' : 'Viesis / Neautorizēts' }}</strong>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <span class="text-muted">IP Adrese:</span>
+                                                                    <strong class="text-dark font-monospace">{{ $log->ip }}</strong>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <span class="text-muted">Laiks:</span>
+                                                                    <strong class="text-dark">{{ $log->created_at->format('d.m.Y H:i:s') }}</strong>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <span class="text-muted">Pilns URL:</span>
+                                                                    <div class="font-monospace text-dark text-break mt-1 bg-light p-2 rounded border" style="font-size: 0.8rem;">{{ $log->url }}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="mb-3 small text-muted">
-                                                        <strong>Laiks:</strong> {{ $log->created_at->format('d.m.Y H:i:s') }} (IP: {{ $log->ip }})
+
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <label class="form-label small fw-bold text-dark mb-0">
+                                                            <i class="fa-solid fa-code text-primary me-1"></i> Pieprasījuma parametri (Payload JSON):
+                                                        </label>
                                                     </div>
-                                                    <pre class="bg-dark text-light p-3 rounded-3 font-monospace small mb-0" style="max-height: 400px; overflow-y: auto;">{{ $log->data }}</pre>
+                                                    <pre class="p-3 rounded-3 font-monospace mb-0 text-start" style="background: #0f172a !important; color: #38bdf8 !important; max-height: 400px; overflow-y: auto; font-size: 0.85rem; line-height: 1.5; border: 1px solid #1e293b;">{{ $log->data }}</pre>
                                                 </div>
-                                                <div class="modal-footer">
+                                                <div class="modal-footer bg-white border-top py-2 px-4 d-flex justify-content-between">
+                                                    <span class="small text-muted">ID: #{{ $log->id }}</span>
                                                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Aizvērt</button>
                                                 </div>
                                             </div>
