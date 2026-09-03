@@ -32,6 +32,12 @@
                         <i class="fa-solid fa-file-invoice-dollar me-1 opacity-75"></i> Rēķini
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}"
+                       href="{{ url(route('admin.logs.index')) }}">
+                        <i class="fa-solid fa-list-check me-1 opacity-75"></i> Žurnāls
+                    </a>
+                </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ (request()->routeIs('admin.export') || request()->routeIs('admin.npi') || request()->routeIs('admin.working-hours.*') || request()->routeIs('admin.vacations.*') || request()->routeIs('admin.vat.*')) ? 'active' : '' }}"

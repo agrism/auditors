@@ -10,6 +10,11 @@ use App\CompanyVatNumber;
 class Log extends Model
 {
 	protected $table = 'logs';
-	protected $fillable = ['ip', 'user_id','method', 'url', 'data',];
+	protected $fillable = ['ip', 'user_id', 'method', 'url', 'data'];
 	public $timestamps = true;
+
+	public function user()
+	{
+		return $this->belongsTo(User::class, 'user_id');
+	}
 }

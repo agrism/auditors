@@ -15,6 +15,8 @@ Route::group(
 
 	Route::get("/", ['as' => 'home', 'uses' => 'CompanyController@index']);
 
+	Route::get('logs', ['as' => 'logs.index', 'uses' => 'LogController@index']);
+
 	Route::resource('companies', 'CompanyController');
 
 
