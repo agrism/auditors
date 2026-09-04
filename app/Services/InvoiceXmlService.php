@@ -313,10 +313,11 @@ class InvoiceXmlService
         $root->appendChild($paymentMeans);
     }
 
-    protected function addCbcElement(DOMDocument $dom, \DOMElement $parent, string $name, string $value): \DOMElement
+    protected function addCbcElement(DOMDocument $dom, \DOMElement $parent, string $name, ?string $value): \DOMElement
     {
+        $cleanValue = html_entity_decode((string)$value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $elem = $dom->createElement($name);
-        $elem->appendChild($dom->createTextNode($value));
+        $elem->appendChild($dom->createTextNode($cleanValue));
         $parent->appendChild($elem);
         return $elem;
     }
