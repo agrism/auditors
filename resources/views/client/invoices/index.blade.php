@@ -150,6 +150,11 @@
                                                 data-target="#myModalShow"
                                                 action-url="{{ url(route('client.invoices.show', $invoice->id))}}"></div>
 
+                                        <a href="{{ url(route('client.invoices.xml', $invoice->id)) }}"
+                                           class="text-primary fa fa-file-code-o fa-2x"
+                                           style="cursor: pointer; text-decoration: none;"
+                                           data-toggle1="tooltip" title="{{ _("XML (E-rēķins)") }}" data-placement="top"></a>
+
                                         <div class="text-info fa-2x fa fa-copy copyButton1"
                                                 style="cursor: pointer"
                                                 data-toggle1="tooltip" title="{{ _("Copy") }}" data-placement="top"

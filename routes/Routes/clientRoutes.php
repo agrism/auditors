@@ -50,6 +50,10 @@ Route::group(
             'invoice/{id}/copy/',
             ['as' => 'invoices.copy', 'uses' => 'InvoiceController@copyInvoice']
         );
+        Route::get(
+            'invoices/{id}/xml',
+            ['as' => 'invoices.xml', 'uses' => 'InvoiceController@exportXml']
+        );
         Route::resource('invoices', 'InvoiceController');
 
         Route::get(

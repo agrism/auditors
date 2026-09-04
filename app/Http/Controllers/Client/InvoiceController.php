@@ -6,6 +6,7 @@ use App\CompanySetting;
 use App\Exports\InvoiceExport;
 use App\InvoiceType;
 use App\Services\InvoiceService;
+use App\Services\InvoiceXmlService;
 use App\StructuralunitUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -274,6 +275,29 @@ class InvoiceController extends Controller
 
 		return view('client.invoices.show', compact('invoice', 'vats', 'settingLeftMargin', 'settingTopMargin'));
 
+	}
+
+	/**
+	 * Export invoice as PEPPOL BIS Billing 3.0 (UBL 2.1) XML.
+	 *
+	 * @param int $id
+	 * @param InvoiceXmlService $xmlService
+	 * @return \Illuminate\Http\Response
+	 */
+	public function exportXml(int $id, InvoiceXmlService $xmlService)
+	{
+		$invoice = Invoice::with([
+			'company', 'company.vatNumbers', 'partner', 'currency', 'invoiceLines',
+			'invoiceLines.unit', 'invoiceLines.vat', 'invoiceLines.currency',
+		])->where('company_id', $this->companyId)->findOrFail($id);
+
+		$xmlContent = $xmlService->generateXml($invoice);
+		$filename = 'invoice_' . preg_replace('/[^A-Za-z0-9_\-]/', '_', $invoice->number ?: (string)$invoice->id) . '.xml';
+
+		return response($xmlContent, 200, [
+			'Content-Type' => 'application/xml; charset=utf-8',
+			'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+		]);
 	}
 
 	/**

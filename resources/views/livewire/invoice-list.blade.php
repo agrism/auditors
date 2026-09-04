@@ -220,6 +220,11 @@
                                                    title="PDF EN">
                                                     <i class="fa-solid fa-file-pdf text-danger"></i> EN
                                                 </a>
+                                                <a href="{{ route('client.invoices.xml', $invoice->id) }}"
+                                                   class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2 py-0.5 rounded-pill bg-white shadow-xs fw-medium text-decoration-none"
+                                                   title="E-rēķins XML (Peppol BIS 3.0)">
+                                                    <i class="fa-solid fa-file-code text-primary"></i> XML
+                                                </a>
                                                 <button type="button"
                                                         class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
                                                         wire:click="setActiveInvoiceId({{$invoice->id}}); $set('showInvoiceFom', true)"
@@ -238,7 +243,7 @@
                                         </td>
                                     </tr>
 
-                                                             <tr class="@if($invoice->id !== $activeInvoiceId) d-none @endif actions bg-primary-50 bg-opacity-25 border-bottom border-primary-100">
+                                                              <tr class="@if($invoice->id !== $activeInvoiceId) d-none @endif actions bg-primary-50 bg-opacity-25 border-bottom border-primary-100">
                                         <td colspan="100" class="p-3">
                                             <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 py-1">
                                                 {{-- PDF LV Button --}}
@@ -255,6 +260,14 @@
                                                    class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium text-decoration-none">
                                                     <i class="fa-solid fa-file-pdf text-danger"></i>
                                                     <span>PDF EN</span>
+                                                </a>
+
+                                                {{-- XML E-Invoice Button --}}
+                                                <a href="{{ route('client.invoices.xml', $invoice->id) }}"
+                                                   class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill bg-white shadow-xs fw-medium text-decoration-none"
+                                                   title="E-rēķins XML (Peppol BIS 3.0)">
+                                                    <i class="fa-solid fa-file-code text-primary"></i>
+                                                    <span>XML (E-rēķins)</span>
                                                 </a>
 
                                                 {{-- Copy Invoice --}}

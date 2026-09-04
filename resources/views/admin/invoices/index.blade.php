@@ -66,9 +66,14 @@
                                         {{ number_format((float)$invoice->amount_total, 2) }}
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ url(route('admin.invoices.show', $invoice->id)) }}" class="btn btn-sm btn-outline-secondary py-1 px-2" title="View details">
-                                            <i class="fa-regular fa-eye"></i>
-                                        </a>
+                                        <div class="d-inline-flex align-items-center gap-1">
+                                            <a href="{{ url(route('client.invoices.xml', $invoice->id)) }}" class="btn btn-sm btn-outline-primary py-1 px-2" title="E-rēķins XML (Peppol)">
+                                                <i class="fa-solid fa-file-code"></i>
+                                            </a>
+                                            <a href="{{ url(route('admin.invoices.show', $invoice->id)) }}" class="btn btn-sm btn-outline-secondary py-1 px-2" title="View details">
+                                                <i class="fa-regular fa-eye"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
