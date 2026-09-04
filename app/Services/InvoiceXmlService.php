@@ -208,13 +208,16 @@ class InvoiceXmlService
 
         $this->appendPostalAddress($dom, $party, $company->address ?? '');
 
-        // Supplier VAT scheme (BR-CO-09 and LV-007 require country prefix LV followed by 11 digits: LV40003624203)
-        $taxId = $this->formatVatNumber($vatNumber, $regNumber, 'LV');
+        // Supplier Tax scheme (TAX scheme with 11-digit registration number 40003624203 satisfies LV-037 and EN16931 BT-32)
+        $taxId = preg_replace('/[^0-9A-Za-z]/', '', $regNumber ?: $vatNumber);
+        if ($taxId && str_starts_with(strtoupper($taxId), 'LV')) {
+            $taxId = substr($taxId, 2);
+        }
         if (!empty($taxId)) {
             $taxScheme = $dom->createElement('cac:PartyTaxScheme');
             $this->addCbcElement($dom, $taxScheme, 'cbc:CompanyID', $taxId);
             $scheme = $dom->createElement('cac:TaxScheme');
-            $this->addCbcElement($dom, $scheme, 'cbc:ID', 'VAT');
+            $this->addCbcElement($dom, $scheme, 'cbc:ID', 'TAX');
             $taxScheme->appendChild($scheme);
             $party->appendChild($taxScheme);
         }
