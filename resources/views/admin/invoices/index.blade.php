@@ -36,7 +36,7 @@
                         </thead>
                         <tbody>
                             @forelse($invoices as $invoice)
-                                <tr>
+                                <tr class="{{ (preg_match('/copy/i', $invoice->number ?? '')) ? 'table-warning is-copy-invoice' : '' }}">
                                     <td class="text-center text-muted small fw-semibold">#{{ $invoice->id }}</td>
                                     <td>
                                         <span class="fw-semibold text-slate-900">{{ $invoice->number ?? '-' }}</span>

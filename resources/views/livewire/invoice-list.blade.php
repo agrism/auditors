@@ -179,7 +179,7 @@
                             </thead>
                             <tbody>
                                 @foreach($invoices as $invoice)
-                                    <tr class="line text-truncate {{ (preg_match('/copy/',$invoice->number)) ? 'bg-warning' : null }}"
+                                    <tr class="line text-truncate {{ (preg_match('/copy/i', $invoice->number ?? '')) ? 'table-warning is-copy-invoice' : '' }}"
                                         wire:click="setActiveInvoiceId({{$invoice->id}})"
                                         style="cursor: pointer">
                                         <td id="td{{$invoice->id}}">

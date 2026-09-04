@@ -110,7 +110,7 @@
                         </thead>
                         <tbody>
                         @foreach($invoices as $invoice)
-                            <tr class="line {{ (preg_match('/copy/',$invoice->number)) ? 'danger' : null }}" style="cursor: pointer">
+                            <tr class="line {{ (preg_match('/copy/i', $invoice->number ?? '')) ? 'table-warning is-copy-invoice' : '' }}" style="cursor: pointer">
                                 <td>{{ $invoice->id}}</td>
                                 <td id="td{{$invoice->id}}">{{ $invoice->number}}</td>
                                 <td>

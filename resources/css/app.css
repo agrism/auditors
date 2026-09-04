@@ -374,6 +374,21 @@ h1, h2, h3, h4, h5, h6, .display-font {
     background-color: rgba(99, 102, 241, 0.03);
 }
 
+/* Highlight copy rows in invoice list */
+.table-modern tbody tr.is-copy-invoice > td,
+.table-modern tbody tr.table-warning > td,
+.table tbody tr.is-copy-invoice > td,
+.table tbody tr.table-warning > td {
+    background-color: #fef3c7 !important;
+}
+
+.table-modern tbody tr.is-copy-invoice:hover > td,
+.table-modern tbody tr.table-warning:hover > td,
+.table tbody tr.is-copy-invoice:hover > td,
+.table tbody tr.table-warning:hover > td {
+    background-color: #fde68a !important;
+}
+
 /* Status Badges */
 .badge-modern {
     display: inline-flex;
