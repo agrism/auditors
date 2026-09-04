@@ -102,4 +102,89 @@ class InvoiceXmlServiceTest extends TestCase
         $this->assertTrue($doc->loadXML($xml));
         $this->assertEquals('Invoice', $doc->documentElement->localName);
     }
+
+    public function test_generate_xml_omits_party_tax_scheme_for_non_vat_buyer()
+    {
+        $company = new Company();
+        $company->forceFill([
+            'title' => 'LFC Group SIA',
+            'registration_number' => '40003624203',
+            'address' => 'Dubultu iela 20-7, Rīga, LV1069',
+            'bank' => 'Swedbank AS',
+            'swift' => 'HABALV22',
+            'account_number' => 'LV83HABA0551004219090',
+        ]);
+        $company->setRelation('vatNumbers', collect());
+
+        $partner = new Partner();
+        $partner->forceFill([
+            'name' => 'Patērētāju tiesību aizsardzības centrs',
+            'registration_number' => '90000068854',
+            'vat_number' => '-',
+            'address' => 'Talejas iela 1, Rīga, LV-1026',
+        ]);
+
+        $currency = new Currency();
+        $currency->forceFill(['name' => 'EUR']);
+
+        $unit = new Unit();
+        $unit->forceFill(['name' => 'stundas']);
+
+        $vat = new Vat();
+        $vat->forceFill(['name' => 'PVN 21%', 'rate' => 21]);
+
+        $line = new InvoiceLine();
+        $line->forceFill([
+            'title' => 'IT Services',
+            'quantity' => 2,
+            'price' => 62.00,
+        ]);
+        $line->setRelation('unit', $unit);
+        $line->setRelation('vat', $vat);
+
+        $invoice = new Invoice();
+        $invoice->forceFill([
+            'number' => 'PTAC/009',
+            'date' => '04.09.2026',
+            'payment_date' => '18.09.2026',
+            'vat_number' => 'LV40003624203',
+            'partner_vat_number' => '-',
+            'partner_registration_number' => '90000068854',
+            'partner_name' => 'Patērētāju tiesību aizsardzības centrs',
+            'partner_address' => 'Talejas iela 1, Rīga, LV-1026',
+            'account_number' => 'LV83HABA0551004219090',
+            'bank' => 'Swedbank AS',
+            'swift' => 'HABALV22',
+            'amount_total' => 149.92,
+        ]);
+
+        $invoice->setRelation('company', $company);
+        $invoice->setRelation('partner', $partner);
+        $invoice->setRelation('currency', $currency);
+        $invoice->setRelation('invoiceLines', collect([$line]));
+
+        $service = new InvoiceXmlService();
+        $xml = $service->generateXml($invoice);
+
+        $doc = new DOMDocument();
+        $this->assertTrue($doc->loadXML($xml));
+
+        $xpath = new \DOMXPath($doc);
+        $xpath->registerNamespace('cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+        $xpath->registerNamespace('cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+
+        // Supplier tax scheme must be the 11-digit clean number (LV-037 valid)
+        $supplierTaxId = $xpath->query('//cac:AccountingSupplierParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID');
+        $this->assertEquals(1, $supplierTaxId->length);
+        $this->assertEquals('40003624203', $supplierTaxId->item(0)->textContent);
+
+        // Buyer PartyTaxScheme must NOT be present since partner_vat_number is '-'
+        $customerTaxScheme = $xpath->query('//cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme');
+        $this->assertEquals(0, $customerTaxScheme->length);
+
+        // LegalEntity CompanyID should have the clean registration number
+        $customerLegalCompId = $xpath->query('//cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID');
+        $this->assertEquals(1, $customerLegalCompId->length);
+        $this->assertEquals('90000068854', $customerLegalCompId->item(0)->textContent);
+    }
 }

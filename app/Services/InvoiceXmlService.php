@@ -206,16 +206,13 @@ class InvoiceXmlService
         $this->addCbcElement($dom, $partyName, 'cbc:Name', $companyTitle);
         $party->appendChild($partyName);
 
-        $address = $dom->createElement('cac:PostalAddress');
-        $this->addCbcElement($dom, $address, 'cbc:StreetName', $company->address ?? 'Latvija');
-        $country = $dom->createElement('cac:Country');
-        $this->addCbcElement($dom, $country, 'cbc:IdentificationCode', 'LV');
-        $address->appendChild($country);
-        $party->appendChild($address);
+        $this->appendPostalAddress($dom, $party, $company->address ?? '');
 
-        if (!empty($vatNumber)) {
+        // Supplier tax scheme (LV-037 requires 5-11 chars registration/tax number for LV entities)
+        $taxId = $this->cleanTaxNumber($vatNumber, $regNumber, 'LV');
+        if (!empty($taxId)) {
             $taxScheme = $dom->createElement('cac:PartyTaxScheme');
-            $this->addCbcElement($dom, $taxScheme, 'cbc:CompanyID', $vatNumber);
+            $this->addCbcElement($dom, $taxScheme, 'cbc:CompanyID', $taxId);
             $scheme = $dom->createElement('cac:TaxScheme');
             $this->addCbcElement($dom, $scheme, 'cbc:ID', 'VAT');
             $taxScheme->appendChild($scheme);
@@ -225,8 +222,7 @@ class InvoiceXmlService
         $legalEntity = $dom->createElement('cac:PartyLegalEntity');
         $this->addCbcElement($dom, $legalEntity, 'cbc:RegistrationName', $companyTitle);
         if (!empty($regNumber)) {
-            $compElem = $this->addCbcElement($dom, $legalEntity, 'cbc:CompanyID', $regNumber);
-            $compElem->setAttribute('schemeID', '0218');
+            $this->addCbcElement($dom, $legalEntity, 'cbc:CompanyID', $regNumber);
         }
         $party->appendChild($legalEntity);
 
@@ -242,8 +238,8 @@ class InvoiceXmlService
         $partner = $invoice->partner;
         $customerName = $invoice->partner_name ?? $partner->name ?? 'Customer';
         $regNumber = preg_replace('/[^0-9A-Za-z]/', '', $invoice->partner_registration_number ?? $partner->registration_number ?? '');
-        $vatNumber = $invoice->partner_vat_number ?? $partner->vat_number ?? '';
-        $customerAddress = $invoice->partner_address ?? $partner->address ?? 'Latvija';
+        $rawVatNumber = $invoice->partner_vat_number ?? $partner->vat_number ?? '';
+        $customerAddress = $invoice->partner_address ?? $partner->address ?? '';
 
         if (!empty($regNumber)) {
             $endpoint = $this->addCbcElement($dom, $party, 'cbc:EndpointID', $regNumber);
@@ -258,16 +254,13 @@ class InvoiceXmlService
         $this->addCbcElement($dom, $partyName, 'cbc:Name', $customerName);
         $party->appendChild($partyName);
 
-        $address = $dom->createElement('cac:PostalAddress');
-        $this->addCbcElement($dom, $address, 'cbc:StreetName', $customerAddress);
-        $country = $dom->createElement('cac:Country');
-        $this->addCbcElement($dom, $country, 'cbc:IdentificationCode', 'LV');
-        $address->appendChild($country);
-        $party->appendChild($address);
+        $this->appendPostalAddress($dom, $party, $customerAddress);
 
-        if (!empty($vatNumber)) {
+        // Buyer PartyTaxScheme is optional in PEPPOL/EN16931. Only include if buyer is a valid VAT payer.
+        $customerTaxId = $this->cleanTaxNumber($rawVatNumber, null, 'LV');
+        if (!empty($customerTaxId)) {
             $taxScheme = $dom->createElement('cac:PartyTaxScheme');
-            $this->addCbcElement($dom, $taxScheme, 'cbc:CompanyID', $vatNumber);
+            $this->addCbcElement($dom, $taxScheme, 'cbc:CompanyID', $customerTaxId);
             $scheme = $dom->createElement('cac:TaxScheme');
             $this->addCbcElement($dom, $scheme, 'cbc:ID', 'VAT');
             $taxScheme->appendChild($scheme);
@@ -277,8 +270,7 @@ class InvoiceXmlService
         $legalEntity = $dom->createElement('cac:PartyLegalEntity');
         $this->addCbcElement($dom, $legalEntity, 'cbc:RegistrationName', $customerName);
         if (!empty($regNumber)) {
-            $compElem = $this->addCbcElement($dom, $legalEntity, 'cbc:CompanyID', $regNumber);
-            $compElem->setAttribute('schemeID', '0218');
+            $this->addCbcElement($dom, $legalEntity, 'cbc:CompanyID', $regNumber);
         }
         $party->appendChild($legalEntity);
 
@@ -366,5 +358,98 @@ class InvoiceXmlService
             'pak.', 'pakalpojums', 'service' => 'E48',
             default => 'C62',
         };
+    }
+
+    protected function cleanTaxNumber(?string $vatNumber, ?string $regNumber = null, string $countryCode = 'LV'): ?string
+    {
+        $raw = trim((string)$vatNumber);
+
+        // Check if empty or explicitly marked as not available
+        if (empty($raw) || in_array(mb_strtolower($raw), ['-', 'nav', 'n/a', 'na', 'none', 'null', '0'], true)) {
+            if (!empty($regNumber) && $countryCode === 'LV') {
+                $cleanedReg = preg_replace('/[^0-9A-Za-z]/', '', $regNumber);
+                if (strlen($cleanedReg) >= 5 && strlen($cleanedReg) <= 11) {
+                    return $cleanedReg;
+                }
+            }
+            return null;
+        }
+
+        $cleaned = preg_replace('/[^0-9A-Za-z]/', '', $raw);
+
+        if ($countryCode === 'LV') {
+            // If prefixed with LV, strip it to get the 11-digit national tax number
+            if (preg_match('/^LV([0-9A-Za-z]{5,11})$/i', $cleaned, $matches)) {
+                return $matches[1];
+            }
+
+            if (strlen($cleaned) >= 5 && strlen($cleaned) <= 11) {
+                return $cleaned;
+            }
+
+            if (!empty($regNumber)) {
+                $cleanedReg = preg_replace('/[^0-9A-Za-z]/', '', $regNumber);
+                if (strlen($cleanedReg) >= 5 && strlen($cleanedReg) <= 11) {
+                    return $cleanedReg;
+                }
+            }
+
+            return null;
+        }
+
+        return strlen($cleaned) >= 3 ? $cleaned : null;
+    }
+
+    protected function appendPostalAddress(DOMDocument $dom, \DOMElement $party, ?string $rawAddress, string $countryCode = 'LV'): void
+    {
+        $address = $dom->createElement('cac:PostalAddress');
+        $cleanAddress = trim((string)$rawAddress);
+
+        if (empty($cleanAddress)) {
+            $this->addCbcElement($dom, $address, 'cbc:StreetName', 'Latvija');
+            $country = $dom->createElement('cac:Country');
+            $this->addCbcElement($dom, $country, 'cbc:IdentificationCode', $countryCode);
+            $address->appendChild($country);
+            $party->appendChild($address);
+            return;
+        }
+
+        // Try to extract postal code (e.g. LV-1069, LV 1069, LV1069)
+        $postalZone = null;
+        if (preg_match('/(LV\s*-\s*[0-9]{4}|LV[0-9]{4})/i', $cleanAddress, $matches)) {
+            $postalZone = strtoupper(str_replace(' ', '', $matches[1]));
+            if (!str_contains($postalZone, '-')) {
+                $postalZone = substr($postalZone, 0, 2) . '-' . substr($postalZone, 2);
+            }
+        }
+
+        // Split by commas if present
+        $parts = array_map('trim', explode(',', $cleanAddress));
+        $street = $parts[0] ?? $cleanAddress;
+        $city = null;
+
+        if (count($parts) > 1) {
+            foreach (array_slice($parts, 1) as $part) {
+                // If part contains the postal code, strip it to find city
+                $cleanedPart = preg_replace('/(LV\s*-\s*[0-9]{4}|LV[0-9]{4})/i', '', $part);
+                $cleanedPart = trim($cleanedPart);
+                if (!empty($cleanedPart) && empty($city)) {
+                    $city = $cleanedPart;
+                }
+            }
+        }
+
+        $this->addCbcElement($dom, $address, 'cbc:StreetName', $street ?: $cleanAddress);
+        if (!empty($city)) {
+            $this->addCbcElement($dom, $address, 'cbc:CityName', $city);
+        }
+        if (!empty($postalZone)) {
+            $this->addCbcElement($dom, $address, 'cbc:PostalZone', $postalZone);
+        }
+
+        $country = $dom->createElement('cac:Country');
+        $this->addCbcElement($dom, $country, 'cbc:IdentificationCode', $countryCode);
+        $address->appendChild($country);
+        $party->appendChild($address);
     }
 }
