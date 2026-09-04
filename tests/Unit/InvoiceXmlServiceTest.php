@@ -173,10 +173,10 @@ class InvoiceXmlServiceTest extends TestCase
         $xpath->registerNamespace('cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
         $xpath->registerNamespace('cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
 
-        // Supplier tax scheme must be the 11-digit clean number (LV-037 valid)
+        // Supplier tax scheme must be the full VAT number with country prefix (BR-CO-09 & LV-007 valid)
         $supplierTaxId = $xpath->query('//cac:AccountingSupplierParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID');
         $this->assertEquals(1, $supplierTaxId->length);
-        $this->assertEquals('40003624203', $supplierTaxId->item(0)->textContent);
+        $this->assertEquals('LV40003624203', $supplierTaxId->item(0)->textContent);
 
         // Buyer PartyTaxScheme must NOT be present since partner_vat_number is '-'
         $customerTaxScheme = $xpath->query('//cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme');

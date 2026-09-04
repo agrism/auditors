@@ -208,8 +208,8 @@ class InvoiceXmlService
 
         $this->appendPostalAddress($dom, $party, $company->address ?? '');
 
-        // Supplier tax scheme (LV-037 requires 5-11 chars registration/tax number for LV entities)
-        $taxId = $this->cleanTaxNumber($vatNumber, $regNumber, 'LV');
+        // Supplier VAT scheme (BR-CO-09 and LV-007 require country prefix LV followed by 11 digits: LV40003624203)
+        $taxId = $this->formatVatNumber($vatNumber, $regNumber, 'LV');
         if (!empty($taxId)) {
             $taxScheme = $dom->createElement('cac:PartyTaxScheme');
             $this->addCbcElement($dom, $taxScheme, 'cbc:CompanyID', $taxId);
@@ -257,7 +257,7 @@ class InvoiceXmlService
         $this->appendPostalAddress($dom, $party, $customerAddress);
 
         // Buyer PartyTaxScheme is optional in PEPPOL/EN16931. Only include if buyer is a valid VAT payer.
-        $customerTaxId = $this->cleanTaxNumber($rawVatNumber, null, 'LV');
+        $customerTaxId = $this->formatVatNumber($rawVatNumber, null, 'LV');
         if (!empty($customerTaxId)) {
             $taxScheme = $dom->createElement('cac:PartyTaxScheme');
             $this->addCbcElement($dom, $taxScheme, 'cbc:CompanyID', $customerTaxId);
@@ -360,37 +360,30 @@ class InvoiceXmlService
         };
     }
 
-    protected function cleanTaxNumber(?string $vatNumber, ?string $regNumber = null, string $countryCode = 'LV'): ?string
+    protected function formatVatNumber(?string $vatNumber, ?string $regNumber = null, string $countryCode = 'LV'): ?string
     {
         $raw = trim((string)$vatNumber);
 
-        // Check if empty or explicitly marked as not available
+        // Check if empty or explicitly marked as not available / not a VAT payer
         if (empty($raw) || in_array(mb_strtolower($raw), ['-', 'nav', 'n/a', 'na', 'none', 'null', '0'], true)) {
-            if (!empty($regNumber) && $countryCode === 'LV') {
-                $cleanedReg = preg_replace('/[^0-9A-Za-z]/', '', $regNumber);
-                if (strlen($cleanedReg) >= 5 && strlen($cleanedReg) <= 11) {
-                    return $cleanedReg;
-                }
-            }
             return null;
         }
 
-        $cleaned = preg_replace('/[^0-9A-Za-z]/', '', $raw);
+        $cleaned = strtoupper(preg_replace('/[^0-9A-Za-z]/', '', $raw));
 
         if ($countryCode === 'LV') {
-            // If prefixed with LV, strip it to get the 11-digit national tax number
-            if (preg_match('/^LV([0-9A-Za-z]{5,11})$/i', $cleaned, $matches)) {
-                return $matches[1];
+            if (str_starts_with($cleaned, 'LV')) {
+                return $cleaned;
             }
 
             if (strlen($cleaned) >= 5 && strlen($cleaned) <= 11) {
-                return $cleaned;
+                return 'LV' . $cleaned;
             }
 
             if (!empty($regNumber)) {
                 $cleanedReg = preg_replace('/[^0-9A-Za-z]/', '', $regNumber);
                 if (strlen($cleanedReg) >= 5 && strlen($cleanedReg) <= 11) {
-                    return $cleanedReg;
+                    return 'LV' . $cleanedReg;
                 }
             }
 
