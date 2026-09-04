@@ -315,7 +315,8 @@ class InvoiceXmlService
 
     protected function addCbcElement(DOMDocument $dom, \DOMElement $parent, string $name, string $value): \DOMElement
     {
-        $elem = $dom->createElement($name, htmlspecialchars($value, ENT_XML1, 'UTF-8'));
+        $elem = $dom->createElement($name);
+        $elem->appendChild($dom->createTextNode($value));
         $parent->appendChild($elem);
         return $elem;
     }
