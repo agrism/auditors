@@ -25,6 +25,11 @@ class Partner extends Model
 			'swift', 'account_number', 'company_id',
 		];
 
+	public function getNameAttribute($value)
+	{
+		return html_entity_decode((string)$value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	}
+
 	static function createRules()
 	{
 		return [

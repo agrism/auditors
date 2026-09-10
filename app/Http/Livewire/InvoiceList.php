@@ -175,6 +175,23 @@ class InvoiceList extends Component
         $this->showInvoiceFom = false;
     }
 
+    public function editInvoice($id)
+    {
+        $invoice = \App\Invoice::find($id);
+        if ($invoice && $invoice->is_locked) {
+            return;
+        }
+
+        $this->activeInvoiceId = $id;
+        $this->showInvoiceFom = true;
+    }
+
+    public function copyInvoiceById($id)
+    {
+        $this->activeInvoiceId = $id;
+        $this->copyInvoice();
+    }
+
     public function copyInvoice()
     {
         $this->activeInvoiceNo = "";
@@ -188,6 +205,7 @@ class InvoiceList extends Component
     {
         $this->activeInvoiceId = $this->invoiceService->copy($this->company, $this->activeInvoiceId);
         $this->dispatchBrowserEvent('closeModal_copy_invoice');
+        $this->invoices = $this->getInvoices();
     }
 
     public function copyInvoiceCancel()
@@ -195,6 +213,11 @@ class InvoiceList extends Component
         $this->dispatchBrowserEvent('closeModal_copy_invoice');
     }
 
+    public function deleteInvoiceById($id)
+    {
+        $this->activeInvoiceId = $id;
+        $this->deleteInvoice();
+    }
 
     public function deleteInvoice()
     {
@@ -209,11 +232,64 @@ class InvoiceList extends Component
     {
         $this->invoiceService->deleteInvoice($this->company, $this->activeInvoiceId);
         $this->dispatchBrowserEvent('closeModal_delete_invoice');
+        $this->invoices = $this->getInvoices();
     }
 
     public function deleteInvoiceCancel()
     {
         $this->dispatchBrowserEvent('closeModal_delete_invoice');
+    }
+
+    public function lockInvoiceById($id)
+    {
+        $this->activeInvoiceId = $id;
+        $this->activeInvoiceNo = "";
+        if ($activeInvoice = $this->getActiveInvoiceModel()) {
+            $this->activeInvoiceNo = $activeInvoice->number;
+        }
+        $this->dispatchBrowserEvent('openModal_lock_invoice');
+    }
+
+    public function lockInvoiceConfirm()
+    {
+        if ($this->activeInvoiceId) {
+            $this->invoiceService->lockInvoice($this->activeInvoiceId);
+        }
+        $this->dispatchBrowserEvent('closeModal_lock_invoice');
+        $this->invoices = $this->getInvoices();
+    }
+
+    public function lockInvoiceCancel()
+    {
+        $this->dispatchBrowserEvent('closeModal_lock_invoice');
+    }
+
+    public function unlockInvoiceById($id)
+    {
+        $this->activeInvoiceId = $id;
+        $this->activeInvoiceNo = "";
+        if ($activeInvoice = $this->getActiveInvoiceModel()) {
+            $this->activeInvoiceNo = $activeInvoice->number;
+        }
+        $this->dispatchBrowserEvent('openModal_unlock_invoice');
+    }
+
+    public function unlockInvoiceConfirm()
+    {
+        if ($this->activeInvoiceId) {
+            $invoice = \App\Invoice::find($this->activeInvoiceId);
+            if ($invoice) {
+                $invoice->is_locked = 0;
+                $invoice->save();
+            }
+        }
+        $this->dispatchBrowserEvent('closeModal_unlock_invoice');
+        $this->invoices = $this->getInvoices();
+    }
+
+    public function unlockInvoiceCancel()
+    {
+        $this->dispatchBrowserEvent('closeModal_unlock_invoice');
     }
 
     public function updatingFilterPartnerId()

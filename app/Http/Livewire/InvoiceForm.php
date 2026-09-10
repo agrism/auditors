@@ -76,7 +76,16 @@ class InvoiceForm extends Component
             return;
         }
 
+        $startTime = microtime(true);
+
         $this->save($formData);
+
+        if (!app()->environment('testing')) {
+            $elapsed = microtime(true) - $startTime;
+            if ($elapsed < 3) {
+                usleep((int)((3 - $elapsed) * 1000000));
+            }
+        }
 
         $shouldReturn = $returnToList !== null ? (bool)$returnToList : $this->goToListAfterSave;
 

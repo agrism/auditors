@@ -307,7 +307,10 @@ class InvoiceController extends Controller
 	 */
 	public function edit($id, InvoiceService $invoiceService)
 	{
-//	    dd($invoiceService->getInvoiceFormData($this->company, $id));
+		$invoice = \App\Invoice::where('company_id', $this->companyId)->find($id);
+		if ($invoice && $invoice->is_locked) {
+			return redirect()->route('client.invoices.index')->with('error', _('Locked invoices cannot be edited'));
+		}
 		return view('client.invoices.edit', $invoiceService->getInvoiceFormData($this->company, $id));
 	}
 
@@ -319,6 +322,11 @@ class InvoiceController extends Controller
 	 */
 	public function update(Request $request, InvoiceService $invoiceService, int $id)
 	{
+		$invoice = \App\Invoice::where('company_id', $this->companyId)->find($id);
+		if ($invoice && $invoice->is_locked) {
+			return redirect()->route('client.invoices.index')->with('error', _('Locked invoices cannot be edited'));
+		}
+
 		$invoiceService->saveInvoice($request, $this->company, $id);
 
 		if (strtolower($request->get('submit-name')) === 'save') {

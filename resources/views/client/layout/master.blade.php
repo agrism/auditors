@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Auditors.lv') }}</title>
+    <title>@hasSection('title'){{ config('app.name', 'Auditors.lv') }} :: @yield('title')@else{{ config('app.name', 'Auditors.lv') }}@endif</title>
 
     @include('client.partials.head')
     @yield('style')

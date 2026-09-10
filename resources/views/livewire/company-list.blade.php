@@ -19,8 +19,9 @@
             <div class="companies-grid">
                 @foreach($companies as $company)
                     <?php
+                    $cleanTitle = html_entity_decode((string)$company->title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                     $isActive = ($company->id == \App\Services\AuthUser::instance()->selectedCompanyId());
-                    $initials = mb_substr(trim($company->title ?? 'CO'), 0, 2);
+                    $initials = mb_substr(trim($cleanTitle ?: 'CO'), 0, 2);
                     ?>
                     <div wire:click="setActiveCompanyId({{ $company->id }})"
                          role="button"
@@ -29,12 +30,10 @@
                             {{ strtoupper($initials) }}
                         </div>
                         <div class="company-info flex-grow-1 min-w-0" style="min-width: 0;">
-                            <h6 class="text-truncate mb-1 fw-bold text-slate-800" title="{{ $company->title }}">{{ $company->title }}</h6>
+                            <h6 class="text-truncate mb-1 fw-bold text-slate-800" title="{{ $cleanTitle }}">{{ $cleanTitle }}</h6>
                             <div class="text-muted small text-truncate">
                                 @if(!empty($company->reg_number))
                                     <span class="font-monospace"><i class="fa-solid fa-hashtag text-slate-400 me-0.5"></i>{{ $company->reg_number }}</span>
-                                @else
-                                    <span>ID: #{{ $company->id }}</span>
                                 @endif
                             </div>
                         </div>

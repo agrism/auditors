@@ -93,6 +93,6 @@ Route::group(
         ]);
     });
 });
-Route::group(['prefix' => 'client', 'as' => 'client.',], function () {
+Route::group(['middleware' => ['auth'], 'prefix' => 'client', 'as' => 'client.',], function () {
     Route::get('new', \App\Http\Livewire\MainApp::class)->name('new');
 });

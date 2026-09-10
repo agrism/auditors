@@ -38,6 +38,16 @@ class Company extends Model
 	}
 
 
+	public function getTitleAttribute($value)
+	{
+		return html_entity_decode((string)$value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	}
+
+	public function getRegNumberAttribute()
+	{
+		return $this->registration_number;
+	}
+
 	public function setClosedDataDateAttribute($value)
 	{
 		if (isset($value) && $value) {

@@ -1,4 +1,8 @@
 <div>
+    <div wire:loading wire:target="saveInvoice, closeInvoiceForm">
+        <x-loading loading="true" message="Notiek saglabāšana..." submessage="Lūdzu, uzgaidiet, kamēr dati tiek saglabāti"></x-loading>
+    </div>
+
     <style>
         .invoice-form-card {
             border-radius: 12px;
@@ -52,14 +56,14 @@
         .invoice-lines-table select.form-select,
         .invoice-lines-table select.form-control,
         .invoice-lines-table textarea.form-control {
-            height: 34px !important;
-            min-height: 34px !important;
-            max-height: 34px !important;
-            padding: 4px 8px !important;
+            height: 31px !important;
+            min-height: 31px !important;
+            max-height: 31px !important;
+            padding: 2px 8px !important;
             font-size: 0.8125rem !important;
             line-height: 1.4 !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 6px !important;
+            border: 1px solid #c4cdd5 !important;
+            border-radius: 2px !important;
             box-sizing: border-box !important;
             background-color: #ffffff !important;
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -67,8 +71,8 @@
         .invoice-lines-table input.form-control:focus,
         .invoice-lines-table select.form-select:focus,
         .invoice-lines-table textarea.form-control:focus {
-            border-color: #2563eb !important;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+            border-color: #002855 !important;
+            box-shadow: 0 0 0 1px #002855 !important;
             outline: 0;
         }
         .invoice-lines-table textarea.form-control {
@@ -76,10 +80,10 @@
             overflow: hidden !important;
         }
         .invoice-lines-table .remove-line {
-            height: 34px !important;
-            width: 34px !important;
+            height: 31px !important;
+            width: 31px !important;
             padding: 0 !important;
-            border-radius: 6px !important;
+            border-radius: 2px !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -87,7 +91,7 @@
         .summary-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 4px;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
@@ -136,16 +140,16 @@
         }
         .form-control-neat,
         .form-select-neat {
-            height: 36px;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            border: 1px solid #cbd5e1;
-            padding: 0.375rem 0.65rem;
+            height: 33px;
+            font-size: 0.85rem;
+            border-radius: 2px;
+            border: 1px solid #c4cdd5;
+            padding: 0.35rem 0.65rem;
         }
         .form-control-neat:focus,
         .form-select-neat:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+            border-color: #002855;
+            box-shadow: 0 0 0 1px #002855;
         }
         .invoice-actions-footer {
             border-top: 1px solid #e2e8f0;
@@ -170,17 +174,17 @@
             </div>
             <div class="d-flex align-items-center gap-2">
                 <button type="button"
-                        class="btn btn-outline-secondary btn-sm px-3 rounded-3"
+                        class="btn btn-outline-secondary btn-sm px-3"
                         wire:click="closeInvoiceForm">
                     <i class="fa-solid fa-arrow-left me-1"></i> {{ __('Atpakaļ uz sarakstu') }}
                 </button>
                 <button type="button"
-                        class="btn btn-primary btn-sm px-3 rounded-3 fw-semibold"
+                        class="btn btn-primary btn-sm px-3 fw-semibold"
                         onclick="saveInvoiceForm(false)">
                     <i class="fa-solid fa-floppy-disk me-1"></i> {{ __('Saglabāt') }}
                 </button>
                 <button type="button"
-                        class="btn btn-success btn-sm px-3 rounded-3 fw-semibold"
+                        class="btn btn-success btn-sm px-3 fw-semibold"
                         onclick="saveInvoiceForm(true)">
                     <i class="fa-solid fa-check me-1"></i> {{ __('Saglabāt un iziet') }}
                 </button>
@@ -218,16 +222,16 @@
                                     <div class="input-group input-group-sm">
                                         <input type="text" name="date"
                                                value="{{isset($invoice) ? $invoice['date'] : \Carbon\Carbon::now()->format('d.m.Y') }}"
-                                               class="form-control form-control-neat" placeholder="Datums" id="dp1" readonly>
-                                        <span class="input-group-text bg-light text-muted"><i class="fa-regular fa-calendar"></i></span>
+                                               class="form-control form-control-neat date" placeholder="Datums" id="dp1" readonly>
+                                        <span class="input-group-text bg-light text-muted" role="button" onclick="$('#dp1').datepicker('show')"><i class="fa-regular fa-calendar"></i></span>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6">
                                     <label for="payment_date" class="form-label-neat required">Apmaksas termiņš</label>
                                     <div class="input-group input-group-sm">
-                                        {!! Form::text('payment_date', isset($invoice) ? $invoice['payment_date'] : \Carbon\Carbon::now()->format('d.m.Y')  , ['class'=>'form-control form-control-neat', 'placeholder'=>'Apmaksas datums', 'id'=>'dp2', 'readonly'] ) !!}
-                                        <span class="input-group-text bg-light text-muted"><i class="fa-regular fa-calendar"></i></span>
+                                        {!! Form::text('payment_date', isset($invoice) ? $invoice['payment_date'] : \Carbon\Carbon::now()->format('d.m.Y')  , ['class'=>'form-control form-control-neat date', 'placeholder'=>'Apmaksas datums', 'id'=>'dp2', 'readonly'] ) !!}
+                                        <span class="input-group-text bg-light text-muted" role="button" onclick="$('#dp2').datepicker('show')"><i class="fa-regular fa-calendar"></i></span>
                                     </div>
                                 </div>
 
@@ -507,7 +511,7 @@
                     </div>
 
                     <div class="mt-2">
-                        <button type="button" class="btn btn-outline-primary btn-sm px-3 rounded-pill" id="addLine">
+                        <button type="button" class="btn btn-outline-primary btn-sm px-3" id="addLine">
                             <i class="fa-solid fa-plus me-1"></i> Pievienot rindu
                         </button>
                     </div>
@@ -520,7 +524,7 @@
                             <i class="fa-solid fa-money-bill-transfer text-primary-600"></i>
                             <span>Saņemtie avansa maksājumi</span>
                         </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill" id="addRepaymentLine">
+                        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" id="addRepaymentLine">
                             <i class="fa-solid fa-plus me-1"></i> Pievienot avansu
                         </button>
                     </div>
@@ -605,17 +609,17 @@
 
                     <div class="d-flex align-items-center gap-2">
                         <button type="button"
-                                class="btn btn-outline-secondary px-3 py-2 rounded-3"
+                                class="btn btn-outline-secondary px-3 py-2"
                                 wire:click="closeInvoiceForm">
                             <i class="fa-solid fa-xmark me-1"></i> {{ __('Iziet nesaglabājot') }}
                         </button>
                         <button type="button"
-                                class="btn btn-primary px-3 py-2 rounded-3 fw-semibold shadow-xs"
+                                class="btn btn-primary px-3 py-2 fw-semibold"
                                 onclick="saveInvoiceForm(false)">
                             <i class="fa-solid fa-floppy-disk me-1"></i> {{ __('Saglabāt') }}
                         </button>
                         <button type="button"
-                                class="btn btn-success px-4 py-2 rounded-3 fw-semibold shadow-xs"
+                                class="btn btn-success px-4 py-2 fw-semibold"
                                 onclick="saveInvoiceForm(true)">
                             <i class="fa-solid fa-check me-1"></i> {{ __('Saglabāt un atgriezties') }}
                         </button>
@@ -641,6 +645,7 @@
 
             function initDatepicker(selector) {
                 $(selector).datepicker({
+                    language: 'lv',
                     format: 'dd.mm.yyyy',
                     weekStart: 1,
                     todayBtn: "linked",

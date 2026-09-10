@@ -32,6 +32,10 @@ class PersonalIncomeList extends Component
         ) {
             return redirect('/');
         }
+
+        if ( !AuthUser::instance()->isAdmin() ) {
+            return redirect('/');
+        }
     }
 
     public function render()

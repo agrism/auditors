@@ -51,9 +51,10 @@ class CompanyList extends Component
         return $user->companies;
     }
 
-    public function mount(AuthUser $authUser){
-        if(!$authUser->isLoggedIn()){
-            return redirect('/');
+    public function mount()
+    {
+        if (!Auth::check()) {
+            $this->redirect(route('login'));
         }
     }
 }

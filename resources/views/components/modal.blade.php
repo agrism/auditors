@@ -34,11 +34,26 @@
 
 <script>
     window.addEventListener('closeModal_{{$id}}', event => {
-        console.log('closing modal #'+'{{$id}}')
-        $('#{{$id}}').modal('hide');
-    })
+        const modalEl = document.getElementById('{{$id}}');
+        if (modalEl) {
+            if (window.bootstrap && window.bootstrap.Modal) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.hide();
+            } else if (window.$ && typeof $(modalEl).modal === 'function') {
+                $(modalEl).modal('hide');
+            }
+        }
+    });
 
     window.addEventListener('openModal_{{$id}}', event => {
-        $('#{{$id}}').modal('show');
-    })
+        const modalEl = document.getElementById('{{$id}}');
+        if (modalEl) {
+            if (window.bootstrap && window.bootstrap.Modal) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            } else if (window.$ && typeof $(modalEl).modal === 'function') {
+                $(modalEl).modal('show');
+            }
+        }
+    });
 </script>

@@ -4,7 +4,7 @@
     </div>
 
     @if(!$this->isEditMode())
-        <div class="col-lg-12">
+        <div>
             <div class="card card-modern shadow-sm border-0">
                 <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-2">
@@ -66,72 +66,87 @@
 
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-modern align-middle mb-0">
+                        <table class="table table-modern align-middle mb-0 w-100">
                             <thead>
                             <tr>
-                                <th style="width: 130px;">
+                                <th style="width: 140px; min-width: 110px;">
                                     <x-column-title column="no" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Numurs"></x-column-title>
                                 </th>
-                                <th style="width: 120px;">
+                                <th class="d-none d-md-table-cell text-nowrap" style="width: 120px;">
                                     <x-column-title column="date" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Datums"></x-column-title>
                                 </th>
-                                <th>
+                                <th style="min-width: 140px;">
                                     <x-column-title column="name" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection"
                                                     title="Persona / Saņēmējs"></x-column-title>
                                 </th>
-                                <th style="width: 100px;" class="text-center">{{ __('Ieraksti') }}</th>
-                                <th style="width: 140px;" class="text-end">{{ __('Kopsumma') }}</th>
-                                <th class="text-end" style="width: 160px;">{{ __('Darbības') }}</th>
+                                <th class="d-none d-lg-table-cell text-center text-nowrap" style="width: 90px;">{{ __('Ieraksti') }}</th>
+                                <th style="width: 120px; min-width: 100px;" class="text-end text-nowrap">{{ __('Kopsumma') }}</th>
+                                <th class="text-end text-nowrap pe-3" style="width: 100px; min-width: 90px;">{{ __('Darbības') }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             @forelse($cashExpenses as $cashExpense)
-                                <tr class="line text-truncate {{ (preg_match('/copy/', $cashExpense->id)) ? 'table-warning' : '' }}"
+                                <tr class="line {{ (preg_match('/copy/', $cashExpense->id)) ? 'table-warning' : '' }}"
                                     wire:click="openEdit({{$cashExpense->id}})"
                                     role="button"
                                     style="cursor: pointer;">
-                                    <td class="text-truncate">
+                                    <td>
                                         <span class="font-monospace fw-bold text-slate-800">{{ $cashExpense->no }}</span>
+                                        <div class="d-md-none text-muted small mt-0.5">
+                                            <span class="font-monospace">{{ $cashExpense->date }}</span>
+                                        </div>
                                     </td>
-                                    <td class="text-truncate text-muted">
+                                    <td class="d-none d-md-table-cell text-muted text-nowrap small">
                                         {{ $cashExpense->date }}
                                     </td>
-                                    <td class="text-truncate">
-                                        <div class="fw-medium text-slate-800">{{ $cashExpense->name ?: '-' }}</div>
+                                    <td>
+                                        <div class="fw-medium text-slate-800 text-truncate" style="max-width: 260px;" title="{{ $cashExpense->name }}">
+                                            {{ $cashExpense->name ?: '-' }}
+                                        </div>
                                     </td>
-                                    <td class="text-center text-truncate">
-                                        <span class="badge bg-slate-100 text-slate-600 rounded-pill px-2.5 py-1">
+                                    <td class="d-none d-lg-table-cell text-center">
+                                        <span class="badge bg-slate-100 text-slate-700 rounded-pill px-2.5 py-1">
                                             {{ $cashExpense->lines_count ?? 0 }}
                                         </span>
                                     </td>
-                                    <td class="text-end text-truncate">
+                                    <td class="text-end text-nowrap">
                                         <span class="font-monospace fw-bold text-slate-900">
                                             {{ number_format($cashExpense->total_amount ?? 0, 2) }} €
                                         </span>
                                     </td>
-                                    <td class="text-end" onclick="event.stopPropagation();">
-                                        <div class="d-inline-flex align-items-center gap-1">
-                                            <a href="{{ route('client.cash-expenses.show', [$cashExpense->id, 'locale' => 'lv']) }}"
-                                               target="_blank"
-                                               class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-2 py-0.5 rounded-pill bg-white shadow-xs fw-medium text-decoration-none"
-                                               title="PDF LV">
-                                                <i class="fa-solid fa-file-pdf text-danger"></i> LV
-                                            </a>
-                                            <a href="{{ route('client.cash-expenses.show', [$cashExpense->id, 'locale' => 'en']) }}"
-                                               target="_blank"
-                                               class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 px-2 py-0.5 rounded-pill bg-white shadow-xs fw-medium text-decoration-none"
-                                               title="PDF EN">
-                                                <i class="fa-solid fa-file-pdf text-danger"></i> EN
-                                            </a>
-                                            <button class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                                    wire:click="openEdit({{$cashExpense->id}})"
-                                                    style="width: 28px; height: 28px;"
-                                                    title="Labot norēķinu">
-                                                <i class="fa-solid fa-pen-to-square"></i>
+                                    <td class="text-end text-nowrap pe-3">
+                                        <div class="dropdown eds-action-btn-group" onclick="event.stopPropagation();">
+                                            <button class="btn eds-action-btn dropdown-toggle"
+                                                    type="button"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                <span class="d-inline-flex align-items-center gap-1">
+                                                    <span>{{ __('Darbības') }}</span>
+                                                </span>
                                             </button>
+                                            <ul class="dropdown-menu dropdown-menu-end eds-action-menu shadow">
+                                                <li>
+                                                    <a class="dropdown-item" href="#" wire:click.prevent="openEdit({{$cashExpense->id}})">
+                                                        <i class="fa-solid fa-pen-to-square text-primary"></i>
+                                                        <span>{{ __('Labot') }}</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('client.cash-expenses.show', [$cashExpense->id, 'locale' => 'lv']) }}" target="_blank">
+                                                        <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                        <span>PDF (LV)</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('client.cash-expenses.show', [$cashExpense->id, 'locale' => 'en']) }}" target="_blank">
+                                                        <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                        <span>PDF (EN)</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>

@@ -3,7 +3,7 @@
         <x-loading loading="true"></x-loading>
     </div>
 
-    <div class="col-lg-12">
+    <div>
         <div class="card card-modern shadow-sm border-0">
             <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div class="d-flex align-items-center gap-2">
@@ -75,49 +75,59 @@
 
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-modern align-middle mb-0">
+                        <table class="table table-modern align-middle mb-0 w-100">
                             <thead>
                             <tr>
-                                <th style="min-width: 250px;">
+                                <th style="min-width: 180px;">
                                     <x-column-title column="name" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Nosaukums"></x-column-title>
                                 </th>
-                                <th style="width: 200px;">
+                                <th class="d-none d-md-table-cell text-nowrap" style="width: 180px; min-width: 140px;">
                                     <x-column-title column="registration_number" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection"
                                                     title="Reģistrācijas Nr."></x-column-title>
                                 </th>
-                                <th>
+                                <th class="d-none d-xl-table-cell" style="max-width: 320px;">
                                     <x-column-title column="address" :sortColumn="$sortColumn"
                                                     :sortDirection="$sortDirection" title="Adrese"></x-column-title>
                                 </th>
-                                <th class="text-end" style="width: 70px;">{{ __('Darbības') }}</th>
+                                <th class="text-end text-nowrap pe-3" style="width: 70px; min-width: 70px;">{{ __('Darbības') }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             @forelse($partners as $partner)
-                                <tr class="line text-truncate {{ (preg_match('/copy/',$partner->id)) ? 'table-warning' : '' }}"
+                                <tr class="line {{ (preg_match('/copy/',$partner->id)) ? 'table-warning' : '' }}"
                                     wire:click="openEdit({{$partner->id}})"
                                     data-bs-toggle="modal"
                                     data-bs-target="#handle_partner"
                                     role="button"
                                     style="cursor: pointer;">
-                                    <td class="text-truncate">
-                                        <div class="fw-semibold text-slate-800">{{ $partner->name }}</div>
+                                    <td>
+                                        <div class="fw-semibold text-slate-800 text-truncate" style="max-width: 340px;" title="{{ $partner->name }}">{{ $partner->name }}</div>
+                                        <div class="d-md-none text-muted small font-monospace mt-0.5">
+                                            @if(!empty($partner->registration_number))
+                                                <span>{{ $partner->registration_number }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="d-xl-none text-muted small text-truncate" style="max-width: 320px;" title="{{ $partner->address }}">
+                                            @if(!empty($partner->address))
+                                                <span>{{ $partner->address }}</span>
+                                            @endif
+                                        </div>
                                     </td>
-                                    <td class="text-truncate">
+                                    <td class="d-none d-md-table-cell text-truncate">
                                         @if(!empty($partner->registration_number))
                                             <span class="font-monospace text-slate-700 fw-medium">{{ $partner->registration_number }}</span>
                                         @else
                                             <span class="text-muted small">-</span>
                                         @endif
                                     </td>
-                                    <td class="text-truncate text-muted">
+                                    <td class="d-none d-xl-table-cell text-truncate text-muted" style="max-width: 320px;" title="{{ $partner->address }}">
                                         {{ $partner->address ?: '-' }}
                                     </td>
-                                    <td class="text-end" onclick="event.stopPropagation();">
+                                    <td class="text-end pe-3 text-nowrap">
                                         <button class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                                wire:click="openEdit({{$partner->id}})"
+                                                wire:click.stop="openEdit({{$partner->id}})"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#handle_partner"
                                                 style="width: 28px; height: 28px;"

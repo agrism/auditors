@@ -10,6 +10,11 @@ class Structuralunit extends Model
 	public $timestamps = true;
 	protected $fillable = ['title', 'company_id'];
 
+	public function getTitleAttribute($value)
+	{
+		return html_entity_decode((string)$value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	}
+
 	public function invoices()
 	{
 		return $this->belongsTo(Invoice::class);

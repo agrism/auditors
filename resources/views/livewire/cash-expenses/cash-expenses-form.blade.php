@@ -3,7 +3,7 @@
         <x-loading loading="true"></x-loading>
     </div>
 
-    <div class="col-lg-12">
+    <div>
         <div class="card card-modern shadow-sm border-0">
             <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div class="d-flex align-items-center gap-2">
@@ -107,20 +107,20 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-modern align-middle mb-0">
+                    <table class="table table-modern align-middle mb-0 w-100">
                         <thead>
                         <tr>
-                            <th style="width: 50px;">Nr.</th>
-                            <th style="width: 100px;">Datums</th>
-                            <th style="width: 110px;">Dok. Nr.</th>
-                            <th>Partneris</th>
-                            <th>Apraksts</th>
-                            <th style="width: 90px;">Konts</th>
-                            <th style="width: 90px;">Budžets</th>
-                            <th style="width: 120px;" class="text-end">Bez PVN</th>
-                            <th style="width: 100px;" class="text-end">PVN</th>
-                            <th style="width: 130px;" class="text-end">Kopā ar PVN</th>
-                            <th style="width: 90px;" class="text-end">{{ __('Darbības') }}</th>
+                            <th class="d-none d-sm-table-cell text-center" style="width: 45px;">Nr.</th>
+                            <th class="d-none d-md-table-cell text-nowrap" style="width: 95px;">Datums</th>
+                            <th class="d-none d-lg-table-cell text-nowrap" style="width: 100px;">Dok. Nr.</th>
+                            <th style="min-width: 140px;">Partneris</th>
+                            <th class="d-none d-xl-table-cell" style="max-width: 200px;">Apraksts</th>
+                            <th class="d-none d-xl-table-cell text-center" style="width: 80px;">Konts</th>
+                            <th class="d-none d-xxl-table-cell text-center" style="width: 80px;">Budžets</th>
+                            <th class="d-none d-lg-table-cell text-end text-nowrap" style="width: 100px;">Bez PVN</th>
+                            <th class="d-none d-lg-table-cell text-end text-nowrap" style="width: 85px;">PVN</th>
+                            <th class="text-end text-nowrap" style="width: 115px; min-width: 95px;">Kopā</th>
+                            <th class="text-end text-nowrap pe-3" style="width: 75px; min-width: 75px;">{{ __('Darbības') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -135,45 +135,56 @@
                             $totalVat += floatval(preg_replace('/[^0-9.]/', '', $line->amount_vat));
                             $totalWithoutVat += floatval(preg_replace('/[^0-9.]/', '', $line->amount_without_vat));
                             ?>
-                            <tr class="line text-truncate">
-                                <td class="text-muted small">{{ $line->no }}</td>
-                                <td class="text-muted small">{{ $line->date }}</td>
-                                <td>
+                            <tr class="line">
+                                <td class="d-none d-sm-table-cell text-center text-muted small">{{ $line->no }}</td>
+                                <td class="d-none d-md-table-cell text-muted small text-nowrap">{{ $line->date }}</td>
+                                <td class="d-none d-lg-table-cell text-nowrap">
                                     <span class="font-monospace small fw-medium text-slate-700">{{ $line->document_no ?: '-' }}</span>
                                 </td>
-                                <td class="text-truncate">
-                                    <div class="fw-semibold text-slate-800">{{ $line->partner_name ?: '-' }}</div>
-                                    @if(!empty($line->partner_vat_number))
-                                        <div class="small text-muted font-monospace" style="font-size: 0.75rem;">PVN: {{ $line->partner_vat_number }}</div>
+                                <td>
+                                    <div class="fw-semibold text-slate-800 text-truncate" style="max-width: 260px;" title="{{ $line->partner_name }}">{{ $line->partner_name ?: '-' }}</div>
+                                    <div class="d-flex align-items-center gap-2 flex-wrap text-muted small mt-0.5" style="font-size: 0.75rem;">
+                                        <span class="d-md-none font-monospace">{{ $line->date }}</span>
+                                        @if(!empty($line->document_no))
+                                            <span class="d-lg-none font-monospace">Nr: {{ $line->document_no }}</span>
+                                        @endif
+                                        @if(!empty($line->partner_vat_number))
+                                            <span class="font-monospace">PVN: {{ $line->partner_vat_number }}</span>
+                                        @endif
+                                    </div>
+                                    @if(!empty($line->description))
+                                        <div class="d-xl-none text-muted small text-truncate" style="max-width: 240px;" title="{{ $line->description }}">
+                                            {{ $line->description }}
+                                        </div>
                                     @endif
                                 </td>
-                                <td class="text-truncate text-muted small" style="max-width: 200px;">
+                                <td class="d-none d-xl-table-cell text-truncate text-muted small" style="max-width: 200px;" title="{{ $line->description }}">
                                     {{ $line->description ?: '-' }}
                                 </td>
-                                <td>
+                                <td class="d-none d-xl-table-cell text-center">
                                     @if(!empty($line->account_code))
                                         <span class="badge bg-slate-100 text-slate-700 font-monospace">{{ $line->account_code }}</span>
                                     @else
                                         <span class="text-muted small">-</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="d-none d-xxl-table-cell text-center">
                                     @if(!empty($line->budget_code))
                                         <span class="badge bg-slate-100 text-slate-700 font-monospace">{{ $line->budget_code }}</span>
                                     @else
                                         <span class="text-muted small">-</span>
                                     @endif
                                 </td>
-                                <td class="text-end text-truncate font-monospace text-slate-700">
+                                <td class="d-none d-lg-table-cell text-end text-nowrap font-monospace text-slate-700">
                                     {{ $line->amount_without_vat }} €
                                 </td>
-                                <td class="text-end text-truncate font-monospace text-slate-700">
+                                <td class="d-none d-lg-table-cell text-end text-nowrap font-monospace text-slate-700">
                                     {{ $line->amount_vat }} €
                                 </td>
-                                <td class="text-end text-truncate font-monospace fw-bold text-slate-900">
+                                <td class="text-end text-nowrap font-monospace fw-bold text-slate-900">
                                     {{ $line->amount_with_vat }} €
                                 </td>
-                                <td class="text-end" onclick="event.stopPropagation();">
+                                <td class="text-end text-nowrap pe-3">
                                     <div class="d-inline-flex align-items-center gap-1">
                                         <button class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
                                                 style="width: 26px; height: 26px;"
@@ -202,11 +213,17 @@
                         @if(count($this->get()->lines ?? []) > 0)
                             <tfoot>
                             <tr class="bg-slate-50 border-top fw-semibold">
-                                <td colspan="7" class="text-end text-slate-700 py-3">{{ __('KOPĀ:') }}</td>
-                                <td class="text-end font-monospace text-slate-800 py-3">{{ number_format($totalWithoutVat, 2) }} €</td>
-                                <td class="text-end font-monospace text-slate-800 py-3">{{ number_format($totalVat, 2) }} €</td>
-                                <td class="text-end font-monospace fw-bold text-primary-700 fs-6 py-3">{{ number_format($total, 2) }} €</td>
-                                <td></td>
+                                <td class="d-none d-sm-table-cell"></td>
+                                <td class="d-none d-md-table-cell"></td>
+                                <td class="d-none d-lg-table-cell"></td>
+                                <td class="text-end text-slate-700 py-3">{{ __('KOPĀ:') }}</td>
+                                <td class="d-none d-xl-table-cell"></td>
+                                <td class="d-none d-xl-table-cell"></td>
+                                <td class="d-none d-xxl-table-cell"></td>
+                                <td class="d-none d-lg-table-cell text-end font-monospace text-slate-800 py-3">{{ number_format($totalWithoutVat, 2) }} €</td>
+                                <td class="d-none d-lg-table-cell text-end font-monospace text-slate-800 py-3">{{ number_format($totalVat, 2) }} €</td>
+                                <td class="text-end font-monospace fw-bold text-primary-700 py-3 text-nowrap">{{ number_format($total, 2) }} €</td>
+                                <td class="pe-3"></td>
                             </tr>
                             </tfoot>
                         @endif

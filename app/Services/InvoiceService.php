@@ -114,6 +114,9 @@ class InvoiceService
 
 		if ($invoiceId) {
 			$invoice = Invoice::where('company_id', $data['company_id'])->find($invoiceId);
+			if ($invoice && $invoice->is_locked) {
+				return $invoice;
+			}
 		} else {
 			$invoice = new Invoice;
 			$invoice->company_id = $company->id;

@@ -12,6 +12,7 @@
 <!-- bootstrap-datepicker JavaScript -->
 {{--<script src="{{ URL::asset('admin-assets/datepicker/js/bootstrap-datepicker.min.js') }}"></script>--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.lv.min.js"></script>
 
 <!-- Custom Theme JavaScript -->
 {{--<script src="{{ URL::asset('admin-assets/sb-admin-2/dist/js/sb-admin-2.js') }}"></script>--}}

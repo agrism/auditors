@@ -32,7 +32,7 @@ class AuthUser
 
     public static function instance(): AuthUser{
         if(!static::$instance){
-            !static::$instance = new self();
+            static::$instance = new self();
         }
 
         return static::$instance;
@@ -70,6 +70,13 @@ class AuthUser
         }
     }
 
+    public function clearCompany(): void
+    {
+        $this->selectedCompany = null;
+        session()->forget('companyId');
+        session()->save();
+    }
+
     public function companies(): ?Collection
     {
         return $this->user->companies ?? null;
@@ -88,6 +95,11 @@ class AuthUser
     public function selectedCompanyId(): ? int
     {
        return $this->selectedCompany()->id ?? null;
+    }
+
+    public function isAdmin(): bool
+    {
+        return boolval($this->user && $this->user->isAdmin());
     }
 
 }
