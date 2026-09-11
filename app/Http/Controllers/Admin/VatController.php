@@ -350,7 +350,7 @@ SQL;
 
         // dump($this->xml);
 
-        $this->xml->save('test.xml');
+        $this->xml->save(public_path('test.xml'));
 
         return $this->index($request);
 

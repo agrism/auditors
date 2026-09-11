@@ -18,10 +18,17 @@ class ExportController extends Controller
 
 	public function export(Request $request)
 	{
-
 		$data = $request->all();
+		$companies = Company::orderBy('title', 'asc')->get();
+
+		$company_id = !empty($data['company_id']) ? $data['company_id'] : null;
+
+		if (!$company_id) {
+			return view('admin.export.index', compact('companies', 'data'));
+		}
 
 		$xml = new \DOMDocument('1.0', 'utf-8');
+		$xml->formatOutput = true;
 
 
 		$dataroot = $xml->createElement('dataroot');
@@ -86,12 +93,8 @@ class ExportController extends Controller
 			$toDate = \Carbon\Carbon::now()->subMonth()->endOfMonth();
 		}
 
-		$company_id = !empty($data['company_id']) ? $data['company_id'] : null;
-
-		$invoices = [];
-		if ($company_id) {
-			$invoices = \DB::select(
-				"
+		$invoices = \DB::select(
+			"
 	SELECT 
 		i.id,
 		i.number,
@@ -142,13 +145,12 @@ class ExportController extends Controller
 		structuralunits.title
 	ORDER BY i.date ASC, i.id ASC
 			",
-				[
-					$company_id,
-					$fromDate->format('Y-m-d'),
-					$toDate->format('Y-m-d')
-				]
-			);
-		}
+			[
+				$company_id,
+				$fromDate->format('Y-m-d'),
+				$toDate->format('Y-m-d')
+			]
+		);
 
 		$lastId = '';
 		foreach ($invoices as $invoice) {
@@ -254,31 +256,27 @@ class ExportController extends Controller
 				$text = $xml->createTextNode($invoice['p_vatnumber']);
 				$DocPartnerVatNo->appendChild($text);
 
-				//--DocDisbursementNoticeID
-				$DocDisbursementNoticeID = $xml->createElement(
-					'DocDisbursementNoticeID'
+				//--DocCompanyRegistrationNo
+				$DocCompanyRegistrationNo = $xml->createElement(
+					'DocCompanyRegistrationNo'
 				);
-				$DocDisbursementNoticeID = $financialDoc->appendChild(
-					$DocDisbursementNoticeID
+				$DocCompanyRegistrationNo = $financialDoc->appendChild(
+					$DocCompanyRegistrationNo
 				);
-				$text = $xml->createTextNode('');
-				$DocDisbursementNoticeID->appendChild($text);
+				$text = $xml->createTextNode($invoice['c_regnumber']);
+				$DocCompanyRegistrationNo->appendChild($text);
 
-				//--DocDisbursementTerm
-				$DocDisbursementTerm = $xml->createElement(
-					'DocDisbursementTerm'
-				);
-				$DocDisbursementTerm = $financialDoc->appendChild(
-					$DocDisbursementTerm
-				);
-				$text = $xml->createTextNode(
-					\Carbon\Carbon::createFromFormat(
-						'Y-m-d', $invoice['payment_date']
-					)->format('Y-m-d')
-				);//++++++++++++++++++++++++++
+				//--DocCompanyCode
+				$DocCompanyCode = $xml->createElement('DocCompanyCode');
+				$DocCompanyCode = $financialDoc->appendChild($DocCompanyCode);
+				$text = $xml->createTextNode($invoice['c_name']);
+				$DocCompanyCode->appendChild($text);
 
-
-				$DocDisbursementTerm->appendChild($text);
+				//--DocPaymentDate
+				$DocPaymentDate = $xml->createElement('DocPaymentDate');
+				$DocPaymentDate = $financialDoc->appendChild($DocPaymentDate);
+				$text = $xml->createTextNode($invoice['payment_date']);
+				$DocPaymentDate->appendChild($text);
 
 				//--DocComments
 				$DocComments = $xml->createElement('DocComments');
@@ -286,12 +284,57 @@ class ExportController extends Controller
 				$text = $xml->createTextNode($invoice['details_self']);
 				$DocComments->appendChild($text);
 
+				//--FinancialDocLine
+				$FinancialDocLine = $xml->createElement('FinancialDocLine');
+				$FinancialDocLine = $financialDoc->appendChild(
+					$FinancialDocLine
+				);
 
-				$lastId = $invoice['id'];
+				//--LineAmount
+				$LineAmount = $xml->createElement('LineAmount');
+				$LineAmount = $FinancialDocLine->appendChild($LineAmount);
+				$text = $xml->createTextNode($invoice['amount_total']);
+				$LineAmount->appendChild($text);
+
+				//--LineDebetAccountCode
+				$LineDebetAccountCode = $xml->createElement(
+					'LineDebetAccountCode'
+				);
+				$LineDebetAccountCode = $FinancialDocLine->appendChild(
+					$LineDebetAccountCode
+				);
+				$text = $xml->createTextNode('2310');
+				$LineDebetAccountCode->appendChild($text);
+
+				//--LineCreditAccountCode
+				$LineCreditAccountCode = $xml->createElement(
+					'LineCreditAccountCode'
+				);
+				$LineCreditAccountCode = $FinancialDocLine->appendChild(
+					$LineCreditAccountCode
+				);
+				$text = $xml->createTextNode('6110');
+				$LineCreditAccountCode->appendChild($text);
+
+				//--LineCreditAccountCode
+				$LineVatRate = $xml->createElement('LineVatRate');
+				$LineVatRate = $FinancialDocLine->appendChild($LineVatRate);
+				$text = $xml->createTextNode('0');
+				$LineVatRate->appendChild($text);
+
+				//--DocStructuralUnitCode
+				$DocStructuralUnitCode = $xml->createElement(
+					'DocStructuralUnitCode'
+				);
+				$DocStructuralUnitCode = $financialDoc->appendChild(
+					$DocStructuralUnitCode
+				);
+				$text = $xml->createTextNode($invoice['structuralunit']);
+				$DocStructuralUnitCode->appendChild($text);
+
 			}
-			//--line starts
-//            foreach ($invoice['invoice_lines'] as $line)
-//            {
+
+			$lastId = $invoice['id'];
 
 			//--FinancialDocLine
 			$FinancialDocLine = $xml->createElement('FinancialDocLine');
@@ -348,10 +391,9 @@ class ExportController extends Controller
 			$LineVatRate = $FinancialDocLine->appendChild($LineVatRate);
 			$text = $xml->createTextNode($invoice['rate'] * 100);
 			$LineVatRate->appendChild($text);
-			//            }
 			// --line finish
 
-//            PVN line
+			// PVN line
 			$FinancialDocLine = $xml->createElement('FinancialDocLine');
 			$FinancialDocLine = $financialDoc->appendChild($FinancialDocLine);
 
@@ -407,10 +449,7 @@ class ExportController extends Controller
 
 		}
 
-		$xml->save("test.xml");
-
-		$companies = Company::orderBy('title', 'asc')->get();
-
+		$xml->save(public_path('test.xml'));
 
 		return view('admin.export.index', compact('companies', 'data'));
 	}
