@@ -100,23 +100,30 @@
                                     {{ $item->accumulatedDays }}
                                 </td>
                                 <td class="text-end">
-                                    <div class="d-inline-flex align-items-center gap-1">
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs open-modal"
-                                                style="width: 26px; height: 26px;"
-                                                data-date="{{ $item->date }}"
-                                                title="{{ __('Pievienot notikumu') }}">
-                                            <i class="fa-solid fa-plus" style="font-size: 0.75rem;"></i>
+                                    <div class="dropdown eds-action-btn-group">
+                                        <button class="btn eds-action-btn dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <span>{{ __('Darbības') }}</span>
                                         </button>
-                                        @if($item->id)
-                                            <button type="button"
-                                                    class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs removeDateRecord"
-                                                    style="width: 26px; height: 26px;"
-                                                    data-id="{{ $item->id }}"
-                                                    title="{{ __('Dzēst ierakstu') }}">
-                                                <i class="fa-solid fa-trash-can" style="font-size: 0.75rem;"></i>
-                                            </button>
-                                        @endif
+                                        <ul class="dropdown-menu dropdown-menu-end eds-action-menu shadow">
+                                            <li>
+                                                <a class="dropdown-item open-modal" href="#" data-date="{{ $item->date }}">
+                                                    <i class="fa-solid fa-plus text-primary"></i>
+                                                    <span>{{ __('Pievienot notikumu') }}</span>
+                                                </a>
+                                            </li>
+                                            @if($item->id)
+                                                <li><hr class="dropdown-divider my-1"></li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger removeDateRecord" href="#" data-id="{{ $item->id }}">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                        <span>{{ __('Dzēst ierakstu') }}</span>
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>

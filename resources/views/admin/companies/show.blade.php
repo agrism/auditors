@@ -32,7 +32,7 @@
                             <th style="width: 70px;">ID</th>
                             <th>{{ __('Nosaukums') }}</th>
                             <th>{{ __('Reģistrācijas Nr.') }}</th>
-                            <th class="text-end" style="width: 170px;">{{ __('Darbības') }}</th>
+                            <th class="text-end" style="width: 140px;">{{ __('Darbības') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -45,26 +45,42 @@
                                 <span class="font-monospace text-slate-700">{{ $company->registration_number ?: '-' }}</span>
                             </td>
                             <td class="text-end">
-                                <div class="d-inline-flex align-items-center gap-1">
-                                    <a href="{{ route('admin.companies.users.show', $company->id) }}"
-                                       class="btn btn-sm btn-outline-info d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                       style="width: 28px; height: 28px;"
-                                       title="{{ __('Lietotāji') }}">
-                                        <i class="fa-solid fa-users" style="font-size: 0.75rem;"></i>
-                                    </a>
-                                    <a href="{{ route('admin.companies.edit', $company->id) }}"
-                                       class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                       style="width: 28px; height: 28px;"
-                                       title="{{ __('Labot') }}">
-                                        <i class="fa-solid fa-pen-to-square" style="font-size: 0.75rem;"></i>
-                                    </a>
-                                    <a href="{{ route('admin.companies.destroy', [$company->id, 'method' => 'delete']) }}"
-                                       class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                       style="width: 28px; height: 28px;"
-                                       onclick="return confirm('Vai tiešām vēlaties dzēst uzņēmumu?');"
-                                       title="{{ __('Dzēst') }}">
-                                        <i class="fa-solid fa-trash-can" style="font-size: 0.75rem;"></i>
-                                    </a>
+                                <div class="dropdown eds-action-btn-group">
+                                    <button class="btn eds-action-btn dropdown-toggle"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        <span>{{ __('Darbības') }}</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end eds-action-menu shadow">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('admin.companies.edit', $company->id) }}">
+                                                <i class="fa-solid fa-pen-to-square text-primary"></i>
+                                                <span>{{ __('Labot') }}</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('admin.companies.users.show', $company->id) }}">
+                                                <i class="fa-solid fa-users text-success"></i>
+                                                <span>{{ __('Lietotāji') }}</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('admin.company.structuralunits.index', $company->id) }}">
+                                                <i class="fa-solid fa-sitemap text-secondary"></i>
+                                                <span>{{ __('Struktūrvienības') }}</span>
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider my-1"></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger"
+                                               href="{{ route('admin.companies.destroy', [$company->id, 'method' => 'delete']) }}"
+                                               onclick="return confirm('Vai tiešām vēlaties dzēst uzņēmumu?');">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                                <span>{{ __('Dzēst') }}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </td>
                         </tr>

@@ -31,7 +31,7 @@
                                 <th>{{ __('Partner') }}</th>
                                 <th>{{ __('Currency') }}</th>
                                 <th class="text-end">{{ __('Amount') }}</th>
-                                <th class="text-center" style="width: 100px;">{{ __('Action') }}</th>
+                                <th class="text-end" style="width: 140px;">{{ __('Darbības') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,14 +65,40 @@
                                     <td class="text-end fw-bold font-monospace text-slate-900">
                                         {{ number_format((float)$invoice->amount_total, 2) }}
                                     </td>
-                                    <td class="text-center">
-                                        <div class="d-inline-flex align-items-center gap-1">
-                                            <a href="{{ url(route('client.invoices.xml', $invoice->id)) }}" class="btn btn-sm btn-outline-primary py-1 px-2" title="E-rēķins XML (Peppol)">
-                                                <i class="fa-solid fa-file-code"></i>
-                                            </a>
-                                            <a href="{{ url(route('admin.invoices.show', $invoice->id)) }}" class="btn btn-sm btn-outline-secondary py-1 px-2" title="View details">
-                                                <i class="fa-regular fa-eye"></i>
-                                            </a>
+                                    <td class="text-end">
+                                        <div class="dropdown eds-action-btn-group">
+                                            <button class="btn eds-action-btn dropdown-toggle"
+                                                    type="button"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                <span>{{ __('Darbības') }}</span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end eds-action-menu shadow">
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ url(route('admin.invoices.show', $invoice->id)) }}">
+                                                        <i class="fa-regular fa-eye text-info"></i>
+                                                        <span>{{ __('Skatīt detaļas') }}</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('client.invoices.show', [$invoice->id, 'locale' => 'lv']) }}" target="_blank">
+                                                        <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                        <span>PDF (LV)</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('client.invoices.show', [$invoice->id, 'locale' => 'en']) }}" target="_blank">
+                                                        <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                        <span>PDF (EN)</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ url(route('client.invoices.xml', $invoice->id)) }}">
+                                                        <i class="fa-solid fa-file-code text-primary"></i>
+                                                        <span>{{ __('E-rēķins XML') }}</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>

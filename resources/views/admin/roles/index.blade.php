@@ -27,7 +27,7 @@
                             <th style="width: 70px;">ID</th>
                             <th>{{ __('Lomas kods') }}</th>
                             <th>{{ __('Nosaukums / Apraksts') }}</th>
-                            <th class="text-end" style="width: 170px;">{{ __('Darbības') }}</th>
+                            <th class="text-end" style="width: 140px;">{{ __('Darbības') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -41,26 +41,36 @@
                                     <div class="fw-semibold text-slate-800">{{ $role->label ?: '-' }}</div>
                                 </td>
                                 <td class="text-end">
-                                    <div class="d-inline-flex align-items-center gap-1">
-                                        <a href="{{ route('admin.roles.permissions.show', $role->id) }}"
-                                           class="btn btn-sm btn-outline-info d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                           style="width: 28px; height: 28px;"
-                                           title="{{ __('Tiesību piesaiste') }}">
-                                            <i class="fa-solid fa-key" style="font-size: 0.75rem;"></i>
-                                        </a>
-                                        <a href="{{ route('admin.roles.edit', $role->id) }}"
-                                           class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                           style="width: 28px; height: 28px;"
-                                           title="{{ __('Labot lomu') }}">
-                                            <i class="fa-solid fa-pen-to-square" style="font-size: 0.75rem;"></i>
-                                        </a>
-                                        <a href="{{ route('admin.roles.destroy', [$role->id, 'method' => 'delete']) }}"
-                                           class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center p-1 rounded-circle shadow-xs"
-                                           style="width: 28px; height: 28px;"
-                                           onclick="return confirm('Vai tiešām vēlaties dzēst šo lomu?');"
-                                           title="{{ __('Dzēst lomu') }}">
-                                            <i class="fa-solid fa-trash-can" style="font-size: 0.75rem;"></i>
-                                        </a>
+                                    <div class="dropdown eds-action-btn-group">
+                                        <button class="btn eds-action-btn dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <span>{{ __('Darbības') }}</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end eds-action-menu shadow">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('admin.roles.edit', $role->id) }}">
+                                                    <i class="fa-solid fa-pen-to-square text-primary"></i>
+                                                    <span>{{ __('Labot lomu') }}</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('admin.roles.permissions.show', $role->id) }}">
+                                                    <i class="fa-solid fa-key text-info"></i>
+                                                    <span>{{ __('Tiesību piesaiste') }}</span>
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider my-1"></li>
+                                            <li>
+                                                <a class="dropdown-item text-danger"
+                                                   href="{{ route('admin.roles.destroy', [$role->id, 'method' => 'delete']) }}"
+                                                   onclick="return confirm('Vai tiešām vēlaties dzēst šo lomu?');">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                    <span>{{ __('Dzēst lomu') }}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
