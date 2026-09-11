@@ -80,6 +80,8 @@
             }
         });
     </script>
+    @include('includes.bug-report')
     @yield('js')
 </body>
+
 </html>

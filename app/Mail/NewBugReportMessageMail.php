@@ -2,25 +2,32 @@
 
 namespace App\Mail;
 
+use App\BugReport;
+use App\BugReportItem;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class BackupCompletedMail extends Mailable
+class NewBugReportMessageMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public array $backupDetails;
+    public BugReport $bugReport;
+    public BugReportItem $item;
+    public bool $isNewThread;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(array $backupDetails)
+    public function __construct(BugReport $bugReport, BugReportItem $item, bool $isNewThread = false)
     {
-        $this->backupDetails = $backupDetails;
+        $this->bugReport = $bugReport;
+        $this->item = $item;
+        $this->isNewThread = $isNewThread;
     }
 
     /**
@@ -28,13 +35,12 @@ class BackupCompletedMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        $status = $this->backupDetails['success'] ?? false ? '✓ Veiksmīgi' : '✗ Kļūda';
-        $appName = $this->backupDetails['subject_name'] ?? 'auditors.lv';
-        $date = date('Y-m-d H:i');
+        $author = $this->item->user ? $this->item->user->name : ($this->bugReport->user ? $this->bugReport->user->name : ($this->bugReport->email ?? 'Viesis'));
+        $prefix = $this->isNewThread ? 'Jauns pieteikums' : 'Jauna klienta ziņa';
 
         return new Envelope(
             from: new Address('noreplay@auditors.lv', 'Auditors.lv'),
-            subject: "[{$appName}] Datubāzes rezerves kopija ({$status}) - {$date}",
+            subject: "[Auditors.lv] {$prefix} #{$this->bugReport->id} no {$author}",
         );
     }
 
@@ -44,7 +50,7 @@ class BackupCompletedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.backup-completed',
+            view: 'emails.new-bug-report-message',
         );
     }
 

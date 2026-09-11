@@ -86,27 +86,10 @@ samp {
     font-variant-numeric: tabular-nums;
 }
 
-.text-white,
-.text-white *,
-.text-white h1, .text-white h2, .text-white h3, .text-white h4, .text-white h5, .text-white h6,
-.text-white .modal-title,
-.text-white .form-label,
-.text-white label,
-.text-white span,
-.text-white p,
-.text-white strong,
-.text-white i {
+.text-white {
     color: #ffffff !important;
 }
 
-.bg-primary h1, .bg-primary h2, .bg-primary h3, .bg-primary h4, .bg-primary h5, .bg-primary h6,
-.bg-primary .modal-title, .bg-primary label, .bg-primary span, .bg-primary i,
-.bg-dark h1, .bg-dark h2, .bg-dark h3, .bg-dark h4, .bg-dark h5, .bg-dark h6,
-.bg-dark .modal-title, .bg-dark label, .bg-dark span, .bg-dark i,
-.bg-danger h1, .bg-danger h2, .bg-danger h3, .bg-danger h4, .bg-danger h5, .bg-danger h6,
-.bg-danger .modal-title, .bg-danger label, .bg-danger span, .bg-danger i,
-.bg-success h1, .bg-success h2, .bg-success h3, .bg-success h4, .bg-success h5, .bg-success h6,
-.bg-success .modal-title, .bg-success label, .bg-success span, .bg-success i,
 .modal-header.bg-primary,
 .modal-header.bg-danger,
 .modal-header.bg-dark,
@@ -143,6 +126,144 @@ samp {
 .bg-primary.modal-header {
     background-color: #002855 !important;
 }
+
+/* Dedicated Bug Report & Thread Styles */
+.bug-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.725rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+}
+.bug-status-badge.status-new {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+}
+.bug-status-badge.status-in_progress {
+    background-color: #fffbeb !important;
+    color: #b45309 !important;
+    border: 1px solid #fde68a !important;
+}
+.bug-status-badge.status-answered {
+    background-color: #f0fdf4 !important;
+    color: #15803d !important;
+    border: 1px solid #bbf7d0 !important;
+}
+.bug-status-badge.status-closed {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.bug-thread-wrap {
+    border: 1px solid #e2e8f0;
+    border-radius: 2px;
+    background-color: #ffffff;
+    box-shadow: none;
+}
+.bug-thread-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.65rem 0.85rem;
+}
+.bug-thread-messages {
+    background-color: #f8fafc;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.bug-msg-card {
+    border-radius: 2px;
+    border: 1px solid #e2e8f0;
+    padding: 0.5rem 0.75rem;
+    background-color: #ffffff;
+    box-shadow: none;
+}
+.bug-msg-card.is-initial {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    border-left: 4px solid #002855 !important;
+    padding: 0.65rem 0.85rem;
+    box-shadow: 0 1px 3px rgba(0, 40, 85, 0.06);
+}
+.bug-msg-card.is-admin {
+    background-color: #f8faff !important;
+    border-color: #dbeafe !important;
+    border-left: 3px solid #002855 !important;
+}
+.bug-msg-card.is-client {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    border-left: 3px solid #94a3b8 !important;
+}
+.bug-msg-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+.bug-msg-body {
+    color: #0f172a !important;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    word-break: break-word;
+    white-space: pre-wrap;
+    margin: 0;
+}
+.bug-thumb-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+}
+.bug-thumb-img {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid #cbd5e1;
+    cursor: pointer;
+    background-color: #f1f5f9;
+    display: block;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.bug-thumb-img:hover {
+    transform: scale(1.03);
+    border-color: #002855;
+    box-shadow: 0 4px 8px -2px rgba(15, 23, 42, 0.15);
+}
+.bug-file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.725rem;
+    font-family: var(--bs-font-monospace);
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.bug-file-chip:hover {
+    background-color: #f1f5f9;
+    color: #002855;
+    border-color: #94a3b8;
+}
+.bug-reply-box {
+    border-top: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    padding: 0.65rem 0.85rem;
+    border-radius: 0 0 2px 2px;
+}
+
+
 
 /* Darker Modal Backdrop */
 .modal-backdrop {
@@ -2579,6 +2700,182 @@ select.eds-filter-control {
     font-size: 1.05rem;
     flex-shrink: 0;
 }
+
+/* Sticky Bug Report Floating Button */
+.eds-bug-report-wrapper {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1045;
+}
+
+.eds-bug-report-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 46px;
+    padding: 0 16px 0 14px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 9999px;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none;
+    user-select: none;
+}
+
+.eds-bug-report-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    box-shadow: 0 8px 22px rgba(220, 38, 38, 0.5), 0 4px 10px rgba(0, 0, 0, 0.15);
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.eds-bug-report-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.eds-bug-report-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    animation: edsBugPulse 3.5s infinite ease-in-out;
+}
+
+.eds-bug-report-label {
+    white-space: nowrap;
+    line-height: 1;
+}
+
+@keyframes edsBugPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(1.2) rotate(-8deg);
+    }
+    30% {
+        transform: scale(1.1) rotate(8deg);
+    }
+    45% {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 576px) {
+    .eds-bug-report-wrapper {
+        bottom: 16px;
+        right: 16px;
+    }
+    .eds-bug-report-btn {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        justify-content: center;
+    }
+    .eds-bug-report-label {
+        display: none;
+    }
+}
+
+/* Bug Report Modal */
+.eds-bug-modal .modal-content {
+    border-radius: 14px;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.eds-bug-modal .form-control:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* ==========================================================================
+   Dedicated Admin Panel Theme (Light Red Canvas & Ruby Topbar)
+   ========================================================================== */
+body.admin-panel-body,
+.eds-admin-app-wrapper,
+.eds-admin-main-layout,
+.eds-admin-main-layout > main {
+    background-color: #fdf2f2 !important;
+}
+
+.eds-admin-topbar {
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #450a0a 100%) !important;
+    border-bottom: 2px solid #ef4444 !important;
+    box-shadow: 0 2px 10px rgba(127, 29, 29, 0.3) !important;
+}
+
+.eds-admin-sidebar {
+    background-color: #ffffff !important;
+    border-right: 1px solid #fecaca !important;
+}
+
+.eds-admin-sidebar .eds-brand-header {
+    background-color: #fff5f5 !important;
+    border-bottom: 1px solid #fecaca !important;
+}
+
+.eds-admin-sidebar .eds-menu-item {
+    border-bottom: 1px solid #fee2e2 !important;
+}
+
+.eds-admin-sidebar .eds-menu-link:hover {
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+}
+
+.eds-admin-sidebar .eds-menu-link.active {
+    color: #991b1b !important;
+    background-color: #fee2e2 !important;
+    border-left-color: #dc2626 !important;
+    font-weight: 800 !important;
+}
+
+.eds-admin-sidebar .eds-submenu {
+    background-color: #fff1f2 !important;
+    border-top: 1px solid #fecaca !important;
+    border-bottom: 1px solid #fecaca !important;
+}
+
+.eds-admin-sidebar .eds-submenu-link:hover {
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+.eds-admin-sidebar .eds-submenu-link.active {
+    color: #991b1b !important;
+    background-color: #fecdd3 !important;
+    font-weight: 700 !important;
+}
+
+.eds-admin-sidebar .eds-sidebar-footer {
+    border-top: 1px solid #fecaca !important;
+    background-color: #fff5f5 !important;
+}
+
+.eds-admin-main-layout .card {
+    border-color: #fecaca !important;
+}
+
+.eds-admin-main-layout .table thead.table-light,
+.eds-admin-main-layout .table-light {
+    background-color: #fff1f2 !important;
+}
+
+.eds-admin-main-layout .table-hover tbody tr:hover {
+    background-color: #fef2f2 !important;
+}
+
+
 
 
 

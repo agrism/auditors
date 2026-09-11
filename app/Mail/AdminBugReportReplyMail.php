@@ -2,25 +2,30 @@
 
 namespace App\Mail;
 
+use App\BugReport;
+use App\BugReportItem;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class BackupCompletedMail extends Mailable
+class AdminBugReportReplyMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public array $backupDetails;
+    public BugReport $bugReport;
+    public BugReportItem $item;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(array $backupDetails)
+    public function __construct(BugReport $bugReport, BugReportItem $item)
     {
-        $this->backupDetails = $backupDetails;
+        $this->bugReport = $bugReport;
+        $this->item = $item;
     }
 
     /**
@@ -28,13 +33,9 @@ class BackupCompletedMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        $status = $this->backupDetails['success'] ?? false ? '✓ Veiksmīgi' : '✗ Kļūda';
-        $appName = $this->backupDetails['subject_name'] ?? 'auditors.lv';
-        $date = date('Y-m-d H:i');
-
         return new Envelope(
             from: new Address('noreplay@auditors.lv', 'Auditors.lv'),
-            subject: "[{$appName}] Datubāzes rezerves kopija ({$status}) - {$date}",
+            subject: "[Auditors.lv] Atbilde uz Jūsu pieteikumu #{$this->bugReport->id}",
         );
     }
 
@@ -44,7 +45,7 @@ class BackupCompletedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.backup-completed',
+            view: 'emails.admin-bug-report-reply',
         );
     }
 

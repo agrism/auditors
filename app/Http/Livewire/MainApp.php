@@ -17,8 +17,10 @@ class MainApp extends Component
         'changeActiveCompany' => 'setActiveCompanyId',
         'clearActiveCompany' => 'clearActiveCompany',
         'activateComponent' => 'activateComponent',
+        'unreadBugReportsUpdated' => '$refresh',
+        'refreshNavigationBadges' => '$refresh',
     ];
-    private $nav = [
+    public $nav = [
         'companies' => [
             'title' => 'Sākums',
             'active' => true,
@@ -91,6 +93,13 @@ class MainApp extends Component
             'title' => 'Lietotāja profils',
             'active' => false,
             'available' => false,
+            'shouldAuth' => true,
+            'shouldHaveSelectedCompany' => false,
+        ],
+        'feedback' => [
+            'title' => 'Manas saziņas',
+            'active' => false,
+            'available' => true,
             'shouldAuth' => true,
             'shouldHaveSelectedCompany' => false,
         ],
@@ -222,6 +231,10 @@ class MainApp extends Component
             Arr::set($this->nav,
                 $fullKey,
                 $setValue);
+        }
+
+        if ($name === 'feedback') {
+            $this->emit('resetBugReportsList');
         }
     }
 
@@ -380,5 +393,15 @@ class MainApp extends Component
     public function clearGlobalSearch()
     {
         $this->globalSearchQuery = '';
+    }
+
+    public function getUnreadBugReportsCountProperty(): int
+    {
+        $userId = AuthUser::instance()->userId() ?? \Illuminate\Support\Facades\Auth::id();
+        if (!$userId) {
+            return 0;
+        }
+
+        return \App\BugReport::unreadCountForUser($userId);
     }
 }

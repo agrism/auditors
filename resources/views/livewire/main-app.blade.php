@@ -5,6 +5,7 @@
     'cash-expenses' => 'AVANSU NORĒĶINI',
     'personal-income' => 'IIN / ALGAS',
     'profile' => 'LIETOTĀJA PROFILS',
+    'feedback' => 'MANAS SAZIŅAS',
     'other.company-data' => 'UZŅĒMUMA DATI',
     'other.other-payment-receivers' => 'CITI MAKSĀJUMU SAŅĒMĒJI',
     'other.vacations' => 'ATVAĻINĀJUMI',
@@ -21,6 +22,7 @@
         'cash-expenses' => 'AVANSU NORĒĶINI',
         'personal-income' => 'IIN / ALGAS',
         'profile' => 'LIETOTĀJA PROFILS',
+        'feedback' => 'MANAS SAZIŅAS',
         'other.company-data' => 'UZŅĒMUMA DATI',
         'other.other-payment-receivers' => 'CITI MAKSĀJUMU SAŅĒMĒJI',
         'other.vacations' => 'ATVAĻINĀJUMI',
@@ -127,7 +129,7 @@
                 <li class="eds-menu-item">
                     <a href="#"
                        wire:click.prevent="activateComponent('{{$sysName}}')"
-                       class="eds-menu-link @if(!empty($item['active'])) active @endif">
+                       class="eds-menu-link d-flex justify-content-between align-items-center @if(!empty($item['active'])) active @endif">
                         <span class="d-inline-flex align-items-center gap-2">
                             @if($sysName === 'companies')
                                 <i class="fa-solid fa-house opacity-75"></i>
@@ -139,9 +141,16 @@
                                 <i class="fa-solid fa-money-bill-transfer opacity-75"></i>
                             @elseif($sysName === 'personal-income')
                                 <i class="fa-solid fa-hand-holding-dollar opacity-75"></i>
+                            @elseif($sysName === 'feedback')
+                                <i class="fa-solid fa-headset opacity-75"></i>
                             @endif
                             <span>{{ $item['title'] }}</span>
                         </span>
+                        @if($sysName === 'feedback' && $this->unreadBugReportsCount > 0)
+                            <span class="badge bg-danger rounded-pill px-2 py-0.5 shadow-sm font-monospace" style="font-size: 0.725rem;" title="Neizlasītas atbildes">
+                                {{ $this->unreadBugReportsCount }}
+                            </span>
+                        @endif
                     </a>
                 </li>
             @endforeach
@@ -423,7 +432,12 @@
                         data-bs-target="#userSidebarOffcanvas" 
                         aria-controls="userSidebarOffcanvas" 
                         title="{{ $userName }}">
-                    <i class="fa-solid fa-user eds-topbar-icon"></i>
+                    <div class="position-relative d-inline-flex align-items-center">
+                        <i class="fa-solid fa-user eds-topbar-icon"></i>
+                        @if($this->unreadBugReportsCount > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="width: 8px; height: 8px; margin-top: -2px; margin-left: -2px;" title="Ir neizlasīti paziņojumi"></span>
+                        @endif
+                    </div>
                     <div class="eds-topbar-text-group eds-label-mid">
                         <span class="eds-topbar-sublabel">LIETOTĀJS</span>
                         <span class="eds-topbar-mainval">
@@ -455,7 +469,11 @@
         <main class="flex-grow-1 p-3 p-lg-4">
             <?php $companyId = \App\Services\AuthUser::instance()->selectedCompanyId(); ?>
 
-            @if(empty($companyId) || !$selectedCompany)
+            @if($this->activeComponent() === 'profile')
+                <livewire:user-profile :wire:key="'user-profile-'.\Illuminate\Support\Facades\Auth::id()"/>
+            @elseif($this->activeComponent() === 'feedback')
+                <livewire:bug-reports-list :wire:key="'bug-reports-'.\Illuminate\Support\Facades\Auth::id()"/>
+            @elseif(empty($companyId) || !$selectedCompany)
                 <livewire:company-list :wire:key="'comp-list-'.$this->activeCompanyId"/>
             @elseif($this->activeComponent() === 'companies')
                 <!-- Selected Company Executive Dashboard -->
@@ -972,8 +990,6 @@
                 <livewire:personal-income.personal-income-list :wire:key="'income-'.$companyId.'-'.$this->activeCompanyId"/>
             @elseif($this->activeComponent() === 'other.vacations')
                 <livewire:vacations.vacation-summary :wire:key="'vacations-'.$companyId.'-'.$this->activeCompanyId"/>
-            @elseif($this->activeComponent() === 'profile')
-                <livewire:user-profile :wire:key="'user-profile-'.\Illuminate\Support\Facades\Auth::id()"/>
             @endif
         </main>
     </div>
@@ -1069,6 +1085,27 @@
                         <div class="flex-grow-1 min-w-0">
                             <div class="fw-bold" style="font-size: 0.875rem;">Profila iestatījumi</div>
                             <div class="text-muted" style="font-size: 0.75rem;">Lietotāja vārds un e-pasts</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-muted small"></i>
+                    </a>
+
+                    <a href="#" 
+                       class="eds-user-nav-link d-flex align-items-center justify-content-between"
+                       data-bs-dismiss="offcanvas"
+                       wire:click.prevent="activateComponent('feedback')">
+                        <div class="d-flex align-items-center gap-3 min-w-0">
+                            <div class="eds-user-nav-icon bg-info-subtle text-info position-relative">
+                                <i class="fa-solid fa-comment-dots"></i>
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-bold d-flex align-items-center gap-2" style="font-size: 0.875rem;">
+                                    <span>Manas saziņas</span>
+                                    @if($this->unreadBugReportsCount > 0)
+                                        <span class="badge bg-danger rounded-pill px-2 py-0.5 font-monospace" style="font-size: 0.7rem;">{{ $this->unreadBugReportsCount }}</span>
+                                    @endif
+                                </div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Mani ziņojumi un atbildes</div>
+                            </div>
                         </div>
                         <i class="fa-solid fa-chevron-right text-muted small"></i>
                     </a>

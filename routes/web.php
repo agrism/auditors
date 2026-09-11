@@ -22,6 +22,10 @@ Route::get('test', function (InvoiceService $invoiceService) {
 Route::get('login', ['as' => 'login', 'uses' => 'App\\Http\\Controllers\\HomeController@login']);
 Route::post('sign-in', ['as' => 'sign-in', 'uses' => 'App\\Http\\Controllers\\HomeController@signIn']);
 Route::get('logout', ['as' => 'logout', 'uses' => 'App\\Http\\Controllers\\HomeController@logout']);
+Route::post('bug-reports', [\App\Http\Controllers\BugReportController::class, 'store'])->name('bug-reports.store')->middleware('auth');
+Route::post('bug-reports/{id}/reply', [\App\Http\Controllers\BugReportController::class, 'reply'])->name('bug-reports.reply')->middleware('auth');
+
+
 
 
 require(app_path() . '/../routes/Routes/clientRoutes.php');

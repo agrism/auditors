@@ -74,5 +74,7 @@
             });
         }
     </script>
+    @include('includes.bug-report')
 </body>
 </html>
+

@@ -1,4 +1,4 @@
-<aside class="eds-sidebar" id="edsSidebar">
+<aside class="eds-sidebar eds-admin-sidebar" id="edsSidebar">
     <!-- Logo & Brand Header: Auditors.lv Admin -->
     <div class="eds-brand-header">
         <a class="eds-brand-link text-decoration-none d-inline-flex flex-column align-items-center justify-content-center" href="{{ route('admin.home') }}">
@@ -9,20 +9,20 @@
                         <!-- Modern financial / ledger mark -->
                         <rect x="7" y="7" width="18" height="18" rx="3" stroke="#ffffff" stroke-width="1.6" stroke-opacity="0.9" fill="none"/>
                         <rect x="10" y="10.5" width="12" height="2.8" rx="1" fill="#ffffff" fill-opacity="0.95"/>
-                        <circle cx="11.5" cy="17.5" r="1.4" fill="#38bdf8"/>
+                        <circle cx="11.5" cy="17.5" r="1.4" fill="#fca5a5"/>
                         <circle cx="16" cy="17.5" r="1.4" fill="#ffffff" fill-opacity="0.9"/>
                         <circle cx="20.5" cy="17.5" r="1.4" fill="#ffffff" fill-opacity="0.9"/>
                         <path d="M10.5 21.5H21.5" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.6"/>
                         <defs>
                             <linearGradient id="auditors_admin_brand_grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#002855"/>
-                                <stop offset="1" stop-color="#0056b3"/>
+                                <stop stop-color="#991b1b"/>
+                                <stop offset="1" stop-color="#dc2626"/>
                             </linearGradient>
                         </defs>
                     </svg>
                 </div>
                 <div class="eds-logo-text">
-                    <span class="eds-logo-name">Auditors</span><span class="eds-logo-tld">.lv</span>
+                    <span class="eds-logo-name">Auditors</span><span class="eds-logo-tld text-danger">.lv</span>
                 </div>
             </div>
             <span class="eds-brand-sub text-danger fw-bold"><i class="fa-solid fa-shield-halved me-1"></i> Admin Panelis</span>
@@ -72,6 +72,23 @@
                     <i class="fa-solid fa-list-check opacity-75"></i>
                     <span>Žurnāls</span>
                 </span>
+            </a>
+        </li>
+
+        <!-- Saziņas un ziņojumi -->
+        @php
+            $newBugReportsCount = \App\BugReport::where('status', \App\Enums\BugReportStatus::NEW->value)->count();
+        @endphp
+        <li class="eds-menu-item">
+            <a href="{{ route('admin.bug-reports.index') }}"
+               class="eds-menu-link d-flex justify-content-between align-items-center {{ request()->routeIs('admin.bug-reports.*') ? 'active' : '' }}">
+                <span class="d-inline-flex align-items-center gap-2">
+                    <i class="fa-solid fa-headset opacity-75"></i>
+                    <span>Saziņas</span>
+                </span>
+                @if($newBugReportsCount > 0)
+                    <span class="badge bg-danger rounded-pill px-2 py-0.5" style="font-size: 0.7rem;">{{ $newBugReportsCount }}</span>
+                @endif
             </a>
         </li>
 

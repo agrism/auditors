@@ -3,14 +3,14 @@
 <head>
     @include('admin.layout.partials.head')
 </head>
-<body class="bg-light">
+<body class="admin-panel-body">
 
-<div class="eds-app-wrapper">
+<div class="eds-app-wrapper eds-admin-app-wrapper">
     @include('admin.layout.partials.navigation')
 
-    <div class="eds-main-layout">
+    <div class="eds-main-layout eds-admin-main-layout">
         <!-- Admin Top Navigation Header -->
-        <header class="eds-topbar">
+        <header class="eds-topbar eds-admin-topbar">
             @php
                 $adminTitle = 'Auditors.lv :: Administrācijas panelis';
                 if (request()->routeIs('admin.home') || request()->routeIs('admin.companies.*')) {
@@ -21,6 +21,8 @@
                     $adminTitle = 'Auditors.lv :: Rēķini';
                 } elseif (request()->routeIs('admin.logs.*')) {
                     $adminTitle = 'Auditors.lv :: Aktivitātes žurnāls';
+                } elseif (request()->routeIs('admin.bug-reports.*')) {
+                    $adminTitle = 'Auditors.lv :: Saziņas un ziņojumi';
                 } elseif (request()->routeIs('admin.export')) {
                     $adminTitle = 'Auditors.lv :: Datu eksports';
                 } elseif (request()->routeIs('admin.npi*')) {
@@ -115,4 +117,6 @@
 </script>
 @yield('js')
 </body>
+
+
 </html>

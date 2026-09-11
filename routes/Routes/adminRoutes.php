@@ -121,6 +121,13 @@ Route::group(
 	Route::get('npi', ['as' => 'npi', 'uses' => 'NpiController@create']);
 	Route::post('npi', ['as' => 'npi.handle', 'uses' => 'NpiController@handle']);
 
+	Route::group(['prefix' => 'bug-reports', 'as' => 'bug-reports.'], function () {
+		Route::get('/', ['as' => 'index', 'uses' => 'BugReportController@index']);
+		Route::get('/{id}', ['as' => 'show', 'uses' => 'BugReportController@show']);
+		Route::post('/{id}/reply', ['as' => 'reply', 'uses' => 'BugReportController@reply']);
+		Route::post('/{id}/status', ['as' => 'updateStatus', 'uses' => 'BugReportController@updateStatus']);
+	});
+
 	Route::group(['prefix'=> 'working-hours', 'as' => 'working-hours.'], function(){
         Route::get('/', ['as' => 'index', 'uses' => 'WorkingHoursController@index']);
         Route::post('/', ['as' => 'handle', 'uses' => 'WorkingHoursController@handle']);
