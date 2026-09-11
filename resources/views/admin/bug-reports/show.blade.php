@@ -13,7 +13,7 @@
                         $isImg = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp']);
                     }
                     if ($isImg) {
-                        $imgUrl = $att['url'] ?? \Illuminate\Support\Facades\Storage::disk('public')->url($att['path'] ?? '');
+                        $imgUrl = !empty($att['path']) ? asset('storage/' . ltrim($att['path'], '/')) : ($att['url'] ?? \Illuminate\Support\Facades\Storage::disk('public')->url($att['path'] ?? ''));
                         $allThreadImages[] = [
                             'url' => $imgUrl,
                             'name' => $att['name'] ?? basename($att['path'] ?? 'attels.jpg'),
@@ -183,7 +183,7 @@
                                 $ext = strtolower(pathinfo($att['name'], PATHINFO_EXTENSION));
                                 $isImg = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp']);
                             }
-                            $url = $att['url'] ?? \Illuminate\Support\Facades\Storage::disk('public')->url($att['path'] ?? '');
+                            $url = !empty($att['path']) ? asset('storage/' . ltrim($att['path'], '/')) : ($att['url'] ?? \Illuminate\Support\Facades\Storage::disk('public')->url($att['path'] ?? ''));
                             $name = $att['name'] ?? basename($att['path'] ?? 'fails');
                             $sizeStr = !empty($att['size']) ? number_format($att['size'] / 1024, 1) . ' KB' : '';
                             if ($isImg) {
