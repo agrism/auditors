@@ -19,7 +19,14 @@ class LogController extends Controller
 
         // Filter by user
         if ($request->filled('user_id')) {
-            $query->where('user_id', $request->get('user_id'));
+            $userId = $request->get('user_id');
+            if ($userId === 'exclude_guest') {
+                $query->whereNotNull('user_id');
+            } elseif ($userId === 'guest') {
+                $query->whereNull('user_id');
+            } else {
+                $query->where('user_id', $userId);
+            }
         }
 
         // Filter by HTTP method

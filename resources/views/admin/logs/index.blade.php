@@ -81,6 +81,12 @@
                     <label class="form-label small fw-semibold text-slate-700 mb-1">Lietotājs</label>
                     <select name="user_id" class="form-select form-select-sm">
                         <option value="">-- Visi lietotāji --</option>
+                        <option value="exclude_guest" {{ request('user_id') === 'exclude_guest' ? 'selected' : '' }}>
+                            Visi (izņemot Viesis/sistēma)
+                        </option>
+                        <option value="guest" {{ request('user_id') === 'guest' ? 'selected' : '' }}>
+                            Tikai Viesis / Sistēma
+                        </option>
                         @foreach($users as $u)
                             <option value="{{ $u->id }}" {{ request('user_id') == $u->id ? 'selected' : '' }}>
                                 {{ $u->name }} ({{ $u->email }})
