@@ -171,7 +171,7 @@ class BugReport extends Model
      */
     public function notifyClient(BugReportItem $item): void
     {
-        $recipientEmail = $this->user ? $this->user->email : $this->email;
+        $recipientEmail = !empty($this->email) ? trim($this->email) : ($this->user ? $this->user->email : null);
         if (empty($recipientEmail) || !filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
             return;
         }

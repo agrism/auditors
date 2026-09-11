@@ -120,8 +120,13 @@
                         <i class="fa-regular fa-user me-1 text-primary"></i>
                         @if($report->user)
                             <strong style="color: #0f172a;">{{ $report->user->name }}</strong> ({{ $report->user->email }})
+                            @if(!empty($report->email) && $report->email !== $report->user->email)
+                                <span class="badge border bg-white ms-1 font-monospace" style="border-color: #f59e0b !important; color: #b45309;" title="Klients lūdza atbildēt uz šo e-pastu">
+                                    <i class="fa-regular fa-envelope me-1"></i>Atbildei: {{ $report->email }}
+                                </span>
+                            @endif
                         @elseif(!empty($report->email))
-                            <strong style="color: #0f172a;">{{ $report->email }}</strong>
+                            <strong style="color: #0f172a;">{{ $report->email }}</strong> (Viesis)
                         @else
                             Viesis
                         @endif

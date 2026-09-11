@@ -323,5 +323,52 @@ class AdminBugReportsTest extends TestCase
                 && $mail->hasFrom('noreplay@auditors.lv');
         });
     }
+
+    public function test_admin_reply_prioritizes_custom_contact_email_over_user_email(): void
+    {
+        \Illuminate\Support\Facades\Mail::fake();
+
+        $admin = User::where('is_admin', 1)->first();
+        if (!$admin) {
+            $admin = User::create([
+                'name' => 'Admin User',
+                'email' => 'admin_user_' . uniqid() . '@test.lv',
+                'password' => bcrypt('secret'),
+                'is_admin' => 1,
+            ]);
+        }
+
+        $clientUser = User::where('is_admin', 0)->orWhereNull('is_admin')->first();
+        if (!$clientUser) {
+            $clientUser = User::create([
+                'name' => 'Client Recipient',
+                'email' => 'client_account_' . uniqid() . '@test.lv',
+                'password' => bcrypt('secret'),
+                'is_admin' => 0,
+            ]);
+        }
+
+        $customEmail = 'custom_preferred_' . uniqid() . '@inbox.lv';
+
+        $report = BugReport::create([
+            'user_id' => $clientUser->id,
+            'email' => $customEmail,
+            'status' => BugReportStatus::NEW,
+        ]);
+        $report->items()->create([
+            'user_id' => $clientUser->id,
+            'message' => 'Klienta jautājums ar lūgumu atbildēt uz citu e-pastu',
+            'is_admin_reply' => false,
+        ]);
+
+        $this->actingAs($admin)->post(route('admin.bug-reports.reply', $report->id), [
+            'message' => 'Labdien! Atbilde nosūtīta uz Jūsu norādīto e-pastu.',
+        ]);
+
+        \Illuminate\Support\Facades\Mail::assertQueued(\App\Mail\AdminBugReportReplyMail::class, function ($mail) use ($customEmail) {
+            return $mail->hasTo($customEmail)
+                && $mail->hasFrom('noreplay@auditors.lv');
+        });
+    }
 }
 
