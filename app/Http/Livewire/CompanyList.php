@@ -38,6 +38,10 @@ class CompanyList extends Component
             return new Collection();
         }
 
+        if (Auth::user()->isAdmin()) {
+            return \App\Company::orderBy('title', 'asc')->get();
+        }
+
         if(!$user = User::with(
             [
                 'companies' => function ($q) {

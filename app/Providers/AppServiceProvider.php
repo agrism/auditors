@@ -27,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
             function ($app) {
                 if ($companyId = \Session::get('companyId')) {
                     if (\Auth::check() && \Auth::user()) {
+                        if (\Auth::user()->isAdmin()) {
+                            return \App\Company::find($companyId);
+                        }
                         return \Auth::user()->companies()->where('id', $companyId)->first();
                     }
                     return \App\Company::find($companyId);

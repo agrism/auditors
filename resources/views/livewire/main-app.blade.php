@@ -390,17 +390,37 @@
                             <i class="fa-solid fa-caret-down eds-topbar-caret eds-label-mid"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 py-1 eds-taxpayer-dropdown-menu">
-                            <li><div class="dropdown-header text-uppercase small fw-bold text-muted py-2 px-3">Pārslēgt uzņēmumu</div></li>
-                            <div class="eds-taxpayer-list" style="max-height: 320px; overflow-y: auto; overflow-x: hidden;">
+                            <li class="px-3 pt-2 pb-1">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="dropdown-header text-uppercase small fw-bold text-muted p-0" style="letter-spacing: 0.5px;">Pārslēgt uzņēmumu</span>
+                                    <span class="badge bg-slate-100 text-slate-600 rounded-pill font-monospace" style="font-size: 0.7rem;">{{ count($userCompanies) }}</span>
+                                </div>
+                                @if(count($userCompanies) > 5)
+                                    <div class="eds-taxpayer-search-box mt-1 mb-1">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text bg-white border-end-0 text-muted px-2"><i class="fa-solid fa-magnifying-glass" style="font-size: 0.75rem;"></i></span>
+                                            <input type="text" 
+                                                   class="form-control border-start-0 ps-1 eds-taxpayer-filter-input" 
+                                                   placeholder="Meklēt uzņēmumu..." 
+                                                   oninput="edsFilterTaxpayers(this.value)" 
+                                                   onclick="event.stopPropagation();"
+                                                   onkeydown="event.stopPropagation();"
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                @endif
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <div class="eds-taxpayer-list" style="max-height: 340px; overflow-y: auto; overflow-x: hidden;">
                                 @foreach($userCompanies as $company)
                                     <?php
                                     $compRegNo = $company->registration_number ?? $company->reg_number;
                                     $isSelected = ($selectedCompany && $selectedCompany->id == $company->id);
                                     ?>
-                                    <li>
+                                    <li class="eds-taxpayer-item" data-search-text="{{ mb_strtolower($company->title . ' ' . $compRegNo) }}">
                                         <a class="dropdown-item py-2 px-3 d-flex align-items-center justify-content-between @if($isSelected) active @endif"
                                            href="#" wire:click.prevent="setActiveCompanyId({{ $company->id }})">
-                                            <div class="text-truncate me-2" style="min-width: 0; max-width: 230px;">
+                                            <div class="text-truncate me-2" style="min-width: 0; max-width: 250px;">
                                                 <div class="fw-semibold text-truncate" style="font-size: 0.85rem;">{{ $company->title }}</div>
                                                 @if(!empty($compRegNo))
                                                     <div class="font-monospace" style="font-size: 0.75rem; {{ $isSelected ? 'color: rgba(255,255,255,0.85);' : 'color: #64748b;' }}">
@@ -414,6 +434,12 @@
                                         </a>
                                     </li>
                                 @endforeach
+                                <li id="edsTaxpayerNoMatch" style="display: none;">
+                                    <div class="text-muted text-center py-3 small">
+                                        <i class="fa-regular fa-folder-open d-block mb-1"></i>
+                                        Nav atrasts neviens uzņēmums
+                                    </div>
+                                </li>
                             </div>
                             <li><hr class="dropdown-divider my-1"></li>
                             <li>
@@ -1159,4 +1185,24 @@
             </div>
         </div>
     </div>
+    <script>
+        function edsFilterTaxpayers(val) {
+            val = (val || '').toLowerCase().trim();
+            var items = document.querySelectorAll('.eds-taxpayer-list .eds-taxpayer-item');
+            var visibleCount = 0;
+            items.forEach(function(item) {
+                var text = item.getAttribute('data-search-text') || '';
+                if (!val || text.includes(val)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            var noMatch = document.getElementById('edsTaxpayerNoMatch');
+            if (noMatch) {
+                noMatch.style.display = (visibleCount === 0) ? 'block' : 'none';
+            }
+        }
+    </script>
 </div>

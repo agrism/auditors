@@ -64,7 +64,9 @@ class AuthUser
             return;
         }
 
-        if ($this->selectedCompany = $this->user->companies()->where('id', $id)->first()) {
+        $query = $this->isAdmin() ? Company::where('id', $id) : $this->user->companies()->where('id', $id);
+
+        if ($this->selectedCompany = $query->first()) {
             session()->put('companyId', $this->selectedCompany->id);
             session()->save();
         }
@@ -79,7 +81,15 @@ class AuthUser
 
     public function companies(): ?Collection
     {
-        return $this->user->companies ?? null;
+        if (!$this->user) {
+            return null;
+        }
+
+        if ($this->isAdmin()) {
+            return Company::orderBy('title', 'asc')->get();
+        }
+
+        return $this->user->companies()->orderBy('title', 'asc')->get();
     }
 
     public function isLoggedIn(): bool

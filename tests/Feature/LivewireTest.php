@@ -44,6 +44,26 @@ class LivewireTest extends TestCase
             ->assertStatus(200);
     }
 
+    public function test_admin_and_client_company_visibility(): void
+    {
+        $admin = User::where('is_admin', 1)->first() ?? User::factory()->create(['is_admin' => 1]);
+        $client = User::where('is_admin', 0)->first() ?? User::where('is_admin', null)->first();
+
+        // 1. Admin should see all companies
+        $this->actingAs($admin);
+        \App\Services\AuthUser::instance(); // re-instantiate or check
+        $authUser = new \App\Services\AuthUser();
+        $allCompaniesCount = Company::count();
+        $this->assertCount($allCompaniesCount, $authUser->companies());
+
+        // 2. Client should see only assigned companies
+        if ($client) {
+            $this->actingAs($client);
+            $clientAuthUser = new \App\Services\AuthUser();
+            $this->assertCount($client->companies()->count(), $clientAuthUser->companies());
+        }
+    }
+
     public function test_livewire_invoice_list(): void
     {
         $user = $this->getTestUser();

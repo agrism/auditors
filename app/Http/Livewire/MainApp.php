@@ -325,12 +325,13 @@ class MainApp extends Component
 
         // 1. Companies
         if ($user) {
-            $results['companies'] = $user->companies()
+            $companyQuery = $user->isAdmin() ? \App\Company::query() : $user->companies();
+            $results['companies'] = $companyQuery
                 ->where(function ($q) use ($query) {
                     $q->where('title', 'like', "%{$query}%")
                       ->orWhere('registration_number', 'like', "%{$query}%");
                 })
-                ->limit(4)
+                ->limit(5)
                 ->get();
         }
 
