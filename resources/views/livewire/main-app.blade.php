@@ -207,8 +207,13 @@
                     <div class="dropdown-menu dropdown-menu-end shadow-lg p-0 border-0 eds-search-menu" style="min-width: 360px; max-width: 440px; z-index: 1050;">
                         <div class="p-3 border-bottom bg-light rounded-top">
                             <div class="d-flex align-items-center justify-content-between mb-1">
-                                <label class="form-label small fw-bold text-muted mb-0 text-uppercase letter-spacing-1">
+                                <label class="form-label small fw-bold text-muted mb-0 text-uppercase letter-spacing-1 d-flex align-items-center">
                                     <i class="fa-solid fa-magnifying-glass me-1 text-primary"></i> Ātrā meklēšana
+                                    @if($selectedCompany)
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 text-truncate" style="max-width: 160px; font-weight: 600;" title="{{ $selectedCompany->title }}">
+                                            {{ $selectedCompany->title }}
+                                        </span>
+                                    @endif
                                 </label>
                                 <span wire:loading wire:target="globalSearchQuery" class="spinner-border spinner-border-sm text-primary" role="status">
                                     <span class="visually-hidden">Meklē...</span>
@@ -220,7 +225,7 @@
                                 </span>
                                 <input type="text"
                                        class="form-control border-start-0 border-end-0 shadow-none ps-1"
-                                       placeholder="Meklēt uzņēmumus, rēķinus, partnerus..."
+                                       placeholder="Meklēt rēķinus, partnerus, avansu norēķinus..."
                                        wire:model.debounce.300ms="globalSearchQuery">
                                 @if(!empty($globalSearchQuery))
                                     <button class="btn btn-outline-secondary border-start-0 bg-white"
@@ -240,47 +245,31 @@
                                 $results = $this->searchResults;
                                 $hasResults = false;
                                 if ($queryLen >= 2 && !empty($results)) {
-                                    $hasResults = ($results['companies']->isNotEmpty() || $results['invoices']->isNotEmpty() || $results['partners']->isNotEmpty() || $results['cashExpenses']->isNotEmpty());
+                                    $hasResults = (!empty($results['invoices']) && $results['invoices']->isNotEmpty()) 
+                                               || (!empty($results['partners']) && $results['partners']->isNotEmpty()) 
+                                               || (!empty($results['cashExpenses']) && $results['cashExpenses']->isNotEmpty());
                                 }
                             @endphp
 
-                            @if($queryLen < 2)
+                            @if(!$selectedCompany)
+                                <div class="p-4 text-center text-muted">
+                                    <i class="fa-solid fa-building-circle-exclamation fs-3 text-secondary opacity-50 mb-2"></i>
+                                    <div class="small fw-semibold text-dark">Izvēlieties uzņēmumu</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Lai meklētu rēķinus, partnerus un avansu norēķinus, vispirms izvēlieties uzņēmumu.</div>
+                                </div>
+                            @elseif($queryLen < 2)
                                 <div class="p-4 text-center text-muted">
                                     <i class="fa-solid fa-keyboard fs-3 text-secondary opacity-50 mb-2"></i>
                                     <div class="small fw-medium">Ievadiet vismaz 2 simbolus</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">Meklējiet pēc uzņēmuma nosaukuma, reģ. Nr., rēķina numura vai partnera</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Meklējiet atlasītā uzņēmuma rēķinus, partnerus vai avansu norēķinus</div>
                                 </div>
                             @elseif(!$hasResults)
                                 <div class="p-4 text-center text-muted">
                                     <i class="fa-solid fa-magnifying-glass fs-3 text-secondary opacity-50 mb-2"></i>
                                     <div class="small fw-semibold text-dark">Nekas netika atrasts</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">Nav atrasts neviens ieraksts vaicājumam "{{ $globalSearchQuery }}"</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Atlasītajā uzņēmumā nav atrasts neviens ieraksts vaicājumam "{{ $globalSearchQuery }}"</div>
                                 </div>
                             @else
-                                <!-- Companies -->
-                                @if($results['companies']->isNotEmpty())
-                                    <div class="eds-search-group-header">
-                                        <i class="fa-solid fa-building me-1 text-primary"></i> Uzņēmumi ({{ $results['companies']->count() }})
-                                    </div>
-                                    @foreach($results['companies'] as $comp)
-                                        <a href="#"
-                                           class="eds-search-item"
-                                           wire:click.prevent="selectSearchResult('company', {{ $comp->id }})">
-                                            <div class="eds-search-item-icon bg-primary-subtle text-primary">
-                                                <i class="fa-solid fa-building"></i>
-                                            </div>
-                                            <div class="eds-search-item-content">
-                                                <div class="eds-search-item-title">{{ $comp->title }}</div>
-                                                <div class="eds-search-item-subtitle">
-                                                    @if(!empty($comp->registration_number))
-                                                        Reģ. Nr.: <span class="font-monospace">{{ $comp->registration_number }}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <i class="fa-solid fa-chevron-right eds-search-item-arrow"></i>
-                                        </a>
-                                    @endforeach
-                                @endif
 
                                 <!-- Invoices -->
                                 @if($results['invoices']->isNotEmpty())

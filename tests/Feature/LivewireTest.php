@@ -119,10 +119,15 @@ class LivewireTest extends TestCase
         $this->actingAs($user);
         session(['companyId' => $company->id]);
 
+        $invoice = \App\Invoice::firstOrCreate(
+            ['company_id' => $company->id, 'number' => 'INV-TEST-999'],
+            ['partner_name' => 'Partneris SIA', 'amount_total' => 123.45, 'date' => now()]
+        );
+
         Livewire::test(MainApp::class)
             ->assertStatus(200)
-            ->set('globalSearchQuery', mb_substr($company->title, 0, 3))
-            ->assertSee($company->title)
+            ->set('globalSearchQuery', 'INV-TEST')
+            ->assertSee('INV-TEST-999')
             ->call('clearGlobalSearch')
             ->assertSet('globalSearchQuery', '');
     }

@@ -314,63 +314,50 @@ class MainApp extends Component
         }
 
         $results = [
-            'companies' => collect(),
             'invoices' => collect(),
             'partners' => collect(),
             'cashExpenses' => collect(),
         ];
 
         $companyId = AuthUser::instance()->selectedCompanyId();
-        $user = AuthUser::instance()->user();
-
-        // 1. Companies
-        if ($user) {
-            $companyQuery = $user->isAdmin() ? \App\Company::query() : $user->companies();
-            $results['companies'] = $companyQuery
-                ->where(function ($q) use ($query) {
-                    $q->where('title', 'like', "%{$query}%")
-                      ->orWhere('registration_number', 'like', "%{$query}%");
-                })
-                ->limit(5)
-                ->get();
+        if (!$companyId) {
+            return $results;
         }
 
-        // 2. Invoices (for active company)
-        if ($companyId) {
-            $results['invoices'] = \App\Invoice::where('company_id', $companyId)
-                ->where(function ($q) use ($query) {
-                    $q->where('number', 'like', "%{$query}%")
-                      ->orWhere('partner_name', 'like', "%{$query}%")
-                      ->orWhere('amount_total', 'like', "%{$query}%");
-                })
-                ->orderBy('date', 'desc')
-                ->limit(5)
-                ->get();
+        // 1. Invoices (for active selected company)
+        $results['invoices'] = \App\Invoice::where('company_id', $companyId)
+            ->where(function ($q) use ($query) {
+                $q->where('number', 'like', "%{$query}%")
+                  ->orWhere('partner_name', 'like', "%{$query}%")
+                  ->orWhere('amount_total', 'like', "%{$query}%");
+            })
+            ->orderBy('date', 'desc')
+            ->limit(5)
+            ->get();
 
-            // 3. Partners
-            $results['partners'] = \App\Partner::where('company_id', $companyId)
-                ->where(function ($q) use ($query) {
-                    $q->where('name', 'like', "%{$query}%")
-                      ->orWhere('registration_number', 'like', "%{$query}%")
-                      ->orWhere('vat_number', 'like', "%{$query}%");
-                })
-                ->orderBy('name', 'asc')
-                ->limit(5)
-                ->get();
+        // 2. Partners (for active selected company)
+        $results['partners'] = \App\Partner::where('company_id', $companyId)
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('registration_number', 'like', "%{$query}%")
+                  ->orWhere('vat_number', 'like', "%{$query}%");
+            })
+            ->orderBy('name', 'asc')
+            ->limit(5)
+            ->get();
 
-            // 4. Cash Expenses
-            $results['cashExpenses'] = \Illuminate\Support\Facades\DB::table('cash_expenses as ce')
-                ->select(['ce.id', 'ce.no', 'ce.date', 'empl.name as employee_name'])
-                ->leftJoin('employees as empl', 'ce.employee_id', '=', 'empl.id')
-                ->where('ce.company_id', $companyId)
-                ->where(function ($q) use ($query) {
-                    $q->where('ce.no', 'like', "%{$query}%")
-                      ->orWhere('empl.name', 'like', "%{$query}%");
-                })
-                ->orderBy('ce.date', 'desc')
-                ->limit(5)
-                ->get();
-        }
+        // 3. Cash Expenses (for active selected company)
+        $results['cashExpenses'] = \Illuminate\Support\Facades\DB::table('cash_expenses as ce')
+            ->select(['ce.id', 'ce.no', 'ce.date', 'empl.name as employee_name'])
+            ->leftJoin('employees as empl', 'ce.employee_id', '=', 'empl.id')
+            ->where('ce.company_id', $companyId)
+            ->where(function ($q) use ($query) {
+                $q->where('ce.no', 'like', "%{$query}%")
+                  ->orWhere('empl.name', 'like', "%{$query}%");
+            })
+            ->orderBy('ce.date', 'desc')
+            ->limit(5)
+            ->get();
 
         return $results;
     }
