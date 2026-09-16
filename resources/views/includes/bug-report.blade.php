@@ -145,9 +145,9 @@
 
                     <!-- User and Page Context Details Bar -->
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom font-monospace" style="font-size: 0.75rem; color: #64748b; border-color: #cbd5e1 !important;">
-                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
                             <span><i class="fa-regular fa-user text-primary me-1"></i><strong style="color: #0f172a;">{{ Auth::user()->name }}</strong></span>
-                            <span id="bugReportCompanyDisplay" class="fw-semibold text-truncate" style="max-width: 240px; color: #475569;"></span>
+                            <span id="bugReportCompanyDisplay" class="fw-semibold text-truncate ms-2" style="max-width: 240px; color: #475569;"></span>
                         </div>
                         <div class="d-flex align-items-center gap-1">
                             <i class="fa-solid fa-folder text-primary me-1"></i>
