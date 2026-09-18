@@ -67,7 +67,9 @@
             background-color: #ffffff !important;
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
-        .invoice-lines-table textarea.form-control {
+        .invoice-lines-table textarea.form-control,
+        .invoice-lines-table textarea.line_title {
+            field-sizing: content !important;
             min-height: 31px !important;
             padding: 4px 8px !important;
             font-size: 0.8125rem !important;
@@ -78,6 +80,7 @@
             background-color: #ffffff !important;
             overflow-y: hidden !important;
             resize: none !important;
+            width: 100% !important;
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
         .invoice-lines-table input.form-control:focus,
@@ -367,7 +370,7 @@
                                             @if($line->id ?? null)
                                                 {!! Form::hidden('line_id['.$index.']', $line->id) !!}
                                             @endif
-                                            {!! Form::textarea('title['.$index.']', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'min-height: 31px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1] ) !!}
+                                            {!! Form::textarea('title['.$index.']', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'min-height: 31px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1, 'oninput'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";', 'onfocus'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";'] ) !!}
                                         </td>
                                         <td>
                                             {!! Form::select('unit_id['.$index.']', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
@@ -403,7 +406,7 @@
                                 </td>
                                 <td>
                                     {!! Form::hidden('line_id[]', null) !!}
-                                    {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'min-height: 31px; min-width:200px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1] ) !!}
+                                    {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'min-height: 31px; min-width:200px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1, 'oninput'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";', 'onfocus'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";'] ) !!}
                                 </td>
                                 <td>
                                     {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id ?? null , ['class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}

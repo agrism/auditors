@@ -26,11 +26,7 @@
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @livewireStyles
-</head>
-<body id="app-layout" class="bg-light">
-    {{ $slot }}
-
+    <!-- Core JS Libraries -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.lv.min.js"></script>
@@ -38,6 +34,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
     <script src="{{asset('build/virtual-select/virtual-select.min.js')}}"></script>
+
+    @livewireStyles
+</head>
+<body id="app-layout" class="bg-light">
+    {{ $slot }}
 
     @livewireScripts
     @stack('scripts')
@@ -57,20 +58,39 @@
             });
         }
 
+        function autoResizeTextareas() {
+            document.querySelectorAll('.invoice-lines-table textarea.line_title').forEach(function(el) {
+                el.style.height = 'auto';
+                var offset = el.offsetHeight - el.clientHeight;
+                el.style.height = Math.max(31, el.scrollHeight + (offset > 0 ? offset : 2)) + 'px';
+            });
+        }
+        window.autoResizeTextareas = autoResizeTextareas;
+
         function syncDocumentTitle() {
             var el = document.querySelector('[data-page-title]');
             if (el && el.dataset.pageTitle) {
                 document.title = el.dataset.pageTitle;
             }
         }
-        document.addEventListener('DOMContentLoaded', syncDocumentTitle);
+        document.addEventListener('DOMContentLoaded', function() {
+            syncDocumentTitle();
+            autoResizeTextareas();
+        });
         if (window.Livewire) {
-            Livewire.hook('message.processed', syncDocumentTitle);
+            Livewire.hook('message.processed', function() {
+                syncDocumentTitle();
+                autoResizeTextareas();
+            });
         } else {
             document.addEventListener('livewire:load', function() {
                 if (window.Livewire) {
-                    Livewire.hook('message.processed', syncDocumentTitle);
+                    Livewire.hook('message.processed', function() {
+                        syncDocumentTitle();
+                        autoResizeTextareas();
+                    });
                 }
+                autoResizeTextareas();
             });
         }
     </script>

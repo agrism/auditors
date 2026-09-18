@@ -101,13 +101,16 @@
             line-height: 1.4 !important;
             box-sizing: border-box !important;
         }
-        .invoice-lines-table textarea.form-control {
+        .invoice-lines-table textarea.form-control,
+        .invoice-lines-table textarea.line_title {
+            field-sizing: content !important;
             min-height: 34px !important;
             padding: 4px 8px !important;
             font-size: 0.85rem !important;
             line-height: 1.35 !important;
             box-sizing: border-box !important;
             resize: none !important;
+            width: 100% !important;
             overflow-y: hidden !important;
         }
         .invoice-lines-table .remove-line {
@@ -251,7 +254,7 @@
                     </td>
                     <td>
                         {!! Form::hidden('line_id[]', $line->id) !!}
-                        {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'min-height: 34px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
+                        {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'min-height: 34px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1, 'oninput'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";', 'onfocus'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";'] ) !!}
                     </td>
                     <td>
                         {!! Form::select('unit_id[]', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
@@ -288,7 +291,7 @@
             </td>
             <td>
                 {!! Form::hidden('line_id[]', null) !!}
-                {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'min-height: 34px; min-width:200px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
+                {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'min-height: 34px; min-width:200px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1, 'oninput'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";', 'onfocus'=>'this.style.height="auto";this.style.height=(this.scrollHeight+2)+"px";'] ) !!}
             </td>
             <td>
                 {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id , ['class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
