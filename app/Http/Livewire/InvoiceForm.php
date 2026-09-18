@@ -113,8 +113,8 @@ class InvoiceForm extends Component
 
         $this->company = app()->Company;
 
-        if (request()->session()->has('companyId')) {
-            $this->companyId = request()->session()->get('companyId');
+        if (session()->has('companyId')) {
+            $this->companyId = session()->get('companyId');
 
             if (!$this->company = Company::where('id', $this->companyId)->first()) {
                 $this->companyId = null;

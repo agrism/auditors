@@ -92,8 +92,7 @@
         }
         .invoice-lines-table input.form-control,
         .invoice-lines-table select.form-select,
-        .invoice-lines-table select.form-control,
-        .invoice-lines-table textarea.form-control {
+        .invoice-lines-table select.form-control {
             height: 34px !important;
             min-height: 34px !important;
             max-height: 34px !important;
@@ -103,8 +102,13 @@
             box-sizing: border-box !important;
         }
         .invoice-lines-table textarea.form-control {
+            min-height: 34px !important;
+            padding: 4px 8px !important;
+            font-size: 0.85rem !important;
+            line-height: 1.35 !important;
+            box-sizing: border-box !important;
             resize: none !important;
-            overflow: hidden !important;
+            overflow-y: hidden !important;
         }
         .invoice-lines-table .remove-line {
             height: 34px !important;
@@ -247,7 +251,7 @@
                     </td>
                     <td>
                         {!! Form::hidden('line_id[]', $line->id) !!}
-                        {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'height: 34px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
+                        {!! Form::textarea('title[]', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'min-height: 34px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
                     </td>
                     <td>
                         {!! Form::select('unit_id[]', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
@@ -284,7 +288,7 @@
             </td>
             <td>
                 {!! Form::hidden('line_id[]', null) !!}
-                {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'height: 34px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
+                {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'min-height: 34px; min-width:200px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Nosaukums', 'rows'=>1] ) !!}
             </td>
             <td>
                 {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id , ['class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
@@ -505,10 +509,38 @@
                 setCurrencyRateForBaseCurrency()
             });
 
+            function autoResizeTextarea(el) {
+                if (!el) return;
+                el.style.height = 'auto';
+                var offset = el.offsetHeight - el.clientHeight;
+                var newHeight = Math.max(34, el.scrollHeight + offset);
+                el.style.height = newHeight + 'px';
+            }
+
+            function autoResizeAllLineTitles() {
+                $('.invoice-lines-table textarea.line_title').each(function () {
+                    autoResizeTextarea(this);
+                });
+            }
+
+            autoResizeAllLineTitles();
+
+            $(document.body).on('input', '.line_title', function () {
+                autoResizeTextarea(this);
+            });
+
+            $(window).on('resize', function () {
+                autoResizeAllLineTitles();
+            });
+
             $('#addLine').on('click', function () {
                 div = $('#line-empty-div').clone().removeClass('d-none');
                 div.find("input").val("");
                 $('#placeNewRow').before(div);
+                let newTextarea = div.find('.line_title')[0];
+                if (newTextarea) {
+                    autoResizeTextarea(newTextarea);
+                }
             });
 
             $(document.body).on('click', '.remove-line', function () {

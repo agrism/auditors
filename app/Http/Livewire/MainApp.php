@@ -233,6 +233,14 @@ class MainApp extends Component
                 $setValue);
         }
 
+        if ($name === 'invoices') {
+            $this->emit('closeInvoice');
+        }
+
+        if ($name === 'cash-expenses') {
+            $this->emit('closeForm');
+        }
+
         if ($name === 'feedback') {
             $this->emit('resetBugReportsList');
         }

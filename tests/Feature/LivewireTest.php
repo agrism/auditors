@@ -311,5 +311,28 @@ class LivewireTest extends TestCase
             return $mail->hasTo('7924@inbox.lv') && $mail->isNewThread === false;
         });
     }
+
+    public function test_activate_invoices_emits_close_invoice_and_resets_form(): void
+    {
+        $user = $this->getTestUser();
+        $company = $this->getTestCompany();
+
+        $this->actingAs($user);
+        session(['companyId' => $company->id]);
+
+        // Test MainApp emits closeInvoice when invoices is activated
+        Livewire::test(MainApp::class)
+            ->call('activateComponent', 'invoices')
+            ->assertEmitted('closeInvoice');
+
+        // Test InvoiceList resets showInvoiceFom and activeInvoiceId on closeInvoice
+        Livewire::test(InvoiceList::class, ['activeCompanyId' => $company->id])
+            ->call('openNewInvoice')
+            ->assertSet('showInvoiceFom', true)
+            ->emit('closeInvoice')
+            ->assertSet('showInvoiceFom', false)
+            ->assertSet('activeInvoiceId', null);
+    }
 }
+
 

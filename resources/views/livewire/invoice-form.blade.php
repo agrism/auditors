@@ -54,8 +54,7 @@
         }
         .invoice-lines-table input.form-control,
         .invoice-lines-table select.form-select,
-        .invoice-lines-table select.form-control,
-        .invoice-lines-table textarea.form-control {
+        .invoice-lines-table select.form-control {
             height: 31px !important;
             min-height: 31px !important;
             max-height: 31px !important;
@@ -68,16 +67,25 @@
             background-color: #ffffff !important;
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
+        .invoice-lines-table textarea.form-control {
+            min-height: 31px !important;
+            padding: 4px 8px !important;
+            font-size: 0.8125rem !important;
+            line-height: 1.35 !important;
+            border: 1px solid #c4cdd5 !important;
+            border-radius: 2px !important;
+            box-sizing: border-box !important;
+            background-color: #ffffff !important;
+            overflow-y: hidden !important;
+            resize: none !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
         .invoice-lines-table input.form-control:focus,
         .invoice-lines-table select.form-select:focus,
         .invoice-lines-table textarea.form-control:focus {
             border-color: #002855 !important;
             box-shadow: 0 0 0 1px #002855 !important;
             outline: 0;
-        }
-        .invoice-lines-table textarea.form-control {
-            resize: none !important;
-            overflow: hidden !important;
         }
         .invoice-lines-table .remove-line {
             height: 31px !important;
@@ -359,7 +367,7 @@
                                             @if($line->id ?? null)
                                                 {!! Form::hidden('line_id['.$index.']', $line->id) !!}
                                             @endif
-                                            {!! Form::textarea('title['.$index.']', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'height: 34px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1] ) !!}
+                                            {!! Form::textarea('title['.$index.']', isset($line) ? $line['title'] : null , ['size'=>'100%xAuto', 'style'=>'min-height: 31px; min-width:200px','class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1] ) !!}
                                         </td>
                                         <td>
                                             {!! Form::select('unit_id['.$index.']', $units->pluck('name','id'), isset($line) ? $line['unit_id'] : null , ['style'=>'min-width:80px','class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
@@ -395,7 +403,7 @@
                                 </td>
                                 <td>
                                     {!! Form::hidden('line_id[]', null) !!}
-                                    {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'height: 34px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1] ) !!}
+                                    {!! Form::textarea('title[]', null , ['size'=>'100%xAuto', 'style'=>'min-height: 31px; min-width:200px', 'class'=>'form-control form-control-sm line_title line-1', 'placeholder'=>'Preces vai pakalpojuma nosaukums', 'rows'=>1] ) !!}
                                 </td>
                                 <td>
                                     {!! Form::select('unit_id[]', $units->pluck('name', 'id') , $units[0]->id ?? null , ['class'=>'form-select form-select-sm line_unit line-1 text-end'] ) !!}
@@ -861,6 +869,30 @@
                 setCurrencyRateForBaseCurrency();
             });
 
+            function autoResizeTextarea(el) {
+                if (!el) return;
+                el.style.height = 'auto';
+                var offset = el.offsetHeight - el.clientHeight;
+                var newHeight = Math.max(31, el.scrollHeight + offset);
+                el.style.height = newHeight + 'px';
+            }
+
+            function autoResizeAllLineTitles() {
+                $('.invoice-lines-table textarea.line_title').each(function () {
+                    autoResizeTextarea(this);
+                });
+            }
+
+            autoResizeAllLineTitles();
+
+            $(document.body).on('input', '.line_title', function () {
+                autoResizeTextarea(this);
+            });
+
+            $(window).on('resize', function () {
+                autoResizeAllLineTitles();
+            });
+
             var addlineIndex = 100;
 
             $('#addLine').on('click', function () {
@@ -875,6 +907,10 @@
 
                 div.find("input").val("");
                 $('#placeNewRow').before(div);
+                let newTextarea = div.find('.line_title')[0];
+                if (newTextarea) {
+                    autoResizeTextarea(newTextarea);
+                }
             });
 
             $(document.body).on('click', '.remove-line', function () {
@@ -920,6 +956,9 @@
                 recalculateInvoiceData();
                 showHideOtherCurrencyData();
                 recalculateInvoiceData();
+                setTimeout(function () {
+                    autoResizeAllLineTitles();
+                }, 50);
             });
         });
     </script>

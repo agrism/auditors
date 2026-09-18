@@ -173,6 +173,8 @@ class InvoiceList extends Component
     public function closeInvoice()
     {
         $this->showInvoiceFom = false;
+        $this->activeInvoiceId = null;
+        $this->activeInvoiceNo = null;
     }
 
     public function editInvoice($id)
