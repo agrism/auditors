@@ -32,16 +32,11 @@
     $fullTitle = config('app.name', 'Auditors.lv') . ' :: ' . $headerTitle;
     ?>
     @section('title', $headerTitle)
-    <script>
-        if (typeof document !== 'undefined') {
-            document.title = @json($fullTitle);
-        }
-    </script>
     <!-- Left Navigation Sidebar -->
     <aside class="eds-sidebar" id="edsSidebar">
         <!-- Logo & Brand Header: Auditors.lv -->
         <div class="eds-brand-header">
-            <a class="eds-brand-link text-decoration-none d-inline-flex flex-column align-items-center justify-content-center" href="#" wire:click.prevent="activateComponent('companies')">
+            <a class="eds-brand-link text-decoration-none d-inline-flex flex-column align-items-center justify-content-center" href="javascript:void(0)" wire:click.prevent="activateComponent('companies')">
                 <div class="eds-logo-container">
                     <div class="eds-logo-icon">
                         <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -79,7 +74,7 @@
                         if(!empty($subItem['active'])) { $isSubActive = true; break; }
                     }
                     ?>
-                    <li class="eds-menu-item">
+                    <li class="eds-menu-item" wire:key="nav-main-{{ $sysName }}">
                         <a class="eds-menu-link d-flex justify-content-between align-items-center @if($isSubActive) active @endif"
                            data-bs-toggle="collapse"
                            href="#edsMenu{{ ucfirst($sysName) }}"
@@ -98,8 +93,8 @@
                                 @if(!isset($subItem['available']) || !$subItem['available'])
                                     @continue
                                 @endif
-                                <li>
-                                    <a href="#"
+                                <li wire:key="nav-sub-{{ $sysName }}-{{ $subSysName }}">
+                                    <a href="javascript:void(0)"
                                        wire:click.prevent="activateComponent('{{$sysName.'.'.$subSysName}}')"
                                        class="eds-submenu-link @if(!empty($subItem['active'])) active @endif">
                                         <span class="d-inline-flex align-items-center gap-2">
@@ -126,8 +121,8 @@
                     @continue
                 @endif
 
-                <li class="eds-menu-item">
-                    <a href="#"
+                <li class="eds-menu-item" wire:key="nav-main-{{ $sysName }}">
+                    <a href="javascript:void(0)"
                        wire:click.prevent="activateComponent('{{$sysName}}')"
                        class="eds-menu-link d-flex justify-content-between align-items-center @if(!empty($item['active'])) active @endif">
                         <span class="d-inline-flex align-items-center gap-2">
@@ -156,7 +151,7 @@
             @endforeach
 
             @if(\Auth::check() && \Auth::user()->isAdmin())
-                <li class="eds-menu-item">
+                <li class="eds-menu-item" wire:key="nav-admin-panel">
                     <a href="{{ route('admin.home') }}" class="eds-menu-link text-warning fw-semibold">
                         <span class="d-inline-flex align-items-center gap-2">
                             <i class="fa-solid fa-shield-halved"></i>
@@ -199,7 +194,7 @@
             <div class="eds-topbar-controls">
                 <!-- Search Button & Dropdown -->
                 <div class="dropdown">
-                    <a href="#" class="eds-topbar-btn eds-search-block" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="Meklēt">
+                    <a href="javascript:void(0)" class="eds-topbar-btn eds-search-block" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="Meklēt">
                         <i class="fa-solid fa-magnifying-glass eds-topbar-icon"></i>
                         <span class="eds-topbar-text eds-label-wide fw-bold text-uppercase">MEKLĒT</span>
                         <i class="fa-solid fa-caret-down eds-topbar-caret eds-label-wide"></i>
@@ -277,7 +272,8 @@
                                         <i class="fa-solid fa-file-invoice me-1 text-success"></i> Rēķini ({{ $results['invoices']->count() }})
                                     </div>
                                     @foreach($results['invoices'] as $inv)
-                                        <a href="#"
+                                        <a href="javascript:void(0)"
+                                           wire:key="search-inv-{{ $inv->id }}"
                                            class="eds-search-item"
                                            wire:click.prevent="selectSearchResult('invoices')">
                                             <div class="eds-search-item-icon bg-success-subtle text-success">
@@ -310,7 +306,8 @@
                                         <i class="fa-solid fa-handshake me-1 text-info"></i> Partneri ({{ $results['partners']->count() }})
                                     </div>
                                     @foreach($results['partners'] as $part)
-                                        <a href="#"
+                                        <a href="javascript:void(0)"
+                                           wire:key="search-part-{{ $part->id }}"
                                            class="eds-search-item"
                                            wire:click.prevent="selectSearchResult('partners')">
                                             <div class="eds-search-item-icon bg-info-subtle text-info">
@@ -337,7 +334,8 @@
                                         <i class="fa-solid fa-receipt me-1 text-warning"></i> Avansu norēķini ({{ $results['cashExpenses']->count() }})
                                     </div>
                                     @foreach($results['cashExpenses'] as $ce)
-                                        <a href="#"
+                                        <a href="javascript:void(0)"
+                                           wire:key="search-ce-{{ $ce->id ?? $loop->index }}"
                                            class="eds-search-item"
                                            wire:click.prevent="selectSearchResult('cash-expenses')">
                                             <div class="eds-search-item-icon bg-warning-subtle text-warning">
@@ -368,7 +366,7 @@
                 <!-- Taxpayer / Company Switcher Dropdown (shown when company is selected) -->
                 @if($selectedCompany)
                     <div class="dropdown">
-                        <a href="#" class="eds-topbar-btn eds-taxpayer-block" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $selectedCompany->title }}">
+                        <a href="javascript:void(0)" class="eds-topbar-btn eds-taxpayer-block" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $selectedCompany->title }}">
                             <i class="fa-solid fa-building eds-topbar-icon"></i>
                             <div class="eds-topbar-text-group eds-label-mid">
                                 <span class="eds-topbar-sublabel">NODOKĻU MAKSĀTĀJS</span>
@@ -406,9 +404,9 @@
                                     $compRegNo = $company->registration_number ?? $company->reg_number;
                                     $isSelected = ($selectedCompany && $selectedCompany->id == $company->id);
                                     ?>
-                                    <li class="eds-taxpayer-item" data-search-text="{{ mb_strtolower($company->title . ' ' . $compRegNo) }}">
+                                    <li class="eds-taxpayer-item" wire:key="taxpayer-item-{{ $company->id }}" data-search-text="{{ mb_strtolower($company->title . ' ' . $compRegNo) }}">
                                         <a class="dropdown-item py-2 px-3 d-flex align-items-center justify-content-between @if($isSelected) active @endif"
-                                           href="#" wire:click.prevent="setActiveCompanyId({{ $company->id }})">
+                                           href="javascript:void(0)" wire:click.prevent="setActiveCompanyId({{ $company->id }})">
                                             <div class="text-truncate me-2" style="min-width: 0; max-width: 250px;">
                                                 <div class="fw-semibold text-truncate" style="font-size: 0.85rem;">{{ $company->title }}</div>
                                                 @if(!empty($compRegNo))
@@ -432,7 +430,7 @@
                             </div>
                             <li><hr class="dropdown-divider my-1"></li>
                             <li>
-                                <a class="dropdown-item py-2 px-3 text-primary fw-semibold d-flex align-items-center gap-2" href="#" wire:click.prevent="clearActiveCompany">
+                                <a class="dropdown-item py-2 px-3 text-primary fw-semibold d-flex align-items-center gap-2" href="javascript:void(0)" wire:click.prevent="clearActiveCompany">
                                     <i class="fa-solid fa-list text-primary"></i> <span>Visi uzņēmumi</span>
                                 </a>
                             </li>
@@ -463,7 +461,7 @@
                 </button>
 
                 <!-- Info Icon -->
-                <a href="#"
+                <a href="javascript:void(0)"
                    class="eds-topbar-btn eds-info-icon-btn"
                    title="Informācija un palīdzība"
                    data-bs-toggle="modal"
@@ -566,7 +564,7 @@
                     <div class="row g-3 mb-4">
                         <!-- KPI: Invoices -->
                         <div class="col-md-4">
-                            <div class="dash-kpi-card" wire:click.prevent="activateComponent('invoices')">
+                            <div class="dash-kpi-card" wire:key="dash-kpi-invoices" role="button" tabindex="0" wire:click.prevent="activateComponent('invoices')">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <span class="text-muted small fw-bold text-uppercase letter-spacing-wide">{{ __('Rēķini') }}</span>
                                     <div class="dash-icon-box bg-primary-50 text-primary-600">
@@ -589,7 +587,7 @@
 
                         <!-- KPI: Partners -->
                         <div class="col-md-4">
-                            <div class="dash-kpi-card" wire:click.prevent="activateComponent('partners')">
+                            <div class="dash-kpi-card" wire:key="dash-kpi-partners" role="button" tabindex="0" wire:click.prevent="activateComponent('partners')">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <span class="text-muted small fw-bold text-uppercase letter-spacing-wide">{{ __('Partneri') }}</span>
                                     <div class="dash-icon-box" style="background-color: #ecfdf5; color: #059669;">
@@ -612,7 +610,7 @@
 
                         <!-- KPI: Expenses -->
                         <div class="col-md-4">
-                            <div class="dash-kpi-card" wire:click.prevent="activateComponent('cash-expenses')">
+                            <div class="dash-kpi-card" wire:key="dash-kpi-cash-expenses" role="button" tabindex="0" wire:click.prevent="activateComponent('cash-expenses')">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <span class="text-muted small fw-bold text-uppercase letter-spacing-wide">{{ __('Avansu norēķini') }}</span>
                                     <div class="dash-icon-box" style="background-color: #fffbeb; color: #d97706;">
@@ -876,7 +874,7 @@
                                         {{ __('Pēdējie uzņēmuma rēķini') }}
                                     </h6>
                                     @if($invoicesCount > 0)
-                                        <a href="#" class="btn btn-sm btn-link text-primary-600 text-decoration-none fw-semibold p-0"
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-link text-primary-600 text-decoration-none fw-semibold p-0"
                                            wire:click.prevent="activateComponent('invoices')">
                                             {{ __('Skatīt visus') }} ({{ $invoicesCount }}) <i class="fa-solid fa-arrow-right ms-1"></i>
                                         </a>
@@ -897,7 +895,7 @@
                                             </thead>
                                             <tbody>
                                                 @foreach($recentInvoices as $inv)
-                                                    <tr style="cursor: pointer;" wire:click.prevent="activateComponent('invoices')">
+                                                    <tr wire:key="recent-inv-row-{{ $inv->id }}" style="cursor: pointer;" wire:click.prevent="activateComponent('invoices')">
                                                         <td class="ps-4 text-muted font-monospace py-2.5">{{ $inv->date }}</td>
                                                         <td class="fw-bold text-slate-900 font-monospace py-2.5">{{ $inv->number }}</td>
                                                         <td class="py-2.5 text-truncate" style="max-width: 220px;" title="{{ $inv->partner_name }}">
@@ -943,7 +941,7 @@
                                 </h6>
 
                                 <div class="d-flex flex-column gap-2">
-                                    <a href="#" class="dash-shortcut-item"
+                                    <a href="javascript:void(0)" class="dash-shortcut-item"
                                        wire:click.prevent="activateComponent('other.other-payment-receivers')">
                                         <div class="d-flex align-items-center gap-2.5">
                                             <div class="dash-shortcut-icon bg-primary-50 text-primary-600">
@@ -958,7 +956,7 @@
                                     </a>
 
                                     @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->isAdmin())
-                                        <a href="#" class="dash-shortcut-item"
+                                        <a href="javascript:void(0)" class="dash-shortcut-item"
                                            wire:click.prevent="activateComponent('personal-income')">
                                             <div class="d-flex align-items-center gap-2.5">
                                                 <div class="dash-shortcut-icon text-indigo-600" style="background-color: #eef2ff;">
@@ -973,7 +971,7 @@
                                         </a>
                                     @endif
 
-                                    <a href="#" class="dash-shortcut-item"
+                                    <a href="javascript:void(0)" class="dash-shortcut-item"
                                        data-bs-toggle="modal" data-bs-target="#edsInfoModal">
                                         <div class="d-flex align-items-center gap-2.5">
                                             <div class="dash-shortcut-icon bg-primary-50 text-primary-600">
@@ -1090,7 +1088,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        class="eds-user-nav-link"
                        data-bs-dismiss="offcanvas"
                        wire:click.prevent="activateComponent('profile')">
@@ -1104,7 +1102,7 @@
                         <i class="fa-solid fa-chevron-right text-muted small"></i>
                     </a>
 
-                    <a href="#" 
+                    <a href="javascript:void(0)" 
                        class="eds-user-nav-link d-flex align-items-center justify-content-between"
                        data-bs-dismiss="offcanvas"
                        wire:click.prevent="activateComponent('feedback')">
@@ -1174,24 +1172,4 @@
             </div>
         </div>
     </div>
-    <script>
-        function edsFilterTaxpayers(val) {
-            val = (val || '').toLowerCase().trim();
-            var items = document.querySelectorAll('.eds-taxpayer-list .eds-taxpayer-item');
-            var visibleCount = 0;
-            items.forEach(function(item) {
-                var text = item.getAttribute('data-search-text') || '';
-                if (!val || text.includes(val)) {
-                    item.style.display = '';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            var noMatch = document.getElementById('edsTaxpayerNoMatch');
-            if (noMatch) {
-                noMatch.style.display = (visibleCount === 0) ? 'block' : 'none';
-            }
-        }
-    </script>
 </div>

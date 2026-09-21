@@ -129,7 +129,7 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end eds-action-menu shadow">
                                                 <li>
-                                                    <a class="dropdown-item" href="#" wire:click.prevent="openEdit({{$cashExpense->id}})">
+                                                    <a class="dropdown-item" href="javascript:void(0)" wire:click.prevent="openEdit({{$cashExpense->id}})">
                                                         <i class="fa-solid fa-pen-to-square text-primary"></i>
                                                         <span>{{ __('Labot') }}</span>
                                                     </a>

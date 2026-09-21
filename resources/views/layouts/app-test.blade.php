@@ -44,6 +44,26 @@
     @stack('scripts')
 
     <script>
+        function edsFilterTaxpayers(val) {
+            val = (val || '').toLowerCase().trim();
+            var items = document.querySelectorAll('.eds-taxpayer-list .eds-taxpayer-item');
+            var visibleCount = 0;
+            items.forEach(function(item) {
+                var text = item.getAttribute('data-search-text') || '';
+                if (!val || text.includes(val)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            var noMatch = document.getElementById('edsTaxpayerNoMatch');
+            if (noMatch) {
+                noMatch.style.display = (visibleCount === 0) ? 'block' : 'none';
+            }
+        }
+        window.edsFilterTaxpayers = edsFilterTaxpayers;
+
         function initDatepicker(selector) {
             $(selector).datepicker({
                 language: 'lv',

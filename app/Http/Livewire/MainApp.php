@@ -183,54 +183,23 @@ class MainApp extends Component
 
     public function activateComponent(string $name)
     {
-        if (!in_array($name,
-            array_keys($this->nav()))
-        ) {
+        if ($this->activeCompanyId && $this->activeCompanyId !== 'none' && $this->activeCompanyId !== 'x') {
+            AuthUser::instance()->setCompany($this->activeCompanyId);
+        }
+
+        if (!in_array($name, array_keys($this->nav()))) {
             return;
         }
 
-        foreach ($this->nav() as $navSysName => $nav) {
-
-            $fullKey = '';
-
-            $keys = explode('.',
-                $navSysName);
-
-            if (count($keys) === 2) {
-                $fullKey = $keys[0] . '.' . 'items' . '.' . $keys[1];
+        foreach ($this->nav as $mainKey => $val) {
+            if (isset($val['items'])) {
+                foreach ($val['items'] as $subKey => $subVal) {
+                    $itemFullName = $mainKey . '.' . $subKey;
+                    $this->nav[$mainKey]['items'][$subKey]['active'] = ($itemFullName === $name);
+                }
             } else {
-                $fullKey = $navSysName;
+                $this->nav[$mainKey]['active'] = ($mainKey === $name);
             }
-
-            $fullKey = $fullKey . '.active';
-
-            if ($navSysName !== $name) {
-
-                Arr::set($this->nav,
-                    $fullKey,
-                    false);
-                continue;
-            }
-
-            if (
-                $nav['shouldAuth'] && !AuthUser::instance()
-                    ->isLoggedIn()
-            ) {
-                continue;
-            }
-
-            $setValue = true;
-
-            if (
-                $nav['shouldHaveSelectedCompany'] && !AuthUser::instance()
-                    ->selectedCompany()
-            ) {
-                $setValue = false;
-            }
-
-            Arr::set($this->nav,
-                $fullKey,
-                $setValue);
         }
 
         if ($name === 'invoices') {

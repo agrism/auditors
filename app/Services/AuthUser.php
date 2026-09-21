@@ -39,24 +39,28 @@ class AuthUser
     }
 
     public function user(){
+        if (!$this->user || (\Auth::check() && ($this->user->id ?? null) !== \Auth::id())) {
+            $this->user = \Auth::user();
+        }
         return $this->user;
     }
 
     public function userId(){
-        return $this->user->id ?? null;
+        return $this->user()->id ?? null;
     }
 
     public function userEmail(){
-        return $this->user->email ?? null;
+        return $this->user()->email ?? null;
     }
 
     public function userName(){
-        return $this->user->name ?? null;
+        return $this->user()->name ?? null;
     }
 
     public function setCompany($id)
     {
-        if (!$this->user) {
+        $user = $this->user();
+        if (!$user) {
             return;
         }
 
@@ -64,7 +68,7 @@ class AuthUser
             return;
         }
 
-        $query = $this->isAdmin() ? Company::where('id', $id) : $this->user->companies()->where('id', $id);
+        $query = $this->isAdmin() ? Company::where('id', $id) : $user->companies()->where('id', $id);
 
         if ($this->selectedCompany = $query->first()) {
             session()->put('companyId', $this->selectedCompany->id);
@@ -81,7 +85,8 @@ class AuthUser
 
     public function companies(): ?Collection
     {
-        if (!$this->user) {
+        $user = $this->user();
+        if (!$user) {
             return null;
         }
 
@@ -89,16 +94,21 @@ class AuthUser
             return Company::orderBy('title', 'asc')->get();
         }
 
-        return $this->user->companies()->orderBy('title', 'asc')->get();
+        return $user->companies()->orderBy('title', 'asc')->get();
     }
 
     public function isLoggedIn(): bool
     {
-        return boolval($this->user);
+        return boolval($this->user());
     }
 
     public function selectedCompany(): ?Company
     {
+        $this->user();
+        $sessCompanyId = session()->get('companyId');
+        if ($sessCompanyId && (!$this->selectedCompany || $this->selectedCompany->id != $sessCompanyId)) {
+            $this->setCompany($sessCompanyId);
+        }
         return $this->selectedCompany;
     }
 
@@ -109,7 +119,8 @@ class AuthUser
 
     public function isAdmin(): bool
     {
-        return boolval($this->user && $this->user->isAdmin());
+        $user = $this->user();
+        return boolval($user && $user->isAdmin());
     }
 
 }

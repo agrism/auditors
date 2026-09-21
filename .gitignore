@@ -22,3 +22,5 @@ yarn-error.log
 /storage/app/*.json
 /storage/app/google-service-account.json
 /storage/app/backups/*
+.DS_Store
+**/.DS_Store

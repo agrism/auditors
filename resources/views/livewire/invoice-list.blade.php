@@ -208,14 +208,14 @@
                                                 <ul class="dropdown-menu dropdown-menu-end eds-action-menu shadow">
                                                     @if(!$invoice->is_locked)
                                                         <li>
-                                                            <a class="dropdown-item" href="#" wire:click.prevent="editInvoice({{$invoice->id}})">
+                                                            <a class="dropdown-item" href="javascript:void(0)" wire:click.prevent="editInvoice({{$invoice->id}})">
                                                                 <i class="fa-solid fa-pen-to-square text-primary"></i>
                                                                 <span>Labot</span>
                                                             </a>
                                                         </li>
                                                     @endif
                                                     <li>
-                                                        <a class="dropdown-item" href="#" wire:click.prevent="copyInvoiceById({{$invoice->id}})">
+                                                        <a class="dropdown-item" href="javascript:void(0)" wire:click.prevent="copyInvoiceById({{$invoice->id}})">
                                                             <i class="fa-regular fa-copy text-primary"></i>
                                                             <span>Kopēt</span>
                                                         </a>
@@ -243,7 +243,7 @@
                                                         @if(\Auth::user()->isAdmin())
                                                             <li>
                                                                 <a class="dropdown-item text-warning"
-                                                                   href="#"
+                                                                   href="javascript:void(0)"
                                                                    wire:click.prevent="unlockInvoiceById({{$invoice->id}})">
                                                                     <i class="fa-solid fa-unlock"></i>
                                                                     <span>Atslēgt</span>
@@ -260,16 +260,16 @@
                                                     @else
                                                         <li>
                                                             <a class="dropdown-item text-secondary"
-                                                               href="#"
-                                                               wire:click.prevent="lockInvoiceById({{$invoice->id}})">
+                                                                href="javascript:void(0)"
+                                                                wire:click.prevent="lockInvoiceById({{$invoice->id}})">
                                                                 <i class="fa-solid fa-lock"></i>
                                                                 <span>Slēgt</span>
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a class="dropdown-item text-danger"
-                                                               href="#"
-                                                               wire:click.prevent="deleteInvoiceById({{$invoice->id}})">
+                                                                href="javascript:void(0)"
+                                                                wire:click.prevent="deleteInvoiceById({{$invoice->id}})">
                                                                 <i class="fa-solid fa-trash-can"></i>
                                                                 <span>Dzēst</span>
                                                             </a>

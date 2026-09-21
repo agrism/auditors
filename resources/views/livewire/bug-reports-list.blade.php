@@ -227,7 +227,7 @@
                     <nav aria-label="breadcrumb" class="d-none d-sm-inline-block ms-2">
                         <ol class="breadcrumb mb-0 small">
                             <li class="breadcrumb-item">
-                                <a href="#" wire:click.prevent="closeReportDetail" class="text-decoration-none fw-semibold text-primary">
+                                <a href="javascript:void(0)" wire:click.prevent="closeReportDetail" class="text-decoration-none fw-semibold text-primary">
                                     <i class="fa-solid fa-comments me-1"></i>{{ __('Manas saziņas') }}
                                 </a>
                             </li>
