@@ -47,6 +47,8 @@
                                         <button class="btn eds-action-btn dropdown-toggle"
                                                 type="button"
                                                 data-bs-toggle="dropdown"
+                                                data-bs-boundary="viewport"
+                                                data-bs-popper-config='{"strategy":"fixed"}'
                                                 aria-expanded="false">
                                             <span>{{ __('Darbības') }}</span>
                                         </button>

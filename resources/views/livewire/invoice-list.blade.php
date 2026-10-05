@@ -202,6 +202,8 @@
                                                 <button class="btn eds-action-btn dropdown-toggle"
                                                         type="button"
                                                         data-bs-toggle="dropdown"
+                                                        data-bs-boundary="viewport"
+                                                        data-bs-popper-config='{"strategy":"fixed"}'
                                                         aria-expanded="false">
                                                     <span>Darbības</span>
                                                 </button>
@@ -282,13 +284,15 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{ $invoices->links() }}
-
-
                         </div>
                         <!-- /.table-responsive -->
                     </div>
                     <!-- /.panel-body -->
+                    @if($invoices->hasPages())
+                        <div class="card-footer bg-white border-top py-2 d-flex justify-content-end">
+                            {{ $invoices->links() }}
+                        </div>
+                    @endif
                 </div>
         @else
             <div>
