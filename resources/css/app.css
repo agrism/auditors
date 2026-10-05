@@ -433,7 +433,7 @@ samp {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     transition: all 0.25s ease;
-    overflow: visible;
+    overflow: visible !important;
     margin-bottom: 1.5rem;
 }
 
@@ -457,12 +457,18 @@ samp {
 
 .card-modern .card-body {
     padding: 1.5rem;
-    overflow: visible;
+    overflow: visible !important;
 }
 
-@media (min-width: 992px) {
-    .card-modern .table-responsive {
-        overflow: visible;
+.card-modern .table-responsive,
+.table-responsive {
+    overflow: visible !important;
+}
+
+@media (max-width: 991.98px) {
+    .card-modern .table-responsive,
+    .table-responsive {
+        overflow-x: auto !important;
     }
 }
 
@@ -1739,6 +1745,7 @@ select.form-select,
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
     padding: 0.25rem 0;
     background-color: #ffffff;
+    z-index: 1060 !important;
 }
 
 .eds-action-menu .dropdown-item {
