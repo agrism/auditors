@@ -198,7 +198,7 @@
                                             <span class="d-inline text-muted small ms-0.5">{{ $invoice->currency_name ?? 'EUR' }}</span>
                                         </td>
                                         <td class="text-end text-nowrap pe-3">
-                                            <div class="dropdown eds-action-btn-group">
+                                            <div class="dropdown eds-action-btn-group @if($loop->iteration > 2 && $loop->iteration >= (count($invoices) - 2)) dropup @endif">
                                                 <button class="btn eds-action-btn dropdown-toggle"
                                                         type="button"
                                                         data-bs-toggle="dropdown"

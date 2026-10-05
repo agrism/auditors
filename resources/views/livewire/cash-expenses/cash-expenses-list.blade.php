@@ -118,7 +118,7 @@
                                         </span>
                                     </td>
                                     <td class="text-end text-nowrap pe-3">
-                                        <div class="dropdown eds-action-btn-group" onclick="event.stopPropagation();">
+                                        <div class="dropdown eds-action-btn-group @if($loop->iteration > 2 && $loop->iteration >= (count($cashExpenses) - 2)) dropup @endif" onclick="event.stopPropagation();">
                                             <button class="btn eds-action-btn dropdown-toggle"
                                                     type="button"
                                                     data-bs-toggle="dropdown"
