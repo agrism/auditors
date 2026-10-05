@@ -1431,6 +1431,11 @@ select.form-select,
     min-height: 100vh;
 }
 
+.eds-main-layout > main,
+main.flex-grow-1 {
+    padding-bottom: 6rem !important;
+}
+
 .eds-topbar {
     background-color: #002855;
     color: #ffffff;

@@ -612,7 +612,7 @@
                 </div>
 
                 <!-- Bottom Action Toolbar -->
-                <div class="invoice-actions-footer d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="invoice-actions-footer d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2">
                     <div class="d-flex align-items-center gap-2 text-muted small">
                         <i class="fa-solid fa-shield-check text-success"></i>
                         <span>Visi aprēķini un nodokļi tiek sinhronizēti automātiski</span>

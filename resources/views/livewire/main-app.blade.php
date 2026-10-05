@@ -479,7 +479,7 @@
         </div>
 
         <!-- Main Workspace Components Container -->
-        <main class="flex-grow-1 p-3 p-lg-4">
+        <main class="flex-grow-1 p-3 p-lg-4" style="padding-bottom: 6rem !important;">
             <?php $companyId = \App\Services\AuthUser::instance()->selectedCompanyId(); ?>
 
             @if($this->activeComponent() === 'profile')
