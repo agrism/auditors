@@ -1,24 +1,37 @@
 @auth
+<?php
+$isBugReportCollapsed = \Illuminate\Support\Facades\Auth::check() && boolval(\Illuminate\Support\Facades\Auth::user()->getSetting('bug_report_collapsed', false));
+?>
 <style>
     /* Sticky Bug Report Button Styles */
     .eds-bug-report-wrapper {
         position: fixed !important;
-        bottom: 24px !important;
-        right: 24px !important;
+        bottom: 20px !important;
+        right: 0 !important;
         z-index: 999999 !important;
-        display: block !important;
+        display: flex !important;
+        align-items: center !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .eds-bug-report-group {
+        display: inline-flex !important;
+        align-items: center !important;
+        box-shadow: -2px 2px 10px rgba(0, 40, 85, 0.25) !important;
+        border-radius: 4px 0 0 4px !important;
+        overflow: hidden !important;
+        transition: all 0.2s ease !important;
     }
     .eds-bug-report-btn {
         display: inline-flex !important;
         align-items: center !important;
         gap: 0.55rem !important;
-        height: 40px !important;
-        padding: 0 14px !important;
+        height: 38px !important;
+        padding: 0 12px !important;
         background: #002855 !important;
         color: #ffffff !important;
         border: 1px solid #001a38 !important;
-        border-radius: 2px !important;
-        box-shadow: 0 2px 8px rgba(0, 40, 85, 0.25) !important;
+        border-right: none !important;
+        border-radius: 4px 0 0 4px !important;
         font-size: 0.8125rem !important;
         font-weight: 600 !important;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
@@ -28,14 +41,34 @@
         transition: all 0.2s ease !important;
         outline: none !important;
         user-select: none !important;
+        white-space: nowrap !important;
     }
     .eds-bug-report-btn:hover {
         background: #001a38 !important;
-        box-shadow: 0 4px 12px rgba(0, 40, 85, 0.35) !important;
         color: #ffffff !important;
     }
     .eds-bug-report-btn:active {
         background: #001124 !important;
+    }
+    .eds-bug-report-collapse-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 22px !important;
+        height: 38px !important;
+        background: #001a38 !important;
+        color: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid #001a38 !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-right: none !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        padding: 0 !important;
+        font-size: 0.7rem !important;
+    }
+    .eds-bug-report-collapse-btn:hover {
+        background: #001124 !important;
+        color: #ffffff !important;
     }
     .eds-bug-report-icon-wrapper {
         display: flex !important;
@@ -48,18 +81,40 @@
         line-height: 1 !important;
         color: #ffffff !important;
     }
+
+    /* Collapsed Mode (only compact icon attached to right border) */
+    .eds-bug-report-wrapper.is-collapsed .eds-bug-report-group {
+        border-radius: 6px 0 0 6px !important;
+    }
+    .eds-bug-report-wrapper.is-collapsed .eds-bug-report-btn {
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+        border-radius: 6px 0 0 6px !important;
+    }
+    .eds-bug-report-wrapper.is-collapsed .eds-bug-report-label,
+    .eds-bug-report-wrapper.is-collapsed .eds-bug-report-collapse-btn {
+        display: none !important;
+    }
+    .eds-bug-report-wrapper.is-collapsed:hover .eds-bug-report-btn {
+        background: #001a38 !important;
+        transform: translateX(-3px) !important;
+    }
+
     @media (max-width: 576px) {
         .eds-bug-report-wrapper {
             bottom: 16px !important;
-            right: 16px !important;
+            right: 0 !important;
         }
         .eds-bug-report-btn {
-            width: 40px !important;
-            height: 40px !important;
+            width: 38px !important;
+            height: 38px !important;
             padding: 0 !important;
             justify-content: center !important;
         }
-        .eds-bug-report-label {
+        .eds-bug-report-label,
+        .eds-bug-report-collapse-btn {
             display: none !important;
         }
     }
@@ -109,18 +164,30 @@
 </style>
 
 <!-- Floating Sticky Bug Report Button -->
-<div class="eds-bug-report-wrapper" id="edsBugReportWrapper">
-    <button type="button" 
-            class="eds-bug-report-btn" 
-            id="edsBugReportBtn"
-            onclick="openBugReportModal()" 
-            title="Ziņot par kļūdu vai ieteikumi" 
-            aria-label="Ziņot par kļūdu vai ieteikumi">
-        <span class="eds-bug-report-icon-wrapper">
-            <i class="fa-solid fa-headset text-white"></i>
-        </span>
-        <span class="eds-bug-report-label">Ziņot par kļūdu / ieteikumi</span>
-    </button>
+<div class="eds-bug-report-wrapper {{ $isBugReportCollapsed ? 'is-collapsed' : '' }}" 
+     id="edsBugReportWrapper" 
+     data-collapsed="{{ $isBugReportCollapsed ? '1' : '0' }}">
+    <div class="eds-bug-report-group">
+        <button type="button" 
+                class="eds-bug-report-btn" 
+                id="edsBugReportBtn"
+                onclick="openBugReportModal()" 
+                title="Ziņot par kļūdu vai ieteikumi" 
+                aria-label="Ziņot par kļūdu vai ieteikumi">
+            <span class="eds-bug-report-icon-wrapper">
+                <i class="fa-solid fa-headset text-white"></i>
+            </span>
+            <span class="eds-bug-report-label">Ziņot par kļūdu / ieteikumi</span>
+        </button>
+        <button type="button" 
+                class="eds-bug-report-collapse-btn" 
+                id="edsBugReportCollapseBtn" 
+                onclick="toggleBugReportCollapse(true, event)" 
+                title="Sakļaut par ikonu" 
+                aria-label="Sakļaut par ikonu">
+            <i class="fa-solid fa-chevron-right text-white"></i>
+        </button>
+    </div>
 </div>
 
 <!-- Bug Report Modal -->
@@ -250,10 +317,81 @@
             </div>
         </div>
     </div>
-</div>
-
 <script>
     var bugReportSelectedFiles = [];
+
+    function setBugReportCollapsed(collapsed, saveToServer) {
+        if (saveToServer === undefined) saveToServer = true;
+        var wrapper = document.getElementById('edsBugReportWrapper');
+        if (!wrapper) return;
+        
+        if (collapsed) {
+            wrapper.classList.add('is-collapsed');
+            try { localStorage.setItem('eds_bug_report_collapsed', '1'); } catch(e){}
+        } else {
+            wrapper.classList.remove('is-collapsed');
+            try { localStorage.setItem('eds_bug_report_collapsed', '0'); } catch(e){}
+        }
+
+        if (saveToServer) {
+            var csrf = '{{ csrf_token() }}';
+            var metaCsrf = document.querySelector('meta[name="csrf-token"]');
+            if (metaCsrf && metaCsrf.getAttribute('content')) {
+                csrf = metaCsrf.getAttribute('content');
+            }
+            fetch('{{ route("user.settings.update") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    key: 'bug_report_collapsed',
+                    value: collapsed ? true : false
+                })
+            }).catch(function(err) {
+                // Silently ignore background save error
+            });
+        }
+    }
+
+    function toggleBugReportCollapse(collapsed, event) {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+        setBugReportCollapsed(collapsed, true);
+    }
+
+    // Auto collapse on click outside
+    document.addEventListener('click', function(e) {
+        var wrapper = document.getElementById('edsBugReportWrapper');
+        if (!wrapper || wrapper.classList.contains('is-collapsed')) return;
+        
+        // If click is outside wrapper and outside modal, collapse it
+        if (!wrapper.contains(e.target) && !e.target.closest('.eds-bug-modal') && !e.target.closest('.modal')) {
+            setBugReportCollapsed(true, true);
+        }
+    });
+
+    // Initialize state on load
+    (function() {
+        var wrapper = document.getElementById('edsBugReportWrapper');
+        if (!wrapper) return;
+        
+        var isServerCollapsed = wrapper.getAttribute('data-collapsed') === '1';
+        var localVal = null;
+        try {
+            localVal = localStorage.getItem('eds_bug_report_collapsed');
+        } catch(e) {}
+
+        if (localVal === '1' || isServerCollapsed) {
+            wrapper.classList.add('is-collapsed');
+        } else if (localVal === '0' && !isServerCollapsed) {
+            wrapper.classList.remove('is-collapsed');
+        }
+    })();
 
     function detectCurrentPageContext() {
         // 1. Detect Main Section Title from Topbar or Document Title

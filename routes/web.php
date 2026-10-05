@@ -24,6 +24,7 @@ Route::post('sign-in', ['as' => 'sign-in', 'uses' => 'App\\Http\\Controllers\\Ho
 Route::get('logout', ['as' => 'logout', 'uses' => 'App\\Http\\Controllers\\HomeController@logout']);
 Route::post('bug-reports', [\App\Http\Controllers\BugReportController::class, 'store'])->name('bug-reports.store')->middleware('auth');
 Route::post('bug-reports/{id}/reply', [\App\Http\Controllers\BugReportController::class, 'reply'])->name('bug-reports.reply')->middleware('auth');
+Route::post('user/settings', [\App\Http\Controllers\Client\UserController::class, 'updateSetting'])->name('user.settings.update')->middleware('auth');
 
 
 

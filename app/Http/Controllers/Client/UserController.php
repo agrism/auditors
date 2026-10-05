@@ -55,4 +55,17 @@ class UserController extends Controller
 
 		return redirect()->route('client.user.edit')->with('success', true)->with('form_message', _('Data updated'));
 	}
+
+	public function updateSetting(Request $request)
+	{
+		$user = Auth::user();
+		if ($user) {
+			$key = $request->input('key');
+			$value = $request->input('value');
+			if ($key) {
+				$user->setSetting($key, $value);
+			}
+		}
+		return response()->json(['success' => true]);
+	}
 }

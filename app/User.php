@@ -17,7 +17,7 @@ class User extends Authenticatable
 	 */
 	protected $fillable
 		= [
-			'name', 'email', 'password', 'is_admin',
+			'name', 'email', 'password', 'is_admin', 'settings',
 		];
 
 	/**
@@ -38,7 +38,23 @@ class User extends Authenticatable
 	protected $casts
 		= [
 			'email_verified_at' => 'datetime',
+			'settings' => 'array',
 		];
+
+	public function getSetting(string $key, $default = null)
+	{
+		$settings = $this->settings ?? [];
+		return $settings[$key] ?? $default;
+	}
+
+	public function setSetting(string $key, $value): self
+	{
+		$settings = $this->settings ?? [];
+		$settings[$key] = $value;
+		$this->settings = $settings;
+		$this->save();
+		return $this;
+	}
 
 	public function roles()
 	{
