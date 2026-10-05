@@ -171,8 +171,8 @@ $isBugReportCollapsed = \Illuminate\Support\Facades\Auth::check() && boolval(\Il
         <button type="button" 
                 class="eds-bug-report-btn" 
                 id="edsBugReportBtn"
-                onclick="openBugReportModal()" 
-                title="Ziņot par kļūdu vai ieteikumi" 
+                onclick="handleBugReportBtnClick(event)" 
+                title="{{ $isBugReportCollapsed ? 'Izvērst pogu (Ziņot par kļūdu / ieteikumi)' : 'Ziņot par kļūdu vai ieteikumi' }}" 
                 aria-label="Ziņot par kļūdu vai ieteikumi">
             <span class="eds-bug-report-icon-wrapper">
                 <i class="fa-solid fa-headset text-white"></i>
@@ -317,19 +317,45 @@ $isBugReportCollapsed = \Illuminate\Support\Facades\Auth::check() && boolval(\Il
             </div>
         </div>
     </div>
+</div>
+
 <script>
     var bugReportSelectedFiles = [];
+
+    function handleBugReportBtnClick(e) {
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        var wrapper = document.getElementById('edsBugReportWrapper');
+        if (!wrapper) return;
+
+        if (wrapper.classList.contains('is-collapsed')) {
+            // If collapsed into small icon, clicking it expands it back to the big button
+            setBugReportCollapsed(false, true);
+        } else {
+            // If already open as big button, clicking it opens the bug report modal
+            openBugReportModal();
+        }
+    }
 
     function setBugReportCollapsed(collapsed, saveToServer) {
         if (saveToServer === undefined) saveToServer = true;
         var wrapper = document.getElementById('edsBugReportWrapper');
+        var btn = document.getElementById('edsBugReportBtn');
         if (!wrapper) return;
         
         if (collapsed) {
             wrapper.classList.add('is-collapsed');
+            if (btn) {
+                btn.setAttribute('title', 'Izvērst pogu (Ziņot par kļūdu / ieteikumi)');
+            }
             try { localStorage.setItem('eds_bug_report_collapsed', '1'); } catch(e){}
         } else {
             wrapper.classList.remove('is-collapsed');
+            if (btn) {
+                btn.setAttribute('title', 'Ziņot par kļūdu vai ieteikumi');
+            }
             try { localStorage.setItem('eds_bug_report_collapsed', '0'); } catch(e){}
         }
 
