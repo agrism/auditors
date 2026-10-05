@@ -433,7 +433,7 @@ samp {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     transition: all 0.25s ease;
-    overflow: hidden;
+    overflow: visible;
     margin-bottom: 1.5rem;
 }
 
@@ -451,10 +451,19 @@ samp {
     font-weight: 600;
     font-size: 1.05rem;
     color: var(--slate-900);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
 }
 
 .card-modern .card-body {
     padding: 1.5rem;
+    overflow: visible;
+}
+
+@media (min-width: 992px) {
+    .card-modern .table-responsive {
+        overflow: visible;
+    }
 }
 
 /* EDS Global Buttons */
