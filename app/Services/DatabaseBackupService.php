@@ -54,6 +54,49 @@ class DatabaseBackupService
         return $fullPath;
     }
 
+    /**
+     * Clean up local database backup files older than specified days.
+     *
+     * @param int $retentionDays Number of days to retain backups locally
+     * @param string|null $backupDir Custom directory (optional)
+     * @return int Number of deleted files
+     */
+    public function cleanupOldLocalBackups(int $retentionDays = 3, ?string $backupDir = null): int
+    {
+        if ($retentionDays < 0) {
+            return 0;
+        }
+
+        $dir = $backupDir ?? storage_path('app/backups');
+        if (!is_dir($dir)) {
+            return 0;
+        }
+
+        $cutoffTime = time() - ($retentionDays * 86400);
+        $deletedCount = 0;
+
+        $files = glob($dir . '/backup_*.sql');
+        if ($files === false) {
+            return 0;
+        }
+
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                $fileTime = filemtime($file);
+                if ($fileTime !== false && $fileTime < $cutoffTime) {
+                    if (@unlink($file)) {
+                        $deletedCount++;
+                        Log::info("Deleted expired local backup file: {$file}");
+                    } else {
+                        Log::warning("Failed to delete expired local backup file: {$file}");
+                    }
+                }
+            }
+        }
+
+        return $deletedCount;
+    }
+
     private function hasMysqldump(): bool
     {
         $process = Process::fromShellCommandline('which mysqldump');

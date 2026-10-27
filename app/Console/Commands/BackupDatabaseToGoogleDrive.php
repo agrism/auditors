@@ -18,7 +18,8 @@ class BackupDatabaseToGoogleDrive extends Command
                             {--subject= : Custom subject/title for the email notification (e.g. biatlons.kilograms.lv)}
                             {--local-only : Only create local backup without uploading to Google Drive}
                             {--force : Force upload even if not in production environment}
-                            {--keep= : Override default retention days for remote cleanup}';
+                            {--keep= : Override default retention days for remote cleanup}
+                            {--keep-local= : Override default retention days for local storage cleanup}';
 
     /**
      * The console command description.
@@ -76,10 +77,24 @@ class BackupDatabaseToGoogleDrive extends Command
                 $this->warn('Skipped Google Drive upload (--local-only specified).');
             }
 
+            // 4. Clean up expired local backups
+            $localDeleted = 0;
+            $localRetentionDays = $this->option('keep-local') !== null
+                ? (int) $this->option('keep-local')
+                : config('services.google_drive.local_retention_days', 3);
+
+            if ($localRetentionDays >= 0) {
+                $this->info("Cleaning up local backups older than {$localRetentionDays} days...");
+                $localDeleted = $backupService->cleanupOldLocalBackups($localRetentionDays);
+                if ($localDeleted > 0) {
+                    $this->info("Cleaned up <comment>{$localDeleted}</comment> expired local backup(s).");
+                }
+            }
+
             $duration = round(microtime(true) - $startTime, 2);
             $this->info("<info>✓ Database backup finished successfully in {$duration}s.</info>");
 
-            // 4. Send notification email
+            // 5. Send notification email
             $this->sendNotificationEmail([
                 'success' => true,
                 'subject_name' => $subjectName,
@@ -91,6 +106,8 @@ class BackupDatabaseToGoogleDrive extends Command
                 'folder_id' => config('services.google_drive.folder_id'),
                 'deleted_count' => $deleted,
                 'retention_days' => $retentionDays,
+                'local_deleted_count' => $localDeleted,
+                'local_retention_days' => $localRetentionDays,
                 'server_host' => gethostname(),
                 'server_ip' => '65.21.182.7',
             ]);

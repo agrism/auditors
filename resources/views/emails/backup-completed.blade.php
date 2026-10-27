@@ -140,8 +140,14 @@
                 @endif
                 @if(isset($backupDetails['deleted_count']))
                 <tr>
-                    <th>Dzēstās vecās kopijas</th>
+                    <th>Google Drive dzēstās kopijas</th>
                     <td>{{ $backupDetails['deleted_count'] }} faili (saglabāšanas periods: {{ $backupDetails['retention_days'] ?? 30 }} d.)</td>
+                </tr>
+                @endif
+                @if(isset($backupDetails['local_deleted_count']))
+                <tr>
+                    <th>Servera lokāli dzēstās kopijas</th>
+                    <td>{{ $backupDetails['local_deleted_count'] }} faili (saglabāšanas periods: {{ $backupDetails['local_retention_days'] ?? 3 }} d.)</td>
                 </tr>
                 @endif
                 <tr>
